@@ -1,6 +1,7 @@
 package com.bytesmyth.ui;
 
 import com.bytesmyth.graphics.batch.QuadTextureBatcher;
+import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.font.BitmapFont;
 import com.bytesmyth.graphics.texture.NinePatch;
 import com.bytesmyth.graphics.texture.Texture;
@@ -9,27 +10,36 @@ import com.bytesmyth.input.Input;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-public class Gui {
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+public class Gui extends Container {
 
     private QuadTextureBatcher batcher;
     private boolean enabled = true;
 
     private final Texture guiTexture;
-    private final TextureAtlas atlas;
+    private OrthographicCamera2D camera;
 
     private final NinePatch windowPatch;
     private final NinePatch buttonPatch;
 
     private final BitmapFont font;
 
-    private Pane rootNode;
+    private Node pressedNode = null;
+    private Node hoveredNode = null;
 
-    public Gui(Pane rootNode, Texture guiTexture, QuadTextureBatcher batcher) {
-        this.rootNode = rootNode;
+    private Map<String, Node> keyNodeMap = new HashMap<>();
+
+    public Gui(Texture guiTexture, QuadTextureBatcher batcher, OrthographicCamera2D camera) {
+        super(0, 0);
         this.guiTexture = guiTexture;
         this.batcher = batcher;
+        this.camera = camera;
 
-        atlas = new TextureAtlas(guiTexture, 16, 16);
+        TextureAtlas atlas = new TextureAtlas(guiTexture, 16, 16);
         windowPatch = new NinePatch(atlas, 0,16);
         buttonPatch = new NinePatch(atlas, 3,16);
         font = new BitmapFont(guiTexture, "mono");
@@ -40,7 +50,31 @@ public class Gui {
             return;
         }
 
-//        System.out.println("Handling gui input");
+        List<PositionedNode> nodeOrder = getNodeOrder();
+
+        Vector2f mousePosition = camera.toCameraCoordinates(input.getMousePosition());
+
+        for (PositionedNode positionedNode : nodeOrder) {
+            if (positionedNode.contains(mousePosition)) {
+                hoveredNode = positionedNode.node;
+            } else {
+                positionedNode.node.setHovered(false);
+            }
+        }
+
+        hoveredNode.setHovered(true);
+
+        if (input.isMouseDown("left") && pressedNode == null) { //if nothing is currently being pressed
+            pressedNode = hoveredNode;
+            pressedNode.setPressed(true);
+        } else if(!input.isMouseDown("left") && pressedNode != null) {
+            if (pressedNode instanceof Button) {
+                ((Button) pressedNode).fireClick();
+            }
+            pressedNode.setPressed(false);
+            pressedNode = null;
+        }
+
     }
 
     public void render() {
@@ -48,97 +82,130 @@ public class Gui {
             return;
         }
 
+        List<PositionedNode> nodeOrder = getNodeOrder();
+
         batcher.begin(guiTexture);
-        drawNode(0, 0, rootNode);
+        for (PositionedNode positionedNode : nodeOrder) {
+            drawNode(positionedNode);
+        }
         batcher.end();
     }
 
-    private void drawNode(float x, float y, Node node) {
-        if (node instanceof Pane) {
-            drawPane(x, y, (Pane) node);
-        } else if (node instanceof Button) {
-            drawButton(x, y, (Button) node);
+    private List<PositionedNode> getNodeOrder() {
+        List<PositionedNode> positionedNodes = new LinkedList<>();
+
+        Position rootPosition = new Position(0,0, camera.getWidth(), camera.getHeight());
+        position(rootPosition, this, positionedNodes);
+        return positionedNodes;
+    }
+
+    private void position(Position position, Node node, List<PositionedNode> output) {
+        float hw = node.getWidth() / 2f;
+        float hh = node.getHeight() / 2f;
+        output.add(new PositionedNode(position.getX() - hw, position.getY() + hh, node.getWidth(), node.getHeight(), node));
+
+        if (node instanceof Container) {
+            positionChildren(position, (Container) node, output);
         }
     }
 
-    private void drawPane(float x, float y, Pane pane) {
-        float paneHW = pane.getW() / 2f;
-        float paneHH = pane.getH() / 2f;
-
-        windowPatch.draw(x - paneHW, y + paneHH, pane.getW(), pane.getH(), batcher);
-
-        for (Node child : pane.getChildren()) {
-            float childHW = child.getW() / 2f;
-            float childHH = child.getH() / 2f;
-
-            RelativePositioning positioning = pane.getNodePositioning(child);
-            float horizontalOffset = positioning.getHorizontalOffset();
-
-            float targetX = x;
-            float targetY = y;
-
-            switch (positioning.getHorizontalAlignment()) {
-                case LEFT:
-                    if (horizontalOffset >= 0) {
-                        targetX = x - paneHW + childHW + horizontalOffset;
-                    } else {
-                        targetX = x - paneHW - childHW + horizontalOffset;
-                    }
-                    break;
-                case RIGHT:
-                    if (horizontalOffset >= 0) {
-                        targetX = x + paneHW - childHW - horizontalOffset;
-                    } else {
-                        targetX = x + paneHW + childHW - horizontalOffset;
-                    }
-                    break;
-                case CENTER:
-                    targetX = x + horizontalOffset;
-                    break;
-            }
-
-            float verticalOffset = positioning.getVerticalOffset();
-
-            switch (positioning.getVerticalAlignment()) {
-                case BOTTOM:
-                    if (verticalOffset >= 0) {
-                        targetY = y - paneHH + childHH + verticalOffset;
-                    } else {
-                        targetY = y - paneHH - childHH + verticalOffset;
-                    }
-                    break;
-                case TOP:
-                    if (verticalOffset >= 0) {
-                        targetY = y + paneHH - childHH - verticalOffset;
-                    } else {
-                        targetY = y + paneHH + childHH - verticalOffset;
-                    }
-                    break;
-                case CENTER:
-                    targetY = y + verticalOffset;
-                    break;
-            }
-
-            drawNode(targetX, targetY, child);
+    private void positionChildren(Position parent, Container container, List<PositionedNode> output) {
+        for (Node child : container.getChildren()) {
+            Position position = container.getNodePositioning(child).position(parent, child, this);
+            position(position, child, output);
         }
     }
 
-    private void drawButton(float x, float y, Button button) {
-        Vector3f color = button.getColor();
+    private void drawNode(PositionedNode node) {
+        if (node.node instanceof Pane) {
+            drawPane(node.position, (Pane) node.node);
+        } else if (node.node instanceof Label) {
+            drawLabel(node.position, (Label) node.node);
+        } else if (node.node instanceof Button) {
+            drawButton(node.position, (Button) node.node);
+        }
+    }
 
-        float hw = button.getW() / 2f;
-        float hh = button.getH() / 2f;
+    private void drawLabel(Position p, Label label) {
+        Vector2f size = font.getTextSize(label.getText(), 16f);
+        float labelFontSize = 16;
+        font.drawText(label.getText(), p.getX() + p.getWidth()/2f - size.x/2f, p.getY() - p.getHeight()/2f + size.y / 2f, labelFontSize, batcher);
+    }
+
+    private void drawPane(Position p, Pane container) {
+        windowPatch.draw(p.getX(), p.getY(), p.getWidth(), p.getHeight(), batcher);
+    }
+
+    private void drawButton(Position p, Button button) {
+        Vector3f color = new Vector3f(button.getColor());
+
+        if (button.isPressed()) {
+            color.mul(0.65f);
+        } else if (button.isHovered()) {
+            color.mul(0.85f);
+        }
+
         batcher.setColor(color.x, color.y, color.z, 1f);
-        buttonPatch.draw(x - hw, y + hh, button.getW(), button.getH(), batcher);
+        buttonPatch.draw(p.getX(), p.getY(), p.getWidth(), p.getHeight(), batcher);
 
         Vector3f textColor = button.getTextColor();
         batcher.setColor(textColor.x, textColor.y, textColor.z, 1f);
-        //TODO: position text properly
+
         int buttonFontSize = 16;
         Vector2f size = font.getTextSize(button.getText(), buttonFontSize);
-        font.drawText(button.getText(), x - size.x/2f, y + size.y / 2f, buttonFontSize, batcher);
+        font.drawText(button.getText(), p.getX() + p.getWidth()/2f - size.x/2f, p.getY() - p.getHeight()/2f + size.y / 2f, buttonFontSize, batcher);
 
         batcher.setColor(1,1,1,1);
+    }
+
+    public OrthographicCamera2D getCamera() {
+        return camera;
+    }
+
+    public BitmapFont getFont() {
+        return font;
+    }
+
+    @Override
+    Gui getGui() {
+        return this;
+    }
+
+    public void registerNode(Node node) {
+        if (node.getKey() != null) {
+            this.keyNodeMap.put(node.getKey(), node);
+        }
+    }
+
+    public Node getNode(String key) {
+        return keyNodeMap.get(key);
+    }
+
+    private static class PositionedNode {
+        private Position position;
+        private Node node;
+
+        private PositionedNode(float x, float y, float w, float h, Node node) {
+            position = new Position(x, y, w, h);
+            this.node = node;
+        }
+
+        private PositionedNode(Position position, Node node) {
+            this.position = position;
+            this.node = node;
+        }
+
+        public boolean contains(Vector2f mousePosition) {
+            if (mousePosition.x < position.getX() || mousePosition.x > position.getX() + position.getWidth()) {
+                return false;
+            }
+
+            if (mousePosition.y < position.getY() - position.getHeight() || mousePosition.y > position.getY()) {
+                return false;
+            }
+
+            return true;
+        }
     }
 
 }

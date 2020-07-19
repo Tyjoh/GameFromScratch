@@ -14,11 +14,11 @@ public class GLFWLoopHandler {
 
     private final TickHandler tickHandler;
     private final DrawHandler drawHandler;
-    private final KeyHandler keyHandler;
-    private final MouseHandler mouseHandler;
+    private KeyHandler keyHandler;
+    private MouseHandler mouseHandler;
+    private WindowSizeListener windowSizeListener = null;
 
     private int fps;
-    private GLFWKeyCallback callback;
 
     public GLFWLoopHandler(long window, int tickRate, TickHandler tickHandler, DrawHandler drawHandler, KeyHandler keyHandler, MouseHandler mouseHandler) {
         this.window = window;
@@ -31,7 +31,11 @@ public class GLFWLoopHandler {
     }
 
     public void run() {
-        glfwSetKeyCallback(window, callback = GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
+        glfwSetKeyCallback(window, GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
+            if (keyHandler == null) {
+                return;
+            }
+
             if (action == GLFW_PRESS) {
                 keyHandler.onKeyPressed(key);
             } else if (action == GLFW_RELEASE) {
@@ -40,14 +44,26 @@ public class GLFWLoopHandler {
         }));
 
         glfwSetCursorPosCallback(window, GLFWCursorPosCallback.create((window, xpos, ypos) -> {
-            mouseHandler.onCursorPosChanged(xpos, ypos);
+            if (mouseHandler != null) {
+                mouseHandler.onCursorPosChanged(xpos, ypos);
+            }
         }));
 
         glfwSetMouseButtonCallback(window, GLFWMouseButtonCallback.create((window, button, action, mods) -> {
+            if (mouseHandler == null) {
+                return;
+            }
+
             if (action == GLFW_PRESS) {
                 mouseHandler.onButtonPressed(button);
             } else if (action == GLFW_RELEASE) {
                 mouseHandler.onButtonReleased(button);
+            }
+        }));
+
+        glfwSetWindowSizeCallback(window, GLFWWindowSizeCallback.create((window, width, height) -> {
+            if (windowSizeListener != null) {
+                windowSizeListener.onWindowSizeChanged(width, height);
             }
         }));
 
@@ -80,10 +96,25 @@ public class GLFWLoopHandler {
 
             if(System.currentTimeMillis() - fpsTimer >= 1000) {
                 fps = frames;
-                System.out.println("FPS:" + fps);
+                drawHandler.setFps(fps);
                 frames = 0;
                 fpsTimer += 1000;
             }
         }
+    }
+
+    public GLFWLoopHandler setWindowSizeListener(WindowSizeListener windowSizeListener) {
+        this.windowSizeListener = windowSizeListener;
+        return this;
+    }
+
+    public GLFWLoopHandler setKeyHandler(KeyHandler keyHandler) {
+        this.keyHandler = keyHandler;
+        return this;
+    }
+
+    public GLFWLoopHandler setMouseHandler(MouseHandler mouseHandler) {
+        this.mouseHandler = mouseHandler;
+        return this;
     }
 }

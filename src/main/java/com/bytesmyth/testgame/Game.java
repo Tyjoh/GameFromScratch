@@ -5,6 +5,7 @@ import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
 import com.bytesmyth.game.DrawHandler;
 import com.bytesmyth.game.TickHandler;
+import com.bytesmyth.game.WindowSizeListener;
 import com.bytesmyth.graphics.animation.Animation;
 import com.bytesmyth.graphics.animation.AnimationTimeline;
 import com.bytesmyth.graphics.batch.QuadTextureBatcher;
@@ -12,6 +13,7 @@ import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
+import com.bytesmyth.testgame.ui.TestUIFactory;
 import com.bytesmyth.ui.*;
 import com.bytesmyth.input.Input;
 import com.bytesmyth.input.InputWrapper;
@@ -21,12 +23,10 @@ import com.bytesmyth.testgame.tilemap.TileMap;
 import com.bytesmyth.testgame.tilemap.TileMapFactory;
 import com.bytesmyth.testgame.tilemap.TileMapRenderer;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class Game implements TickHandler, DrawHandler {
-
+public class Game implements TickHandler, DrawHandler, WindowSizeListener {
 
     private final World world;
     private final Renderer renderer;
@@ -36,60 +36,31 @@ public class Game implements TickHandler, DrawHandler {
     private Input input;
     private final TextureAtlas mapTextureAtlas;
 
-    private final QuadTextureBatcher uiBatcher;
-    private final Texture uiTexture;
-
     private final Gui gui;
     private final OrthographicCamera2D uiCamera;
+
+    private final OrthographicCamera2D worldCamera;
+    private int currentFps;
+    private final Label fpsLabel;
 
     public Game(Input input) {
         this.input = input;
 
-        float ratio = 1280 / 32;
-        float height = 800 / ratio;
-
-        OrthographicCamera2D worldCamera = new OrthographicCamera2D(-16, 16, -height / 2f, height / 2f, 0, 100);
+        worldCamera = new OrthographicCamera2D();
         worldCamera.setPosition(new Vector2f(16, 16));
 
-        float widthUI = 1024;
-        float ratioUI = 1280 / widthUI;
-        float heightUI = 800 / ratioUI;
-        uiCamera = new OrthographicCamera2D(-widthUI/2f, widthUI/2f, -heightUI / 2f, heightUI / 2f, 0, 100);
+        uiCamera = new OrthographicCamera2D();
         uiCamera.setPosition(new Vector2f(0, 0));
 
         QuadTextureBatcher batcher = new QuadTextureBatcher(worldCamera);
         renderer = new Renderer(batcher);
 
-        uiBatcher = new QuadTextureBatcher(uiCamera);
+        QuadTextureBatcher uiBatcher = new QuadTextureBatcher(uiCamera);
+        Texture uiTexture = new Texture("/textures/gui-tileset.png");
 
-        uiTexture = new Texture("/textures/gui-tileset.png");
-
-        Pane root = new Pane(512, 256 + 128);
-        gui = new Gui(root, uiTexture, uiBatcher);
-
-        Button leftButton = new Button("Left", 128, 32).setColor(new Vector3f(1f, 0.3f, 0.3f));
-        BasicPositioning left = BasicPositioning.bottomLeft(8);
-        root.addChild(leftButton, left);
-
-        Button centerButton = new Button("CENTER", 128, 32).setColor(new Vector3f(0.3f, 0.3f, 1f));
-        BasicPositioning center = BasicPositioning.bottomCenter(8);
-        root.addChild(centerButton, center);
-
-        Button rightButton = new Button("Right", 128, 32).setColor(new Vector3f(0.3f, 1f, 0.3f));
-        BasicPositioning right = BasicPositioning.bottomRight(8);
-        root.addChild(rightButton, right);
-
-        Button sideButton = new Button("",24, 24);
-        BasicPositioning rightSide = new BasicPositioning(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER, -4, 36f);
-        root.addChild(sideButton, rightSide);
-
-        Button sideButtonTop = new Button("",24, 24);
-        BasicPositioning rightSideTop = new BasicPositioning(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER, -4, 0f);
-        root.addChild(sideButtonTop, rightSideTop);
-
-        Button sideButtonBottom = new Button("",24, 24);
-        BasicPositioning rightSideBottom = new BasicPositioning(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER, -4, -36f);
-        root.addChild(sideButtonBottom, rightSideBottom);
+        gui = new Gui(uiTexture, uiBatcher, uiCamera);
+        new TestUIFactory().populateGui(gui);
+        fpsLabel = (Label) gui.getNode("fps_label");
 
         tileMapRenderer = new TileMapRenderer(worldCamera, batcher);
 
@@ -153,10 +124,32 @@ public class Game implements TickHandler, DrawHandler {
     }
 
     @Override
+    public void setFps(int currentFps) {
+        this.fpsLabel.setText("FPS: " + currentFps);
+        this.currentFps = currentFps;
+    }
+
+    @Override
     public void tick(float dt) {
         world.delta = dt;
         world.process();
 
         gui.handleGuiInput(input);
+    }
+
+    @Override
+    public void onWindowSizeChanged(int width, int height) {
+        System.out.println("Screen size changed " + width + "," + height);
+
+        float widthWorld = 32;
+        float ratio = width / widthWorld;
+        float heightWorld = height / ratio;
+
+        worldCamera.setCameraView(-16, 16, -heightWorld / 2f, heightWorld / 2f, 0, 100);
+
+        float widthUI = 1024;
+        float ratioUI = width / widthUI;
+        float heightUI = height / ratioUI;
+        uiCamera.setCameraView(-widthUI/2f, widthUI/2f, -heightUI / 2f, heightUI / 2f, 0, 100);
     }
 }

@@ -18,6 +18,11 @@ public class Editor implements TickHandler, DrawHandler {
     }
 
     @Override
+    public void setFps(int currentFps) {
+
+    }
+
+    @Override
     public void tick(float dt) {
 
     }

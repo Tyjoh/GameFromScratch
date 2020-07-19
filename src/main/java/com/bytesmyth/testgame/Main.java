@@ -4,7 +4,6 @@ import com.bytesmyth.editor.Editor;
 import com.bytesmyth.game.GLFWLoopHandler;
 import com.bytesmyth.input.GLFWInput;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
@@ -21,6 +20,9 @@ public class Main {
     private long window;
 
     private String mode;
+
+    private int initialWidth;
+    private int initialHeight;
 
     public Main(String mode) {
         this.mode = mode;
@@ -74,17 +76,11 @@ public class Main {
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
             // Get the window size passed to glfwCreateWindow
+            glfwMaximizeWindow(window);
             glfwGetWindowSize(window, pWidth, pHeight);
 
-            // Get the resolution of the primary monitor
-            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-            // Center the window
-            glfwSetWindowPos(
-                    window,
-                    (vidmode.width() - pWidth.get(0)) / 2,
-                    (vidmode.height() - pHeight.get(0)) / 2
-            );
+            initialWidth = pWidth.get(0);
+            initialHeight = pHeight.get(0);
         } // the stack frame is popped automatically
 
         // Make the OpenGL context current
@@ -101,18 +97,24 @@ public class Main {
         GL.createCapabilities();
         GLFWInput input = new GLFWInput();
 
-
-        GLFWLoopHandler looper = null;
+        GLFWLoopHandler looper;
         if(mode.equalsIgnoreCase("game")) {
             Game game = new Game(input);
             looper = new GLFWLoopHandler(window, 60, game, game, input, input);
+
+            looper.setWindowSizeListener((width, height) -> {
+                input.onWindowSizeChanged(width, height);
+                game.onWindowSizeChanged(width, height);
+            });
+
+            input.onWindowSizeChanged(initialWidth, initialHeight);
+            game.onWindowSizeChanged(initialWidth, initialHeight);
         } else if (mode.equalsIgnoreCase("editor")) {
             Editor editor = new Editor(input);
             looper = new GLFWLoopHandler(window, 60, editor, editor, input, input);
-        }else {
+        } else {
             throw new IllegalArgumentException(mode);
         }
-
         looper.run();
     }
 

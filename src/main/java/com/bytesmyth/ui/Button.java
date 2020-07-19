@@ -2,6 +2,9 @@ package com.bytesmyth.ui;
 
 import org.joml.Vector3f;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Button extends Node {
 
     public interface Listener {
@@ -13,15 +16,15 @@ public class Button extends Node {
     private Vector3f color = new Vector3f(1,1,1);
     private Vector3f textColor = new Vector3f(0,0,0);
 
-    private Listener listener;
+    private List<Listener> listeners = new LinkedList<>();
 
     public Button(String text, float w, float h) {
         super(w, h);
         this.text = text;
     }
 
-    public Button setListener(Listener listener) {
-        this.listener = listener;
+    public Button addListener(Listener listener) {
+        this.listeners.add(listener);
         return this;
     }
 
@@ -48,6 +51,8 @@ public class Button extends Node {
     }
 
     void fireClick() {
-        listener.onClicked();
+        for (Listener listener : listeners) {
+            listener.onClicked();
+        }
     }
 }

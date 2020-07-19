@@ -7,25 +7,22 @@ import org.joml.Vector4f;
 
 public class OrthographicCamera2D {
 
-    private final float left;
-    private final float right;
-    private final float top;
-    private final float bottom;
-    private final float near;
-    private final float far;
+    private float left;
+    private float right;
+    private float top;
+    private float bottom;
+    private float near;
+    private float far;
 
     private Vector2f position = new Vector2f();
     private Matrix4f projection = new Matrix4f();
     private Matrix4f view = new Matrix4f();
 
-    public OrthographicCamera2D(float left, float right, float bottom, float top, float near, float far) {
-        this.left = left;
-        this.right = right;
-        this.top = top;
-        this.bottom = bottom;
-        this.near = near;
-        this.far = far;
-        updateMatrices();
+    private Matrix4f combined = new Matrix4f();
+    private Matrix4f inverseCombined = new Matrix4f();
+
+    public OrthographicCamera2D() {
+        setCameraView(-1, 1, -1, 1, 0, 1);
     }
 
     private void updateMatrices() {
@@ -38,6 +35,9 @@ public class OrthographicCamera2D {
 
         view.identity();
         view.lookAt(eye, target, up);
+
+        combined.set(projection).mul(view);
+        inverseCombined.set(combined).invert();
     }
 
     public Matrix4f getProjection() {
@@ -62,7 +62,31 @@ public class OrthographicCamera2D {
         return new Vector4f(left + position.x, right + position.x, bottom + position.y, top + position.y);
     }
 
+    public float getWidth() {
+        return right - left;
+    }
+
+    public float getHeight() {
+        return top - bottom;
+    }
+
     public Vector2f getPosition() {
         return new Vector2f(position);
+    }
+
+    public Vector2f toCameraCoordinates(Vector2f screenCoordinates) {
+        Vector4f mouseVec = new Vector4f(screenCoordinates.x, screenCoordinates.y, 0, 1);
+        Vector4f out = mouseVec.mul(inverseCombined);
+        return new Vector2f(out.x, out.y);
+    }
+
+    public void setCameraView(float left, float right, float bottom, float top, float near, float far) {
+        this.left = left;
+        this.right = right;
+        this.top = top;
+        this.bottom = bottom;
+        this.near = near;
+        this.far = far;
+        updateMatrices();
     }
 }

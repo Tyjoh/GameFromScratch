@@ -2,13 +2,14 @@ package com.bytesmyth.input;
 
 import com.bytesmyth.game.KeyHandler;
 import com.bytesmyth.game.MouseHandler;
+import com.bytesmyth.game.WindowSizeListener;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GLFWInput implements KeyHandler, MouseHandler, Input {
+public class GLFWInput implements KeyHandler, MouseHandler, WindowSizeListener, Input {
 
     private boolean leftMouseDown;
     private boolean rightMouseDown;
@@ -18,6 +19,8 @@ public class GLFWInput implements KeyHandler, MouseHandler, Input {
     private Map<Integer, String> codeToKeyMap = new HashMap<>();
 
     private Vector2f mousePosition = new Vector2f();
+    private int width;
+    private int height;
 
     public GLFWInput() {
         keyToCodeMap.put("w", GLFW.GLFW_KEY_W);
@@ -51,7 +54,7 @@ public class GLFWInput implements KeyHandler, MouseHandler, Input {
 
     @Override
     public void onCursorPosChanged(double x, double y) {
-        this.mousePosition.set(x, y);
+        this.mousePosition.set((x / width) * 2 - 1, -((y / height) * 2 - 1));
     }
 
     @Override
@@ -92,5 +95,11 @@ public class GLFWInput implements KeyHandler, MouseHandler, Input {
     @Override
     public Vector2f getMousePosition() {
         return mousePosition;
+    }
+
+    @Override
+    public void onWindowSizeChanged(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 }

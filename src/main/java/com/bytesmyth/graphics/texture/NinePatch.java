@@ -31,7 +31,7 @@ public class NinePatch {
 
     public void draw(float x, float y, float w, float h, QuadTextureBatcher batcher) {
         if (w < 1.3f || h < 1.3f) {
-            throw new IllegalArgumentException("Must have width and height >= 2");
+            throw new IllegalArgumentException("Must have width and height >= 1.3");
         }
 
         float scale = 16;

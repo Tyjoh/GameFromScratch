@@ -5,6 +5,8 @@ public abstract class Node {
     private Gui gui;
     private Node parent;
 
+    private String key;
+
     private float w;
     private float h;
 
@@ -18,11 +20,11 @@ public abstract class Node {
         this.h = h;
     }
 
-    public float getW() {
+    public float getWidth() {
         return w;
     }
 
-    public float getH() {
+    public float getHeight() {
         return h;
     }
 
@@ -72,17 +74,41 @@ public abstract class Node {
         return this;
     }
 
-    Node setGui(Gui gui) {
-        this.gui = gui;
-        return this;
-    }
-
     Node setParent(Node parent) {
         this.parent = parent;
         return this;
     }
 
-    public Gui getGui() {
+    Node getParent() {
+        return parent;
+    }
+
+    Gui getGui() {
         return gui;
+    }
+
+    public Node setGui(Gui gui) {
+        this.gui = gui;
+        this.gui.registerNode(this);
+        return this;
+    }
+
+    public Node setKey(String key) {
+        this.key = key;
+        if(gui != null) {
+            gui.registerNode(this);
+        }
+        return this;
+    }
+
+    public void clearFlags() {
+        this.setHovered(false);
+        this.setPressed(false);
+        this.setDragged(false);
+        this.setFocused(false);
+    }
+
+    protected String getKey() {
+        return key;
     }
 }
