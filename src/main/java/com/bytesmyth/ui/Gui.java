@@ -54,15 +54,19 @@ public class Gui extends Container {
 
         Vector2f mousePosition = camera.toCameraCoordinates(input.getMousePosition());
 
+        hoveredNode = null;
+
         for (PositionedNode positionedNode : nodeOrder) {
             if (positionedNode.contains(mousePosition)) {
+                if (hoveredNode != null) {
+                    hoveredNode.setHovered(false);
+                }
                 hoveredNode = positionedNode.node;
+                hoveredNode.setHovered(true);
             } else {
                 positionedNode.node.setHovered(false);
             }
         }
-
-        hoveredNode.setHovered(true);
 
         if (input.isMouseDown("left") && pressedNode == null) { //if nothing is currently being pressed
             pressedNode = hoveredNode;
@@ -133,7 +137,9 @@ public class Gui extends Container {
     }
 
     private void drawPane(Position p, Pane container) {
+        batcher.setColor(1,1,1, container.getOpacity());
         windowPatch.draw(p.getX(), p.getY(), p.getWidth(), p.getHeight(), batcher);
+        batcher.setColor(1,1,1,1);
     }
 
     private void drawButton(Position p, Button button) {
@@ -179,6 +185,10 @@ public class Gui extends Container {
 
     public Node getNode(String key) {
         return keyNodeMap.get(key);
+    }
+
+    public boolean hasNode(String key) {
+        return keyNodeMap.containsKey(key);
     }
 
     private static class PositionedNode {

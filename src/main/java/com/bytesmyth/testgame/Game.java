@@ -13,7 +13,8 @@ import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
-import com.bytesmyth.testgame.ui.TestUIFactory;
+import com.bytesmyth.testgame.ui.HudGuiDecorator;
+import com.bytesmyth.testgame.ui.InventoryUIDecorator;
 import com.bytesmyth.ui.*;
 import com.bytesmyth.input.Input;
 import com.bytesmyth.input.InputWrapper;
@@ -40,8 +41,6 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
     private final OrthographicCamera2D uiCamera;
 
     private final OrthographicCamera2D worldCamera;
-    private int currentFps;
-    private final Label fpsLabel;
 
     public Game(Input input) {
         this.input = input;
@@ -59,8 +58,13 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         Texture uiTexture = new Texture("/textures/gui-tileset.png");
 
         gui = new Gui(uiTexture, uiBatcher, uiCamera);
-        new TestUIFactory().populateGui(gui);
-        fpsLabel = (Label) gui.getNode("fps_label");
+        HudGuiDecorator hudDecorator = new HudGuiDecorator();
+        hudDecorator.addFpsDisplay(gui);
+        hudDecorator.addUIMousePositionDisplay(gui);
+        hudDecorator.addWorldMousePositionDisplay(gui);
+
+        InventoryUIDecorator inventoryDecorator = new InventoryUIDecorator();
+        inventoryDecorator.addInventory(gui, "test", 5, 3);
 
         tileMapRenderer = new TileMapRenderer(worldCamera, batcher);
 
@@ -125,14 +129,28 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
 
     @Override
     public void setFps(int currentFps) {
-        this.fpsLabel.setText("FPS: " + currentFps);
-        this.currentFps = currentFps;
+        if (gui.hasNode("fps_label")) {
+            Label label = (Label) gui.getNode("fps_label");
+            label.setText("FPS: " + currentFps);
+        }
     }
 
     @Override
     public void tick(float dt) {
         world.delta = dt;
         world.process();
+
+        if (gui.hasNode("ui_mouse_position_label")) {
+            Vector2f mouseUI = uiCamera.toCameraCoordinates(input.getMousePosition());
+            Label label = (Label) gui.getNode("ui_mouse_position_label");
+            label.setText(String.format("UI Mouse: (%.1f, %.1f)", mouseUI.x, mouseUI.y));
+        }
+
+        if (gui.hasNode("world_mouse_position_label")) {
+            Vector2f mouseWorld = worldCamera.toCameraCoordinates(input.getMousePosition());
+            Label label = (Label) gui.getNode("world_mouse_position_label");
+            label.setText(String.format("World Mouse: (%.1f, %.1f)", mouseWorld.x, mouseWorld.y));
+        }
 
         gui.handleGuiInput(input);
     }
