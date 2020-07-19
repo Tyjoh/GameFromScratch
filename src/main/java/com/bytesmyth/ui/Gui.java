@@ -1,8 +1,7 @@
-package com.bytesmyth.graphics.ui;
+package com.bytesmyth.ui;
 
 import com.bytesmyth.graphics.batch.QuadTextureBatcher;
 import com.bytesmyth.graphics.font.BitmapFont;
-import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.NinePatch;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;

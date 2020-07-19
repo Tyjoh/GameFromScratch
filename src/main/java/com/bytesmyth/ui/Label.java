@@ -1,4 +1,4 @@
-package com.bytesmyth.graphics.ui;
+package com.bytesmyth.ui;
 
 public class Label extends Node {
 

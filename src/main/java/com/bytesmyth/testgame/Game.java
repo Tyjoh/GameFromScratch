@@ -12,7 +12,7 @@ import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
-import com.bytesmyth.graphics.ui.*;
+import com.bytesmyth.ui.*;
 import com.bytesmyth.input.Input;
 import com.bytesmyth.input.InputWrapper;
 import com.bytesmyth.testgame.components.*;

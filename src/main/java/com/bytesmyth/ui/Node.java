@@ -1,4 +1,4 @@
-package com.bytesmyth.graphics.ui;
+package com.bytesmyth.ui;
 
 public abstract class Node {
 
