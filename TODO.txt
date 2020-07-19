@@ -1,0 +1,59 @@
+
+TODO:
+ - Bush grows berries
+ - Player collect berries
+ - Player can view inventory
+ - Player can transfer berries to inventory
+
+
+NPC AI
+ - Has a set of values etc.
+    - Money (0.3)
+    - Food (0.3)
+    - Kindness (0.4)
+    - Craftsmanship (0.5)
+    - Fun (0.3)
+
+ - Values shape their goals
+    - Create farm / increase size of farm.
+    - Decides on a goal that can increase fulfilment of values
+    - Decisions are based upon theories
+
+ - Theories
+    - Small farm will make enough food
+    - Large farm will make lots of money
+    - Medium farm will cost too much money
+
+ - GOALS
+    - New goals
+    - Make a plan
+    - Begin executing actions to get closer to the goal
+
+    EX: Build a fence
+        - Decide size + location
+            - based on owned land ? (How much should be fenced off)
+            - based on currency ? (How much resources will be needed)
+            - based on resources (How much resources does he have)
+        - Steps to build
+            - buy wood ?
+            - walk to woodpile
+            - pick up wood ?
+            - walk to fence section
+            - build section
+            - pickup wood
+
+
+
+
+Example NPC progression
+ - Decide to do something randomly
+    - Create farm
+ - Creates farm
+ - Money starts to go up
+ - Associate increase in farming with increase in money
+ - Expand farm
+ - Money goes up
+ - Npc now knows that bigger farm = less money
+ - Npc decides to not fertilize farm
+ - Crop yields less, money goes down
+ - Npc knows that not fertilizing = less money
