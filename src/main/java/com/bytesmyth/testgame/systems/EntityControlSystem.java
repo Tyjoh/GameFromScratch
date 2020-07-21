@@ -5,18 +5,22 @@ import com.artemis.annotations.All;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.input.InputWrapper;
-import com.bytesmyth.testgame.components.InputControl;
+import com.bytesmyth.testgame.components.Direction;
+import com.bytesmyth.testgame.components.UserControl;
 import com.bytesmyth.testgame.components.Transform;
 import com.bytesmyth.testgame.components.Velocity;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 
-@All({InputControl.class, Transform.class, Velocity.class})
+@All({UserControl.class, Transform.class, Velocity.class})
 public class EntityControlSystem extends IteratingSystem {
 
-    private ComponentMapper<InputControl> mEntityControl;
+    private ComponentMapper<UserControl> mEntityControl;
     private ComponentMapper<Velocity> mVelocity;
+    private ComponentMapper<Direction> mDirection;
 
     private Vector2f controlDir = new Vector2f();
+    private Vector2i dir = new Vector2i();
 
     @Wire
     private InputWrapper input;
@@ -24,30 +28,36 @@ public class EntityControlSystem extends IteratingSystem {
     @Override
     protected void begin() {
         super.begin();
-        controlDir.zero();
-
-        if (input.isKeyDown("A")) {
-            controlDir.x = -1;
-        } else if (input.isKeyDown("D")) {
-            controlDir.x = 1;
-        }
-
-        if (input.isKeyDown("W")) {
-            controlDir.y = 1;
-        } else if(input.isKeyDown("S")) {
-            controlDir.y = -1;
-        }
-
-        if (controlDir.length() > 0) {
-            controlDir.normalize();
-        }
     }
 
     @Override
     protected void process(int i) {
-        InputControl inputControl = mEntityControl.get(i);
+        UserControl userControl = mEntityControl.get(i);
         Velocity velocity = mVelocity.get(i);
 
-        velocity.getVelocity().set(controlDir).mul(inputControl.getControlSpeed());
+        dir.zero();
+
+        if (input.isKeyDown("A")) {
+            dir.x = -1;
+        } else if (input.isKeyDown("D")) {
+            dir.x = 1;
+        }
+
+        if (input.isKeyDown("W")) {
+            dir.y = 1;
+        } else if(input.isKeyDown("S")) {
+            dir.y = -1;
+        }
+
+        controlDir.set(dir);
+        if (controlDir.lengthSquared() > 0) {
+            controlDir.normalize();
+        }
+
+        velocity.getVelocity().set(controlDir).mul(userControl.getControlSpeed());
+
+        if (dir.lengthSquared() > 0 && mDirection.has(i)) {
+            mDirection.get(i).setDir(dir);
+        }
     }
 }
