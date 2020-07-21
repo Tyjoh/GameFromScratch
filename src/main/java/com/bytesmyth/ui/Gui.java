@@ -68,7 +68,7 @@ public class Gui extends Container {
             }
         }
 
-        if (input.isMouseDown("left") && pressedNode == null) { //if nothing is currently being pressed
+        if (input.isMouseDown("left") && pressedNode == null && hoveredNode != null) { //if nothing is currently being pressed
             pressedNode = hoveredNode;
             pressedNode.setPressed(true);
         } else if(!input.isMouseDown("left") && pressedNode != null) {

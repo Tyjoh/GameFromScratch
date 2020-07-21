@@ -32,6 +32,10 @@ public class RelativePositioning implements Positioning {
         return new RelativePositioning(HorizontalAlignment.CENTER, VerticalAlignment.CENTER, 0, 0);
     }
 
+    public static Positioning center(float xOffset, float yOffset) {
+        return new RelativePositioning(HorizontalAlignment.CENTER, VerticalAlignment.CENTER, xOffset, yOffset);
+    }
+
     public static Positioning topRight(float padding) {
         return new RelativePositioning(HorizontalAlignment.RIGHT, VerticalAlignment.TOP, padding, padding);
     }

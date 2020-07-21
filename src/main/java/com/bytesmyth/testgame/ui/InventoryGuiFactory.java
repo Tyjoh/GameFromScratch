@@ -2,12 +2,9 @@ package com.bytesmyth.testgame.ui;
 
 import com.bytesmyth.ui.*;
 
-public class InventoryUIDecorator {
+public class InventoryGuiFactory {
 
-    public void addInventory(Gui gui, String cellPrefix, int invWidth, int invHeight) {
-        Pane pane = new Pane(512, 256 + 128);
-        gui.addChild(pane, RelativePositioning.center());
-
+    public Pane createInventory(String inventoryName, int invWidth, int invHeight) {
         float cellSize = 48f;
         float padding = 2f;
 
@@ -17,10 +14,13 @@ public class InventoryUIDecorator {
         float sx = -width / 2f + cellSize / 2f;
         float sy = height / 2f - cellSize / 2f;
 
+        Pane pane = new Pane(width + cellSize, height + cellSize);
+        pane.setKey(inventoryName + "_pane");
+
         for (int x = 0; x < invWidth; x++) {
             for (int y = 0; y < invHeight; y++) {
                 Pane cell = new Pane(cellSize, cellSize);
-                cell.setKey(cellPrefix + (y * invWidth + invHeight));
+                cell.setKey(inventoryName + (y * invWidth + invHeight));
                 cell.setOpacity(0.5f);
                 RelativePositioning basicPositioning = new RelativePositioning(
                         HorizontalAlignment.CENTER,
@@ -30,6 +30,8 @@ public class InventoryUIDecorator {
                 pane.addChild(cell, basicPositioning);
             }
         }
+
+        return pane;
     }
 
 }

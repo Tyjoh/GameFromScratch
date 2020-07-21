@@ -88,8 +88,10 @@ public abstract class Node {
     }
 
     public Node setGui(Gui gui) {
-        this.gui = gui;
-        this.gui.registerNode(this);
+        if (gui != null) {
+            this.gui = gui;
+            this.gui.registerNode(this);
+        }
         return this;
     }
 
