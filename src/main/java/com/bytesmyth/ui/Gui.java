@@ -18,7 +18,6 @@ import java.util.Map;
 public class Gui extends Container {
 
     private QuadTextureBatcher batcher;
-    private boolean enabled = true;
 
     private final Texture guiTexture;
     private OrthographicCamera2D camera;
@@ -30,6 +29,10 @@ public class Gui extends Container {
 
     private Node pressedNode = null;
     private Node hoveredNode = null;
+
+    private Node draggedNode = null;
+    private Positioning draggedNodePositioning = null;
+    private Container draggedParent = null;
 
     private Map<String, Node> keyNodeMap = new HashMap<>();
 
@@ -46,15 +49,16 @@ public class Gui extends Container {
     }
 
     public void handleGuiInput(Input input) {
-        if (!enabled) {
-            return;
-        }
+        handleHover(input);
+        handlePress(input);
+        handleDrag(input);
+    }
+
+    private void handleHover(Input input) {
+        hoveredNode = null;
 
         List<PositionedNode> nodeOrder = getNodeOrder();
-
         Vector2f mousePosition = camera.toCameraCoordinates(input.getMousePosition());
-
-        hoveredNode = null;
 
         for (PositionedNode positionedNode : nodeOrder) {
             if (positionedNode.contains(mousePosition)) {
@@ -67,7 +71,9 @@ public class Gui extends Container {
                 positionedNode.node.setHovered(false);
             }
         }
+    }
 
+    private void handlePress(Input input) {
         if (input.isMouseDown("left") && pressedNode == null && hoveredNode != null) { //if nothing is currently being pressed
             pressedNode = hoveredNode;
             pressedNode.setPressed(true);
@@ -78,14 +84,19 @@ public class Gui extends Container {
             pressedNode.setPressed(false);
             pressedNode = null;
         }
+    }
 
+    private void handleDrag(Input input) {
+        if (draggedNode == null && pressedNode.isDraggable()) {
+            draggedNode = pressedNode;
+            draggedParent = draggedNode.getParent();
+
+            draggedNodePositioning = draggedNode.getPositioning();
+            draggedNode.setPositioning(new MousePositioning(input));
+        }
     }
 
     public void render() {
-        if (!enabled) {
-            return;
-        }
-
         List<PositionedNode> nodeOrder = getNodeOrder();
 
         batcher.begin(guiTexture);
@@ -115,7 +126,7 @@ public class Gui extends Container {
 
     private void positionChildren(Position parent, Container container, List<PositionedNode> output) {
         for (Node child : container.getChildren()) {
-            Position position = container.getNodePositioning(child).position(parent, child, this);
+            Position position = child.getPositioning().position(parent, child, this);
             position(position, child, output);
         }
     }

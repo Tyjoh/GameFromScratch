@@ -5,25 +5,25 @@ import java.util.*;
 public class Container extends Node {
 
     private List<Node> children = new ArrayList<>();
-    private Map<Node, Positioning> positioning = new HashMap<>();
 
     public Container(float w, float h) {
         super(w, h);
     }
 
-    public void addChild(Node node, Positioning basicPositioning) {
+    public void addChild(Node node) {
         this.children.add(node);
-        this.positioning.put(node, basicPositioning);
         node.setParent(this);
         node.setGui(this.getGui());
     }
 
-    public List<Node> getChildren() {
-        return Collections.unmodifiableList(children);
+    public void removeChild(Node node) {
+        this.children.remove(node);
+        node.setParent(null);
+        node.setGui(null);
     }
 
-    public Positioning getNodePositioning(Node node) {
-        return positioning.get(node);
+    public List<Node> getChildren() {
+        return Collections.unmodifiableList(children);
     }
 
     @Override

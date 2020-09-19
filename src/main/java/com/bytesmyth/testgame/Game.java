@@ -82,6 +82,7 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
                 .with(new PositionIntegrationSystem())
                 .with(new TileMapCollisionSystem())
                 .with(new ItemPickupSystem())
+                .with(new InventoryControlSystem())
                 .with(new CameraFollowSystem())
                 .with(new DirectionalAnimationSystem())
                 .with(new TextureAnimationSystem())

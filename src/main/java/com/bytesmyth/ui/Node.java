@@ -3,17 +3,21 @@ package com.bytesmyth.ui;
 public abstract class Node {
 
     private Gui gui;
-    private Node parent;
+    private Container parent;
 
     private String key;
 
     private float w;
     private float h;
 
-    private boolean focused;
-    private boolean hovered;
-    private boolean pressed;
-    private boolean dragged;
+    private boolean focused = false;
+    private boolean hovered = false;
+    private boolean pressed = false;
+    private boolean dragged = false;
+
+    private boolean draggable = false;
+
+    private Positioning positioning = RelativePositioning.center();
 
     protected Node(float w, float h) {
         this.w = w;
@@ -74,12 +78,12 @@ public abstract class Node {
         return this;
     }
 
-    Node setParent(Node parent) {
+    Node setParent(Container parent) {
         this.parent = parent;
         return this;
     }
 
-    Node getParent() {
+    Container getParent() {
         return parent;
     }
 
@@ -88,8 +92,8 @@ public abstract class Node {
     }
 
     public Node setGui(Gui gui) {
+        this.gui = gui;
         if (gui != null) {
-            this.gui = gui;
             this.gui.registerNode(this);
         }
         return this;
@@ -112,5 +116,23 @@ public abstract class Node {
 
     protected String getKey() {
         return key;
+    }
+
+    public Positioning getPositioning() {
+        return positioning;
+    }
+
+    public Node setPositioning(Positioning positioning) {
+        this.positioning = positioning;
+        return this;
+    }
+
+    public boolean isDraggable() {
+        return draggable;
+    }
+
+    public Node setDraggable(boolean draggable) {
+        this.draggable = draggable;
+        return this;
     }
 }

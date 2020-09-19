@@ -60,20 +60,21 @@ public class GuiFactory {
         gui.addChild(invPane, RelativePositioning.center(0, invPane.getHeight()/2f + 8));
 
         Pane otherInv = inventoryGuiFactory.createInventory("other_inventory", 5, 3);
+        otherInv.setPositioning(new RelativePositioning(
+                        HorizontalAlignment.CENTER,
+                        VerticalAlignment.BOTTOM,
+                        0,
+                        -8
+                ));
         Label otherTitle = new Label("Other Inventory");
-        otherInv.addChild(otherTitle, new RelativePositioning(
-                HorizontalAlignment.CENTER,
-                VerticalAlignment.BOTTOM,
-                0,
-                -8
-        ));
+        otherInv.addChild(otherTitle);
 
         gui.addChild(otherInv, RelativePositioning.center(0, -invPane.getHeight()/2f - 8));
 
         return gui;
     }
 
-    private Gui newGui() {
+    public Gui newGui() {
         return new Gui(guiTexture, batcher, uiCamera);
     }
 
