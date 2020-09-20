@@ -63,6 +63,7 @@ public class GLFWLoopHandler {
 
         glfwSetWindowSizeCallback(window, GLFWWindowSizeCallback.create((window, width, height) -> {
             if (windowSizeListener != null) {
+                glViewport(0, 0, width, height);
                 windowSizeListener.onWindowSizeChanged(width, height);
             }
         }));

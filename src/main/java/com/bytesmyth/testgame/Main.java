@@ -119,7 +119,11 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main(args[0]).run();
+        if (args.length == 1) {
+            new Main(args[0]).run();
+        } else {
+            new Main("game").run();
+        }
     }
 
 }

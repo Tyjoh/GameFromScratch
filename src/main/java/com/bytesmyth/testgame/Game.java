@@ -194,11 +194,11 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         float ratio = width / widthWorld;
         float heightWorld = height / ratio;
 
-        worldCamera.setCameraView(-16, 16, -heightWorld / 2f, heightWorld / 2f, 0, 100);
+        worldCamera.setCameraView(-widthWorld / 2f, widthWorld / 2f, -heightWorld / 2f, heightWorld / 2f, 0, 100);
 
         float widthUI = 1024;
         float ratioUI = width / widthUI;
         float heightUI = height / ratioUI;
-        uiCamera.setCameraView(-widthUI/2f, widthUI/2f, -heightUI / 2f, heightUI / 2f, 0, 100);
+        uiCamera.setCameraView(-widthUI / 2f, widthUI / 2f, -heightUI / 2f, heightUI / 2f, 0, 100);
     }
 }
