@@ -69,8 +69,16 @@ public class TileMapCollisionSystem extends IteratingSystem {
             if (largestOverlap != null) {
                 if (Math.abs(largestOverlap.xOverlap) < Math.abs(largestOverlap.yOverlap)) {
                     position.add(new Vector2f(-largestOverlap.xOverlap, 0));
+                    if (mVelocity.has(entityId)) {
+                        Vector2f vel = mVelocity.get(entityId).getVelocity();
+                        vel.set(0, vel.y);
+                    }
                 } else {
                     position.add(new Vector2f(0, -largestOverlap.yOverlap));
+                    if (mVelocity.has(entityId)) {
+                        Vector2f vel = mVelocity.get(entityId).getVelocity();
+                        vel.set(vel.x, 0);
+                    }
                 }
             }
         }

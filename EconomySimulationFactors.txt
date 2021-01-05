@@ -1,0 +1,49 @@
+Elements needed to simulate an economy / society
+
+1. Way to model innovation and technology growth
+2. Way to model an individuals motives and actions
+3. Way to model organizations and relationships of people
+4. Way to model peoples memory and perception of events/information
+
+
+Individual Physical Measures:
+Hunger
+Thirst
+Safety
+Sleep
+Happiness
+Wealth
+Power
+Sanity
+
+
+Individual Goals / Motives:
+Good Relationships
+Satisfying needs of others
+Intent of power
+ - (selfless <-> selfish <-> evil)
+Interests
+ - building
+ - art
+ - study/thinking
+ - entertainment
+ - working
+ - family
+ - cooking
+
+
+Individuals consciousness / perception:
+ - Interpreting environment
+ - Interpreting 'persisted information' (books, online video, telepathic future comms etc.)
+ - Interpreting another person and there perception of oneself
+
+
+Individuals memory:
+ - Modeling memory loss / fade
+ - Modeling memory accuracy
+
+
+Relationships
+ - Respect for others
+ - Desire to improve or destroy a particular relationship (derived from other motives / goals)
+ -

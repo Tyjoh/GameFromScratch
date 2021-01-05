@@ -85,8 +85,9 @@ public class Main {
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(window);
+
         // Enable v-sync
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
 
         // Make the window visible
         glfwShowWindow(window);
@@ -100,7 +101,7 @@ public class Main {
         GLFWLoopHandler looper;
         if(mode.equalsIgnoreCase("game")) {
             Game game = new Game(input);
-            looper = new GLFWLoopHandler(window, 60, game, game, input, input);
+            looper = new GLFWLoopHandler(window, 30, game, game, input, input);
 
             looper.setWindowSizeListener((width, height) -> {
                 input.onWindowSizeChanged(width, height);

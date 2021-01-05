@@ -34,7 +34,7 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
     private final TileMapRenderer tileMapRenderer;
     private final TileMap map;
 
-    private Input input;
+    private final Input input;
     private final TextureAtlas mapTextureAtlas;
 
     private final OrthographicCamera2D uiCamera;
@@ -65,7 +65,7 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         guiManager.enableGui("hud");
         guiManager.registerGui("player_inventory", guiFactory.createPlayerInventoryGui());
         guiManager.registerGui("inventory_transfer", guiFactory.createInventoryTransferGui());
-        guiManager.enableGui("inventory_transfer");
+//        guiManager.enableGui("inventory_transfer");
 
 //        InventoryUIDecorator inventoryDecorator = new InventoryUIDecorator();
 //        inventoryDecorator.addInventory(gui, "test", 5, 3);
@@ -78,11 +78,12 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         map = new TileMapFactory().create(mapTextureAtlas);
 
         WorldConfiguration config = new WorldConfigurationBuilder()
+                .with(new PrevTransformSystem())
                 .with(new EntityControlSystem())
                 .with(new PositionIntegrationSystem())
                 .with(new TileMapCollisionSystem())
                 .with(new ItemPickupSystem())
-                .with(new InventoryControlSystem())
+//                .with(new InventoryControlSystem())
                 .with(new CameraFollowSystem())
                 .with(new DirectionalAnimationSystem())
                 .with(new TextureAnimationSystem())
@@ -114,7 +115,7 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         Animation animation = new Animation(upAnim, downAnim, leftAnim, rightAnim);
 
         world.edit(character)
-                .add(new Transform().setPosition(new Vector2f(32, 32)))
+                .add(new Transform().setPosition(new Vector2f(16, 16)))
                 .add(new Velocity())
                 .add(new Direction())
                 .add(new UserControl())
@@ -131,7 +132,7 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
                 TexturedGraphics.class
         ).build(world);
 
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 400; i++) {
             int coin = world.create(coinArchetype);
             float x = (float) Math.random() * 64;
             float y = (float) Math.random() * 64;
@@ -147,6 +148,8 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
     public void draw(float dt) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        worldCamera.setAlpha(dt);
 
         tileMapRenderer.render(map, mapTextureAtlas);
         renderer.render(dt);

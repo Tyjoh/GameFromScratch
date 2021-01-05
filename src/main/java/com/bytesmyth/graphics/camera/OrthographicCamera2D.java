@@ -15,6 +15,9 @@ public class OrthographicCamera2D {
     private float far;
 
     private Vector2f position = new Vector2f();
+    private Vector2f prevPosition = new Vector2f();
+    private float alpha = 0;
+
     private Matrix4f projection = new Matrix4f();
     private Matrix4f view = new Matrix4f();
 
@@ -25,7 +28,14 @@ public class OrthographicCamera2D {
         setCameraView(-1, 1, -1, 1, 0, 1);
     }
 
+    public void prepare(float alpha) {
+        this.alpha = alpha;
+        updateMatrices();
+    }
+
     private void updateMatrices() {
+        Vector2f position = new Vector2f(this.prevPosition).lerp(this.position, alpha);
+
         projection.identity();
         projection.ortho(left, right, bottom, top, near, far);
 
@@ -59,6 +69,7 @@ public class OrthographicCamera2D {
     }
 
     public Vector4f getViewBounds() {
+        Vector2f position = new Vector2f(this.prevPosition).lerp(this.position, alpha);
         return new Vector4f(left + position.x, right + position.x, bottom + position.y, top + position.y);
     }
 
@@ -87,6 +98,16 @@ public class OrthographicCamera2D {
         this.bottom = bottom;
         this.near = near;
         this.far = far;
+        updateMatrices();
+    }
+
+    public void setAlpha(float dt) {
+        this.alpha = dt;
+        updateMatrices();
+    }
+
+    public void writePrevTransform() {
+        this.prevPosition.set(this.position);
         updateMatrices();
     }
 }

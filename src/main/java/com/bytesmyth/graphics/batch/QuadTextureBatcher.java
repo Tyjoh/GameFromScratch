@@ -76,9 +76,14 @@ public class QuadTextureBatcher {
     }
 
     public void begin(Texture texture) {
-        if(currentTexture != null) {
-            throw new IllegalStateException("Must call end() before begin()");
+        if (currentTexture != null) {
+            if (currentTexture.getId() == texture.getId()) {
+                return;
+            } else {
+                throw new IllegalStateException("Must call end() before begin() when using a different texture");
+            }
         }
+
         currentTexture = texture;
 
         shader.bind();

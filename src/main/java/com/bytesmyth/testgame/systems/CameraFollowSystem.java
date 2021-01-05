@@ -27,6 +27,7 @@ public class CameraFollowSystem extends IteratingSystem {
     protected void process(int entityId) {
         CameraFollow cameraFollow = mCameraFollow.get(entityId);
         Transform transform = mTransform.get(entityId);
+        camera.writePrevTransform();
 
         delta.set(transform.getPosition()).sub(camera.getPosition());
 

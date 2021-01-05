@@ -9,8 +9,9 @@ public class GLFWLoopHandler {
 
     private long window;
 
-    private final int tickRate;
-    private final float deltaTime;
+    private final int ticksPerSecond;
+    private final int millisPerTick;
+    private final int maxFrameSkip = 10;
 
     private final TickHandler tickHandler;
     private final DrawHandler drawHandler;
@@ -20,10 +21,11 @@ public class GLFWLoopHandler {
 
     private int fps;
 
-    public GLFWLoopHandler(long window, int tickRate, TickHandler tickHandler, DrawHandler drawHandler, KeyHandler keyHandler, MouseHandler mouseHandler) {
+    public GLFWLoopHandler(long window, int ticksPerSecond, TickHandler tickHandler, DrawHandler drawHandler, KeyHandler keyHandler, MouseHandler mouseHandler) {
         this.window = window;
-        this.tickRate = tickRate;
-        this.deltaTime = 1f / tickRate;
+        this.ticksPerSecond = ticksPerSecond;
+        this.millisPerTick = 1000 / ticksPerSecond;
+
         this.tickHandler = tickHandler;
         this.drawHandler = drawHandler;
         this.keyHandler = keyHandler;
@@ -68,9 +70,7 @@ public class GLFWLoopHandler {
             }
         }));
 
-        long lastTime = System.nanoTime();
-        double tickDurationNs = 1000000000f / tickRate;
-        double delta = 0;
+        long nextTick = now();
 
         int frames = 0;
 
@@ -80,16 +80,18 @@ public class GLFWLoopHandler {
 
         while (!glfwWindowShouldClose(window)) {
 
-            long now = System.nanoTime();
-            delta += (now - lastTime) / tickDurationNs;
-            lastTime = now;
-            while (delta >= 1) {
-               tickHandler.tick(deltaTime);
-               delta--;
+            int loops = 0;
+            while(now() > nextTick && loops < maxFrameSkip) {
+                tickHandler.tick(1f/ticksPerSecond);
+
+                nextTick += millisPerTick;
+                loops++;
             }
 
+            float alpha = (now() + millisPerTick - nextTick) / (float)millisPerTick;
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-            drawHandler.draw(deltaTime);
+            drawHandler.draw(alpha);
             glfwSwapBuffers(window); // swap the color buffers
             glfwPollEvents();
 
@@ -102,6 +104,10 @@ public class GLFWLoopHandler {
                 fpsTimer += 1000;
             }
         }
+    }
+
+    public long now() {
+        return System.nanoTime() / 1_000_000;
     }
 
     public GLFWLoopHandler setWindowSizeListener(WindowSizeListener windowSizeListener) {

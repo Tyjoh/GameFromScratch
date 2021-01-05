@@ -4,7 +4,7 @@ import com.artemis.Component;
 
 public class Pickup extends Component {
 
-    private float attractRadius = 2f;
+    private float attractRadius = 3f;
     private float pickupRadius = 0.75f;
 
     public float getAttractRadius() {
