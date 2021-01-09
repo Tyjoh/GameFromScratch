@@ -2,6 +2,7 @@ package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.graphics.batch.QuadTextureBatcher;
 import com.bytesmyth.graphics.texture.NinePatch;
+import org.joml.Vector2f;
 
 public class Pane extends Container {
 
@@ -15,9 +16,13 @@ public class Pane extends Container {
         NinePatch windowPatch = g.getWindowPatch();
         QuadTextureBatcher batcher = g.getBatcher();
 
+        Vector2f position = getRenderPosition();
+
         batcher.setColor(1,1,1, opacity);
-        windowPatch.draw(getX(), getY(), getWidth(), getHeight(), batcher);
+        windowPatch.draw(position.x, position.y, getWidth(), getHeight(), batcher);
         batcher.setColor(1,1,1, 1);
+
+        super.draw(g);
     }
 
     public float getOpacity() {

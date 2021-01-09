@@ -19,6 +19,7 @@ import com.bytesmyth.lifegame.tilemap.TileMapFactory;
 import com.bytesmyth.lifegame.tilemap.TileMapRenderer;
 import com.bytesmyth.lifegame.ui.InGameHud;
 import com.bytesmyth.lifegame.ui.PlayerInventoryUI;
+import com.bytesmyth.lifegame.ui.TestUI;
 import org.joml.Vector2f;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -64,10 +65,14 @@ public class LifeGame implements Game {
         TextureAtlas uiAtlas = new TextureAtlas(uiTexture, 16, 16);
 
         guiManager = new GuiManager();
-        guiManager.registerGui("hud", new InGameHud());
-        guiManager.registerGui(PLAYER_INVENTORY, new PlayerInventoryUI(5, 3));
+//        guiManager.registerGui("test", new TestUI());
+//        guiManager.enableGui("test");
 
+        guiManager.registerGui("hud", new InGameHud());
         guiManager.enableGui("hud");
+
+        guiManager.registerGui(PLAYER_INVENTORY, new PlayerInventoryUI(5, 3));
+//
 
         tileMapRenderer = new TileMapRenderer(worldCamera, batcher);
 

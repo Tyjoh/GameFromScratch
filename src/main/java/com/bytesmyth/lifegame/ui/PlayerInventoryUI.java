@@ -1,73 +1,58 @@
 package com.bytesmyth.lifegame.ui;
 
 import com.bytesmyth.graphics.ui.*;
+import com.bytesmyth.graphics.ui.positioning.RelativePositioning;
 import com.bytesmyth.lifegame.domain.item.Inventory;
+import com.bytesmyth.lifegame.domain.item.ItemSlot;
 
 public class PlayerInventoryUI extends Gui {
 
+    private static final float CELL_SIZE = 32f;
+    private static final float CELL_PADDING = 2f;
+
     private final int invWidth;
     private final int invHeight;
-    private Inventory currentInventory;
 
-    private ItemSlotPane[] itemSlotPanes;
-    private final Pane inventoryPane;
+    private final Container slotContainer;
 
     public PlayerInventoryUI(int invWidth, int invHeight) {
         this.invWidth = invWidth;
         this.invHeight = invHeight;
 
-        float cellSize = 48f;
-        float padding = 2f;
+        float width = (invWidth * CELL_SIZE) + ((invWidth-1) * CELL_PADDING);
+        float height = (invHeight * CELL_SIZE) + ((invHeight-1) * CELL_PADDING);
 
-        float width = (invWidth * cellSize) + ((invWidth-1) * padding);
-        float height = (invHeight * cellSize) + ((invHeight-1) * padding);
+        Pane inventoryPane = new Pane();
+        inventoryPane.setSize(width + CELL_SIZE, height + CELL_SIZE);
+        inventoryPane.setPositioning(RelativePositioning.center());
+        this.addChild(inventoryPane);
 
-        inventoryPane = new Pane();
-        inventoryPane.setSize(width + cellSize, height + cellSize)
-                .setKey("player_inventory_pane");
+        slotContainer = new Container();
+        slotContainer.setPositioning(RelativePositioning.center());
+        slotContainer.setSize(width, height);
+        inventoryPane.addChild(slotContainer);
 
-        addChild(inventoryPane);
     }
 
     public void setCurrentInventory(Inventory inventory) {
-        inventoryPane.clearChildren();
+        slotContainer.clearChildren();
         if (inventory != null) {
             initializeInventory(inventory);
         }
-        this.currentInventory = inventory;
     }
 
     private void initializeInventory(Inventory inventory) {
-        float cellSize = 48f;
-        float padding = 2f;
-
-        float width = (invWidth * cellSize) + ((invWidth-1) * padding);
-        float height = (invHeight * cellSize) + ((invHeight-1) * padding);
-
-        float sx = -width / 2f + cellSize / 2f;
-        float sy = height / 2f - cellSize / 2f;
-
-        itemSlotPanes = new ItemSlotPane[invWidth * invHeight];
-
         int slotNum = 0;
         for (int y = 0; y < invHeight; y++) {
             for (int x = 0; x < invWidth; x++) {
-                ItemSlotPane cell = new ItemSlotPane();
-                cell.setItemSlot(inventory.getSlot(slotNum));
-                cell.setSize(cellSize, cellSize);
-                itemSlotPanes[slotNum] = cell;
+                ItemSlot itemSlot = inventory.getSlot(slotNum);
 
-                cell.setKey("slot_" + slotNum);
+                ItemSlotPane cell = new ItemSlotPane(itemSlot);
+                cell.setPosition((x * CELL_SIZE) + (x * CELL_PADDING), -(y * CELL_SIZE) - (y * CELL_PADDING));
+                cell.setSize(CELL_SIZE, CELL_SIZE);
                 cell.setOpacity(0.5f);
 
-                RelativePositioning basicPositioning = new RelativePositioning(
-                        HorizontalAlignment.CENTER,
-                        VerticalAlignment.CENTER,
-                        sx + (x * cellSize) + (x * padding),
-                        sy - (y * cellSize) - (y * padding));
-
-                cell.setPositioning(basicPositioning);
-                inventoryPane.addChild(cell);
+                slotContainer.addChild(cell);
 
                 slotNum++;
             }

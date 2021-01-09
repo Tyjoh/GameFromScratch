@@ -8,6 +8,7 @@ public class Label extends Node {
 
     private String text;
     private Vector3f color;
+    private float fontSize = 14f;
 
     public Label(String text) {
         this.text = text;
@@ -17,11 +18,12 @@ public class Label extends Node {
     public void draw(GuiGraphics g) {
         BitmapFont font = g.getFont();
 
-        Vector2f size = font.getTextSize(text, 16f);
+        Vector2f size = font.getTextSize(text, fontSize);
         this.setSize(size.x, size.y);
 
-        float labelFontSize = 16;
-        font.drawText(text, getX() + getWidth()/2f - size.x/2f, getY() - getHeight()/2f + size.y / 2f, labelFontSize, g.getBatcher());
+        Vector2f renderPosition = getRenderPosition();
+
+        font.drawText(text, renderPosition.x + getWidth()/2f - size.x/2f, renderPosition.y - getHeight()/2f + size.y / 2f, fontSize, g.getBatcher());
     }
 
     public String getText() {
@@ -39,6 +41,15 @@ public class Label extends Node {
 
     public Label setColor(Vector3f color) {
         this.color = color;
+        return this;
+    }
+
+    public float getFontSize() {
+        return fontSize;
+    }
+
+    public Label setFontSize(float fontSize) {
+        this.fontSize = fontSize;
         return this;
     }
 }

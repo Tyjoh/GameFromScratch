@@ -1,4 +1,7 @@
-package com.bytesmyth.graphics.ui;
+package com.bytesmyth.graphics.ui.positioning;
+
+import com.bytesmyth.graphics.ui.Node;
+import org.joml.Vector2f;
 
 public class RelativePositioning implements Positioning {
 
@@ -7,7 +10,6 @@ public class RelativePositioning implements Positioning {
 
     private float horizontalOffset;
     private float verticalOffset;
-
 
     public RelativePositioning(HorizontalAlignment alignmentH, VerticalAlignment alignmentV, float horizontalOffset, float verticalOffset) {
         this.alignmentH = alignmentH;
@@ -44,56 +46,60 @@ public class RelativePositioning implements Positioning {
         return new RelativePositioning(HorizontalAlignment.LEFT, VerticalAlignment.TOP, padding, padding);
     }
 
-    public Position position(Position parent, Node child) {
-        float x = parent.getX();
-        float y = parent.getY();
+    public Vector2f position(Vector2f size, Node node) {
+        float left = 0;
+        float right = size.x;
+        float centerX = size.x / 2f;
+        float top = 0;
+        float bottom = -size.y;
+        float centerY = -size.y / 2f;
 
-        float childHW = child.getWidth() / 2f;
-        float childHH = child.getHeight() / 2f;
+        float nodeHW = node.getWidth() / 2f;
+        float nodeHH = node.getHeight() / 2f;
 
-        float targetX = x;
-        float targetY = y;
+        float targetLeft = left;
+        float targetTop = top;
 
         switch (alignmentH) {
             case LEFT:
                 if (horizontalOffset >= 0) {
-                    targetX = x - parent.getHalfWidth() + childHW + horizontalOffset;
+                    targetLeft = left + horizontalOffset;
                 } else {
-                    targetX = x - parent.getHalfWidth() - childHW + horizontalOffset;
+                    throw new IllegalStateException("Horizontal offset must be positive for LEFT alignment");
                 }
                 break;
             case RIGHT:
                 if (horizontalOffset >= 0) {
-                    targetX = x + parent.getHalfWidth() - childHW - horizontalOffset;
+                    targetLeft = right - node.getWidth() - horizontalOffset;
                 } else {
-                    targetX = x + parent.getHalfWidth() + childHW - horizontalOffset;
+                    throw new IllegalStateException("Horizontal offset must be positive for RIGHT alignment");
                 }
                 break;
             case CENTER:
-                targetX = x + horizontalOffset;
+                targetLeft = centerX - nodeHW + horizontalOffset;
                 break;
         }
 
         switch (alignmentV) {
-            case BOTTOM:
-                if (verticalOffset >= 0) {
-                    targetY = y - parent.getHalfHeight() + childHH + verticalOffset;
-                } else {
-                    targetY = y - parent.getHalfHeight() - childHH + verticalOffset;
-                }
-                break;
             case TOP:
                 if (verticalOffset >= 0) {
-                    targetY = y + parent.getHalfHeight() - childHH - verticalOffset;
+                    targetTop = top - verticalOffset;
                 } else {
-                    targetY = y + parent.getHalfHeight() + childHH - verticalOffset;
+                    throw new IllegalStateException("Vertical offset must be positive for TOP alignment");
+                }
+                break;
+            case BOTTOM:
+                if (horizontalOffset >= 0) {
+                    targetTop = bottom + node.getHeight() + verticalOffset;
+                } else {
+                    throw new IllegalStateException("Vertical offset must be positive for BOTTOM alignment");
                 }
                 break;
             case CENTER:
-                targetY = y + verticalOffset;
+                targetTop = centerY + nodeHH + verticalOffset;
                 break;
         }
 
-        return new Position(targetX, targetY, child.getWidth(), child.getHeight());
+        return new Vector2f(targetLeft, targetTop);
     }
 }

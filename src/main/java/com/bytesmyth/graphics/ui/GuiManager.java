@@ -1,6 +1,8 @@
 package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.application.Input;
+import com.bytesmyth.graphics.batch.QuadTextureBatcher;
+import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,12 +34,23 @@ public class GuiManager {
     }
 
     public void render(GuiGraphics guiGraphics) {
-        guiGraphics.getBatcher().begin(guiGraphics.getTexture());
+        QuadTextureBatcher batcher = guiGraphics.getBatcher();
+        OrthographicCamera2D camera = guiGraphics.getCamera();
+
+        batcher.begin(guiGraphics.getTexture());
+
         for (String enabledGui : enabledGuis) {
             Gui gui = guis.get(enabledGui);
+
+            gui.setPosition(-camera.getWidth()/2f, camera.getHeight()/2f);
+            gui.setSize(camera.getWidth(), camera.getHeight());
+
+            gui.layout();
+
             gui.draw(guiGraphics);
         }
-        guiGraphics.getBatcher().end();
+
+        batcher.end();
     }
 
     public Gui getGui(String hud) {

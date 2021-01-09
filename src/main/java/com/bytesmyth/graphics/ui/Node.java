@@ -1,5 +1,9 @@
 package com.bytesmyth.graphics.ui;
 
+import com.bytesmyth.graphics.ui.positioning.DefaultPositioning;
+import com.bytesmyth.graphics.ui.positioning.Positioning;
+import org.joml.Vector2f;
+
 public abstract class Node {
 
     private Gui gui;
@@ -16,12 +20,14 @@ public abstract class Node {
     private boolean hovered = false;
     private boolean pressed = false;
 
-    private Positioning positioning = RelativePositioning.center();
+    private Positioning positioning = new DefaultPositioning();
 
     protected Node() {
     }
 
     public void draw(GuiGraphics g) { }
+
+    public void layout() { }
 
     public Node setPosition(float x, float y) {
         this.x = x;
@@ -114,5 +120,19 @@ public abstract class Node {
     public Node setPositioning(Positioning positioning) {
         this.positioning = positioning;
         return this;
+    }
+
+    public Vector2f getRenderPosition() {
+        Vector2f pos = new Vector2f(getX(), getY());
+
+        if(getParent() != null) {
+            pos.add(getParent().getRenderPosition());
+        }
+
+        return pos;
+    }
+
+    public Vector2f getPosition() {
+        return new Vector2f(x, y);
     }
 }

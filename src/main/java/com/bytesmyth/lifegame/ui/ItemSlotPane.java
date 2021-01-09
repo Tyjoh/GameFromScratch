@@ -10,27 +10,32 @@ public class ItemSlotPane extends Pane {
 
     private ItemSlot itemSlot;
 
+    public ItemSlotPane(ItemSlot itemSlot) {
+        this.itemSlot = itemSlot;
+    }
+
     @Override
     public void draw(GuiGraphics g) {
         super.draw(g);
 
-        if (itemSlot != null && itemSlot.getItem() != null && itemSlot.getCount() != 0) {
-            TextureRegion coin = g.getAtlas().getRegionByCoord(0, 24);
-            g.getBatcher().draw(getX(), getY(), getX() + getWidth(), getY() - getHeight(), coin);
+        Vector2f renderPos = getRenderPosition();
+
+        if (hasItems()) {
+            TextureRegion textureRegion = g.getAtlas().getRegionByCoord(0, 24);
+            g.getBatcher().draw(renderPos.x, renderPos.y, renderPos.x + getWidth(), renderPos.y - getHeight(), textureRegion);
 
             int fontSize = 12;
             String countText = String.valueOf(itemSlot.getCount());
             Vector2f textSize = g.getFont().getTextSize(countText, fontSize);
 
-            float textX = getX() + getWidth() - textSize.x;
-            float textY = getY() - getHeight() + textSize.y;
+            float textX = renderPos.x + getWidth() - textSize.x;
+            float textY = renderPos.y - getHeight() + textSize.y;
 
             g.getFont().drawText(countText, textX, textY, fontSize, g.getBatcher());
         }
     }
 
-    public ItemSlotPane setItemSlot(ItemSlot itemSlot) {
-        this.itemSlot = itemSlot;
-        return this;
+    private boolean hasItems() {
+        return itemSlot != null && itemSlot.getItem() != null && itemSlot.getCount() != 0;
     }
 }
