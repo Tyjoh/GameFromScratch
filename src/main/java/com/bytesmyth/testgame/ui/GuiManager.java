@@ -2,6 +2,7 @@ package com.bytesmyth.testgame.ui;
 
 import com.bytesmyth.input.Input;
 import com.bytesmyth.ui.Gui;
+import com.bytesmyth.ui.GuiGraphics;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,18 +29,24 @@ public class GuiManager {
     public void handleInput(Input input) {
         for (String enabledGui : enabledGuis) {
             Gui gui = guis.get(enabledGui);
-            gui.handleGuiInput(input);
+            gui.handleInput(input);
         }
     }
 
-    public void render() {
+    public void render(GuiGraphics guiGraphics) {
+        guiGraphics.getBatcher().begin(guiGraphics.getTexture());
         for (String enabledGui : enabledGuis) {
             Gui gui = guis.get(enabledGui);
-            gui.render();
+            gui.draw(guiGraphics);
         }
+        guiGraphics.getBatcher().end();
     }
 
     public Gui getGui(String hud) {
         return guis.get(hud);
+    }
+
+    public boolean isEnabled(String guiId) {
+        return enabledGuis.contains(guiId);
     }
 }

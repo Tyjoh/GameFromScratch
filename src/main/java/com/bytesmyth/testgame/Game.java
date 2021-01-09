@@ -19,16 +19,17 @@ import com.bytesmyth.testgame.systems.*;
 import com.bytesmyth.testgame.tilemap.TileMap;
 import com.bytesmyth.testgame.tilemap.TileMapFactory;
 import com.bytesmyth.testgame.tilemap.TileMapRenderer;
-import com.bytesmyth.testgame.ui.GuiFactory;
 import com.bytesmyth.testgame.ui.GuiManager;
-import com.bytesmyth.ui.Gui;
-import com.bytesmyth.ui.Label;
+import com.bytesmyth.testgame.ui.InGameHud;
+import com.bytesmyth.testgame.ui.PlayerInventoryUI;
+import com.bytesmyth.ui.GuiGraphics;
 import org.joml.Vector2f;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class Game implements TickHandler, DrawHandler, WindowSizeListener {
 
+    public static final String PLAYER_INVENTORY = "player_inventory";
     private final World world;
     private final Renderer renderer;
     private final TileMapRenderer tileMapRenderer;
@@ -42,6 +43,10 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
     private final OrthographicCamera2D worldCamera;
     private final GuiManager guiManager;
 
+    private final QuadTextureBatcher uiBatcher;
+    private final int player;
+    private final GuiGraphics guiGraphics;
+
     public Game(Input input) {
         this.input = input;
 
@@ -54,21 +59,15 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         QuadTextureBatcher batcher = new QuadTextureBatcher(worldCamera);
         renderer = new Renderer(batcher);
 
-        QuadTextureBatcher uiBatcher = new QuadTextureBatcher(uiCamera);
+        uiBatcher = new QuadTextureBatcher(uiCamera);
         Texture uiTexture = new Texture("/textures/gui-tileset.png");
         TextureAtlas uiAtlas = new TextureAtlas(uiTexture, 16, 16);
 
-        GuiFactory guiFactory = new GuiFactory(uiTexture, uiBatcher, uiCamera);
-
         guiManager = new GuiManager();
-        guiManager.registerGui("hud", guiFactory.createHUDGui());
-        guiManager.enableGui("hud");
-        guiManager.registerGui("player_inventory", guiFactory.createPlayerInventoryGui());
-        guiManager.registerGui("inventory_transfer", guiFactory.createInventoryTransferGui());
-//        guiManager.enableGui("inventory_transfer");
+        guiManager.registerGui("hud", new InGameHud());
+        guiManager.registerGui(PLAYER_INVENTORY, new PlayerInventoryUI(5, 3));
 
-//        InventoryUIDecorator inventoryDecorator = new InventoryUIDecorator();
-//        inventoryDecorator.addInventory(gui, "test", 5, 3);
+        guiManager.enableGui("hud");
 
         tileMapRenderer = new TileMapRenderer(worldCamera, batcher);
 
@@ -101,7 +100,7 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         Texture characterTexture = new Texture("/textures/character1.png");
         TextureAtlas textureAtlas = new TextureAtlas(characterTexture, 16, 32);
 
-        int character = world.create();
+        player = world.create();
 
         TexturedGraphics characterGraphics = new TexturedGraphics()
                 .setTextureAtlas(textureAtlas)
@@ -114,7 +113,7 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         AnimationTimeline leftAnim = new AnimationTimeline("left", new int[]{12,13,14,15});
         Animation animation = new Animation(upAnim, downAnim, leftAnim, rightAnim);
 
-        world.edit(character)
+        world.edit(player)
                 .add(new Transform().setPosition(new Vector2f(16, 16)))
                 .add(new Velocity())
                 .add(new Direction())
@@ -142,6 +141,8 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
                     .setTileId(uiAtlas.tileCoordToId(0,16 + 8))
                     .setShape(new Rectangle(1f, 1f));
         }
+
+        guiGraphics = new GuiGraphics(this.uiCamera, this.uiBatcher, uiTexture);
     }
 
     @Override
@@ -154,17 +155,13 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         tileMapRenderer.render(map, mapTextureAtlas);
         renderer.render(dt);
 
-        guiManager.render();
+        guiManager.render(guiGraphics);
     }
 
     @Override
     public void setFps(int currentFps) {
-        Gui gui = guiManager.getGui("hud");
-
-        if (gui.hasNode("fps_label")) {
-            Label label = (Label) gui.getNode("fps_label");
-            label.setText("FPS: " + currentFps);
-        }
+        InGameHud gui = (InGameHud) guiManager.getGui("hud");
+        gui.setFps(currentFps);
     }
 
     @Override
@@ -172,22 +169,31 @@ public class Game implements TickHandler, DrawHandler, WindowSizeListener {
         world.delta = dt;
         world.process();
 
-        Gui gui = guiManager.getGui("hud");
+        InGameHud gui = (InGameHud) guiManager.getGui("hud");
+        gui.setUiMousePosition(uiCamera.toCameraCoordinates(input.getMousePosition()));
+        gui.setWorldMousePosition(worldCamera.toCameraCoordinates(input.getMousePosition()));
 
-        if (gui.hasNode("ui_mouse_position_label")) {
-            Vector2f mouseUI = uiCamera.toCameraCoordinates(input.getMousePosition());
-            Label label = (Label) gui.getNode("ui_mouse_position_label");
-            label.setText(String.format("UI Mouse: (%.1f, %.1f)", mouseUI.x, mouseUI.y));
+        if (!prevEDown && input.isKeyDown("E")) {
+            PlayerInventoryUI inventoryGui = (PlayerInventoryUI) guiManager.getGui(PLAYER_INVENTORY);
+
+            if (guiManager.isEnabled(PLAYER_INVENTORY)) {
+                System.out.println("Disabling player inventory");
+                inventoryGui.setCurrentInventory(null);
+                guiManager.disableGui(PLAYER_INVENTORY);
+            } else {
+                System.out.println("Enabling player inventory");
+                InventoryComponent inventory = world.getEntity(player).getComponent(InventoryComponent.class);
+                inventoryGui.setCurrentInventory(inventory.getInventory());
+                guiManager.enableGui(PLAYER_INVENTORY);
+            }
         }
 
-        if (gui.hasNode("world_mouse_position_label")) {
-            Vector2f mouseWorld = worldCamera.toCameraCoordinates(input.getMousePosition());
-            Label label = (Label) gui.getNode("world_mouse_position_label");
-            label.setText(String.format("World Mouse: (%.1f, %.1f)", mouseWorld.x, mouseWorld.y));
-        }
+        prevEDown = input.isKeyDown("E");
 
-        gui.handleGuiInput(input);
+        gui.handleInput(input);
     }
+
+    boolean prevEDown = false;
 
     @Override
     public void onWindowSizeChanged(int width, int height) {

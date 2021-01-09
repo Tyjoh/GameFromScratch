@@ -1,67 +1,60 @@
 package com.bytesmyth.testgame.item;
 
-import java.util.Stack;
+import java.util.Optional;
 
 public class Inventory {
 
-    private Slot[] slots;
-    private Stack<Slot> available = new Stack<>();
+    private ItemSlot[] slots;
 
     public Inventory(int size) {
-        slots = new Slot[size];
+        slots = new ItemSlot[size];
         for (int i = size - 1; i >= 0; i--) {
-            slots[i] = new Slot();
-            slots[i].slotNum = i;
-            available.push(slots[i]);
+            slots[i] = new ItemSlot(this, i);
         }
     }
 
-    public Item getItem(int slot) {
-        return slots[slot].item;
-    }
-
-    public boolean isAvailable(int slot) {
-        return slots[slot].item == null;
+    public ItemSlot getSlot(int slot) {
+        if (slot >= slots.length) {
+            throw new IllegalArgumentException("Slot " + slot + " out of bounds. Inventory size: " + size());
+        }
+        return slots[slot];
     }
 
     public boolean hasAvailable() {
-        return available.size() > 0;
+        return getAvailable().isPresent();
     }
 
-    public void insert(int slot, Item item) {
-        if (slots[slot].item != null) {
-            throw new IllegalArgumentException("Slot " + slot + " already occupied");
+    public Optional<ItemSlot> getOccupied() {
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i].getItem() != null) {
+                return Optional.of(slots[i]);
+            }
         }
-        slots[slot].item = item;
-        available.remove(slots[slot]);
+        return Optional.empty();
     }
 
-    public Item replace(int slot, Item item) {
-        Item current = slots[slot].item;
-        slots[slot].item = item;
-        return current;
-    }
-
-    public Item remove(int slotNum) {
-        Slot slot = slots[slotNum];
-        Item item = slot.item;
-        slot.item = null;
-        available.push(slot);
-        return item;
-    }
-
-    public void add(Item item) {
-        if (!hasAvailable()) {
-            throw new IllegalArgumentException("Inventory full");
+    public Optional<ItemSlot> getAvailable() {
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i].getItem() == null) {
+                return Optional.of(slots[i]);
+            }
         }
-        Slot slot = available.pop();
-        slot.item = item;
-        System.out.println("Item " + item.getName() + " added to inventory! ");
+        return Optional.empty();
     }
 
-    private static class Slot {
-        private int slotNum;
-        private Item item;
+    public Optional<ItemSlot> getAvailable(Item item) {
+        for (int i = 0; i < slots.length; i++) {
+            ItemSlot slot = slots[i];
+            if (slot.getItem() != null && slot.getItem().equals(item) && slot.getCount() < 10) {
+                return Optional.of(slots[i]);
+            }
+        }
+
+        return getAvailable();
+    }
+
+    public int size() {
+        return slots.length;
     }
 
 }

@@ -1,7 +1,15 @@
 
-TODO:
+TODO infrastructure:
+ - Clean up window / graphics initialization code.
+ - Create consistent way to represent coordinates and origins of objects. (Can be different for world + gui)
+ - Fix rendering artifacts on texture boundaries
+ - Refactor gui code to make positioning and layout make more sense.
+ - Implement gui interaction + listener events.
+ - Implement draggable nodes in gui system.
+
+TODO game features:
  - Bush grows berries
- - Player collect berries
+ - Player collects berries
  - Player can view inventory
  - Player can transfer berries to inventory
 

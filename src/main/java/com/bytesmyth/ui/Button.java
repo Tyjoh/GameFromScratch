@@ -1,31 +1,44 @@
 package com.bytesmyth.ui;
 
+import com.bytesmyth.graphics.batch.QuadTextureBatcher;
+import com.bytesmyth.graphics.texture.NinePatch;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class Button extends Node {
-
-    public interface Listener {
-        void onClicked();
-    }
 
     private String text;
 
     private Vector3f color = new Vector3f(1,1,1);
     private Vector3f textColor = new Vector3f(0,0,0);
 
-    private List<Listener> listeners = new LinkedList<>();
-
-    public Button(String text, float w, float h) {
-        super(w, h);
+    public Button(String text) {
         this.text = text;
     }
 
-    public Button addListener(Listener listener) {
-        this.listeners.add(listener);
-        return this;
+    @Override
+    public void draw(GuiGraphics g) {
+        Vector3f color = new Vector3f(this.color);
+
+        if (isPressed()) {
+            color.mul(0.65f);
+        } else if (isHovered()) {
+            color.mul(0.85f);
+        }
+
+        QuadTextureBatcher batcher = g.getBatcher();
+        NinePatch buttonPatch = g.getButtonPatch();
+
+        batcher.setColor(color.x, color.y, color.z, 1f);
+        buttonPatch.draw(getX(), getY(), getWidth(), getHeight(), batcher);
+
+        int buttonFontSize = 16;
+        Vector2f size = g.getFont().getTextSize(text, buttonFontSize);
+
+        batcher.setColor(textColor.x, textColor.y, textColor.z, 1f);
+        g.getFont().drawText(text,getX() + getWidth()/2f - size.x/2f, getY() - getHeight()/2f + size.y / 2f, buttonFontSize, batcher);
+
+        batcher.setColor(1,1,1,1);
     }
 
     public String getText() {
@@ -50,9 +63,4 @@ public class Button extends Node {
         return this;
     }
 
-    void fireClick() {
-        for (Listener listener : listeners) {
-            listener.onClicked();
-        }
-    }
 }

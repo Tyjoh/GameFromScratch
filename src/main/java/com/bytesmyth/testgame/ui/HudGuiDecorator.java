@@ -1,11 +1,8 @@
 package com.bytesmyth.testgame.ui;
 
-import com.bytesmyth.input.Input;
 import com.bytesmyth.ui.*;
 
 public class HudGuiDecorator {
-
-    private Input input;
 
     private float y = 4;
 
@@ -19,7 +16,8 @@ public class HudGuiDecorator {
     public Label addWorldMousePositionDisplay(Gui gui) {
         Label label = new Label("Mouse: ");
         label.setKey("world_mouse_position_label");
-        gui.addChild(label, new RelativePositioning(HorizontalAlignment.LEFT, VerticalAlignment.TOP, 4, y));
+        label.setPositioning(new RelativePositioning(HorizontalAlignment.LEFT, VerticalAlignment.TOP, 4, y));
+        gui.addChild(label);
         add(gui, label);
         return label;
     }
@@ -32,7 +30,8 @@ public class HudGuiDecorator {
     }
 
     private void add(Gui gui, Node node) {
-        gui.addChild(node, new RelativePositioning(HorizontalAlignment.LEFT, VerticalAlignment.TOP, 4, y));
+        node.setPositioning(new RelativePositioning(HorizontalAlignment.LEFT, VerticalAlignment.TOP, 4, y));
+        gui.addChild(node);
         y += 24f;
     }
 

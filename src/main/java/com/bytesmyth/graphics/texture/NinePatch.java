@@ -16,8 +16,11 @@ public class NinePatch {
     private final TextureRegion topRight;
     private final TextureRegion top;
     private final TextureRegion center;
+    private final TextureAtlas atlas;
 
     public NinePatch(TextureAtlas atlas, int left, int top) {
+        this.atlas = atlas;
+
         this.topLeft = atlas.getRegionByCoord(left, top);
         this.left = atlas.getRegionByCoord(left, top + 1);
         this.bottomLeft = atlas.getRegionByCoord(left, top + 2);
@@ -53,5 +56,9 @@ public class NinePatch {
         batcher.draw(horizontalMiddle, right, position.set(x + w - corner.getHalfWidth(), y - h/2f));
 
         batcher.draw(center, this.center, position.set(x + w/2f, y - h/2f));
+    }
+
+    public Texture getTexture() {
+        return atlas.getTexture();
     }
 }

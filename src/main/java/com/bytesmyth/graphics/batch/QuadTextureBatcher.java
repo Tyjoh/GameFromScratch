@@ -132,22 +132,29 @@ public class QuadTextureBatcher {
         numQuads = 0;
     }
 
-    public void draw(Rectangle rectangle, TextureRegion region, Vector2f translation) {
-        float topY = rectangle.getTopLeft().y + translation.y;
-        float leftX = rectangle.getTopLeft().x + translation.x;
-
-        float bottomY = rectangle.getBottomRight().y + translation.y;
-        float rightX = rectangle.getBottomRight().x + translation.x;
-
-        vertex(leftX, topY, region.getU1(), region.getV1());
-        vertex(rightX, topY, region.getU2(), region.getV1());
-        vertex(rightX, bottomY, region.getU2(), region.getV2());
-        vertex(leftX, bottomY, region.getU1(), region.getV2());
+    public void draw(float x1, float y1, float x2, float y2, float u1, float v1, float u2, float v2) {
+        vertex(x1, y1, u1, v1);
+        vertex(x2, y1, u2, v1);
+        vertex(x2, y2, u2, v2);
+        vertex(x1, y2, u1, v2);
 
         numQuads++;
         if(numQuads >= maxQuads) {
             flush();
         }
+    }
+
+    public void draw(float x1, float y1, float x2, float y2, TextureRegion region) {
+        draw(x1, y1, x2, y2, region.getU1(), region.getV1(), region.getU2(), region.getV2());
+    }
+
+    public void draw(Rectangle rectangle, TextureRegion region, Vector2f translation) {
+        float topY = rectangle.getTopLeft().y + translation.y;
+        float leftX = rectangle.getTopLeft().x + translation.x;
+        float bottomY = rectangle.getBottomRight().y + translation.y;
+        float rightX = rectangle.getBottomRight().x + translation.x;
+
+        draw(leftX, topY, rightX, bottomY, region);
     }
 
     private void vertex(float x, float y, float u, float v) {

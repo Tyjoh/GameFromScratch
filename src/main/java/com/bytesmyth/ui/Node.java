@@ -7,21 +7,40 @@ public abstract class Node {
 
     private String key;
 
-    private float w;
-    private float h;
+    private float x = 0;
+    private float y = 0;
 
-    private boolean focused = false;
+    private float w = 10;//use reasonable default for easy error detection.
+    private float h = 10;
+
     private boolean hovered = false;
     private boolean pressed = false;
-    private boolean dragged = false;
-
-    private boolean draggable = false;
 
     private Positioning positioning = RelativePositioning.center();
 
-    protected Node(float w, float h) {
-        this.w = w;
-        this.h = h;
+    protected Node() {
+    }
+
+    public void draw(GuiGraphics g) { }
+
+    public Node setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+
+    public Node setSize(float width, float height) {
+        this.w = width;
+        this.h = height;
+        return this;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 
     public float getWidth() {
@@ -30,25 +49,6 @@ public abstract class Node {
 
     public float getHeight() {
         return h;
-    }
-
-    public Node setW(float w) {
-        this.w = w;
-        return this;
-    }
-
-    public Node setH(float h) {
-        this.h = h;
-        return this;
-    }
-
-    public boolean isFocused() {
-        return focused;
-    }
-
-    Node setFocused(boolean focused) {
-        this.focused = focused;
-        return this;
     }
 
     public boolean isHovered() {
@@ -69,15 +69,6 @@ public abstract class Node {
         return this;
     }
 
-    public boolean isDragged() {
-        return dragged;
-    }
-
-    Node setDragged(boolean dragged) {
-        this.dragged = dragged;
-        return this;
-    }
-
     Node setParent(Container parent) {
         this.parent = parent;
         return this;
@@ -91,7 +82,7 @@ public abstract class Node {
         return gui;
     }
 
-    public Node setGui(Gui gui) {
+    Node setGui(Gui gui) {
         this.gui = gui;
         if (gui != null) {
             this.gui.registerNode(this);
@@ -110,8 +101,6 @@ public abstract class Node {
     public void clearFlags() {
         this.setHovered(false);
         this.setPressed(false);
-        this.setDragged(false);
-        this.setFocused(false);
     }
 
     protected String getKey() {
@@ -124,15 +113,6 @@ public abstract class Node {
 
     public Node setPositioning(Positioning positioning) {
         this.positioning = positioning;
-        return this;
-    }
-
-    public boolean isDraggable() {
-        return draggable;
-    }
-
-    public Node setDraggable(boolean draggable) {
-        this.draggable = draggable;
         return this;
     }
 }

@@ -6,10 +6,6 @@ public class Container extends Node {
 
     private List<Node> children = new ArrayList<>();
 
-    public Container(float w, float h) {
-        super(w, h);
-    }
-
     public void addChild(Node node) {
         this.children.add(node);
         node.setParent(this);
@@ -20,6 +16,10 @@ public class Container extends Node {
         this.children.remove(node);
         node.setParent(null);
         node.setGui(null);
+    }
+
+    public void clearChildren() {
+        this.children.clear();
     }
 
     public List<Node> getChildren() {

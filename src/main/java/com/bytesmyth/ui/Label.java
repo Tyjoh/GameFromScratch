@@ -1,5 +1,6 @@
 package com.bytesmyth.ui;
 
+import com.bytesmyth.graphics.font.BitmapFont;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -9,8 +10,18 @@ public class Label extends Node {
     private Vector3f color;
 
     public Label(String text) {
-        super(0, 0);
         this.text = text;
+    }
+
+    @Override
+    public void draw(GuiGraphics g) {
+        BitmapFont font = g.getFont();
+
+        Vector2f size = font.getTextSize(text, 16f);
+        this.setSize(size.x, size.y);
+
+        float labelFontSize = 16;
+        font.drawText(text, getX() + getWidth()/2f - size.x/2f, getY() - getHeight()/2f + size.y / 2f, labelFontSize, g.getBatcher());
     }
 
     public String getText() {
@@ -29,17 +40,5 @@ public class Label extends Node {
     public Label setColor(Vector3f color) {
         this.color = color;
         return this;
-    }
-
-    @Override
-    public float getWidth() {
-        Vector2f textSize = getGui().getFont().getTextSize(text, 16);
-        return textSize.x;
-    }
-
-    @Override
-    public float getHeight() {
-        Vector2f textSize = getGui().getFont().getTextSize(text, 16);
-        return textSize.y;
     }
 }

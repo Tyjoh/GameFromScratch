@@ -12,7 +12,10 @@ import com.bytesmyth.testgame.components.Pickup;
 import com.bytesmyth.testgame.components.Transform;
 import com.bytesmyth.testgame.item.Inventory;
 import com.bytesmyth.testgame.item.Item;
+import com.bytesmyth.testgame.item.ItemSlot;
 import org.joml.Vector2f;
+
+import java.util.Optional;
 
 @All({Pickup.class, InventoryComponent.class, Transform.class})
 public class ItemPickupSystem extends IteratingSystem {
@@ -40,19 +43,17 @@ public class ItemPickupSystem extends IteratingSystem {
         float attractRad2 = pickup.getAttractRadius() * pickup.getAttractRadius();
         Inventory inventory = mInventory.get(entityId).getInventory();
 
-        if (!inventory.hasAvailable()) {
-            return;
-        }
-
         IntBag items = collectableItems.getEntities();
         for (int i = 0; i < items.size(); i++) {
             int itemId = items.get(i);
             Vector2f itemPos = mTransform.get(itemId).getPosition();
             float len2 = diff.set(target).sub(itemPos).lengthSquared();
 
-            if (len2 <= pickupRad2) {
-                Item item = mItemComponent.get(itemId).getItem();
-                inventory.add(item);
+            Item item = mItemComponent.get(itemId).getItem();
+            Optional<ItemSlot> available = inventory.getAvailable(item);
+
+            if (len2 <= pickupRad2 && available.isPresent()) {
+                available.get().setItem(item, available.get().getCount() + 1);
                 mTransform.remove(itemId);
             } else if (len2 <= attractRad2) {
                 diff.normalize().mul(world.delta);
