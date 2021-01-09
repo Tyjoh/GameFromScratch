@@ -46,6 +46,12 @@ public class GLFWInput implements Input {
         }
     }
 
+    public void setTime(long nanos) {
+        for (Button button : buttons) {
+            button.setTime(nanos);
+        }
+    }
+
     public void onKeyPressed(int key) {
         if (codeToButtonMap.containsKey(key)) {
             codeToButtonMap.get(key).setPressed(true);

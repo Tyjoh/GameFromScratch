@@ -9,7 +9,7 @@ public class Button {
 
     private boolean pressed;
     private long initialPressTimestamp;
-    private long lastPressTimestamp;
+    private long currentTime;
 
     public Button(String name, int code) {
         this.name = name;
@@ -27,9 +27,8 @@ public class Button {
     void setPressed(boolean pressed) {
         if (pressed) {
             if (!this.pressed) {
-                initialPressTimestamp = System.nanoTime();
+                initialPressTimestamp = currentTime;
             }
-            lastPressTimestamp = System.nanoTime();
         }
         this.pressed = pressed;
     }
@@ -39,14 +38,18 @@ public class Button {
     }
 
     public boolean isJustPressed() {
-        return pressed && initialPressTimestamp == lastPressTimestamp;
+        return pressed && initialPressTimestamp == currentTime;
     }
 
     public long getMillisSinceLastPress() {
-        return (System.nanoTime() - lastPressTimestamp) / NANOS_PER_MILLI;
+        return (System.nanoTime() - currentTime) / NANOS_PER_MILLI;
     }
 
     public long getPressDurationMillis() {
-        return (lastPressTimestamp - initialPressTimestamp) / NANOS_PER_MILLI;
+        return (currentTime - initialPressTimestamp) / NANOS_PER_MILLI;
+    }
+
+    public void setTime(long nanos) {
+        currentTime = nanos;
     }
 }

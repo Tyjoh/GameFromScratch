@@ -21,6 +21,7 @@ public class GameWindow {
     // The window handle
     private final GameContext context = new GameContext();
     private Game game;
+    private GLFWInput input;
 
     public GameContext init() {
         // Setup an error callback. The default implementation
@@ -70,6 +71,8 @@ public class GameWindow {
         // Make the window visible
         glfwShowWindow(window);
 
+        input = new GLFWInput();
+
         return context;
     }
 
@@ -78,7 +81,6 @@ public class GameWindow {
 
         GL.createCapabilities();
 
-        GLFWInput input = new GLFWInput();
         context.setInput(input);
 
         glfwSetKeyCallback(context.getWindowHandle(), GLFWKeyCallback.create((window, key, scancode, action, mods) -> {
@@ -114,6 +116,8 @@ public class GameWindow {
 
         loop();
 
+        game.dispose();
+
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(context.getWindowHandle());
         glfwDestroyWindow(context.getWindowHandle());
@@ -146,11 +150,13 @@ public class GameWindow {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             game.render(alpha);
             glfwSwapBuffers(context.getWindowHandle());
+
+            input.setTime(System.nanoTime());
             glfwPollEvents();
 
             frames ++;
 
-            if(System.currentTimeMillis() - fpsTimer >= 1000) {
+            if(nowMillis() - fpsTimer >= 1000) {
                 context.setFps(frames);
                 frames = 0;
                 fpsTimer += 1000;
@@ -162,13 +168,4 @@ public class GameWindow {
         return System.nanoTime() / 1_000_000;
     }
 
-    /**
-     * Example of how to start up a game window
-     */
-//    public static void main(String[] args) {
-//        GameWindow window = new GameWindow();
-//        GameContext context = window.getGameContext();
-//        Game game = new GameImplementation(context);
-//        window.run(game);
-//    }
 }

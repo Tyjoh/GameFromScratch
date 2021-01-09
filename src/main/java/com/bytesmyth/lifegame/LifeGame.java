@@ -197,12 +197,13 @@ public class LifeGame implements Game {
         float widthWorld = 32;
         float ratio = width / widthWorld;
         float heightWorld = height / ratio;
-
+        worldCamera.setWindowSize(width, height);
         worldCamera.setCameraView(-widthWorld / 2f, widthWorld / 2f, -heightWorld / 2f, heightWorld / 2f, 0, 100);
 
         float widthUI = 1024;
         float ratioUI = width / widthUI;
         float heightUI = height / ratioUI;
+        uiCamera.setWindowSize(width, height);
         uiCamera.setCameraView(-widthUI / 2f, widthUI / 2f, -heightUI / 2f, heightUI / 2f, 0, 100);
     }
 

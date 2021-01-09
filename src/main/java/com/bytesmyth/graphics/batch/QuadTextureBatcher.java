@@ -148,6 +148,10 @@ public class QuadTextureBatcher {
         draw(x1, y1, x2, y2, region.getU1(), region.getV1(), region.getU2(), region.getV2());
     }
 
+    @Deprecated
+    /*
+     * Usages of this method should be removed and replaced by the other draw functions.
+     */
     public void draw(Rectangle rectangle, TextureRegion region, Vector2f translation) {
         float topY = rectangle.getTopLeft().y + translation.y;
         float leftX = rectangle.getTopLeft().x + translation.x;

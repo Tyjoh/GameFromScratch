@@ -13,8 +13,6 @@ import java.util.List;
 
 public class TileMapRenderer {
 
-    private static final Rectangle TILE_SHAPE = new Rectangle(1, 1);
-
     private OrthographicCamera2D camera;
     private QuadTextureBatcher quadBatcher;
 
@@ -35,14 +33,13 @@ public class TileMapRenderer {
         int minY = (int) viewBounds.z - 1;
         int maxY = (int) viewBounds.w + 1;
 
-        Vector2f tilePosition = new Vector2f();
         for (String renderLayer : renderLayers) {
             for (int y = minY; y <= maxY; y++) {
                 for (int x = minX; x <= maxX; x++) {
                     int id = map.get(renderLayer, x, y);
                     if (id > -1) {
                         TextureRegion textureRegion = atlas.getRegionById(id);
-                        quadBatcher.draw(TILE_SHAPE, textureRegion, tilePosition.set(x, y));
+                        quadBatcher.draw(x - 0.5f, y + 0.5f, x + 0.5f, y - 0.5f, textureRegion);
                     }
                 }
             }

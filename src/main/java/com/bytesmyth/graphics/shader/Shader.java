@@ -3,6 +3,7 @@ package com.bytesmyth.graphics.shader;
 import com.bytesmyth.resources.Resources;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL40;
 
 public class Shader {
@@ -83,4 +84,20 @@ public class Shader {
         int uniformLocation = GL40.glGetUniformLocation(programId, name);
         GL40.glUniform1i(uniformLocation, slot);
     }
+
+    public void setVector4f(String name, Vector4f vec) {
+        int uniformLocation = GL40.glGetUniformLocation(programId, name);
+        GL40.glUniform4f(uniformLocation, vec.x, vec.y, vec.z, vec.w);
+    }
+
+    public void setVector2f(String name, Vector2f vec) {
+        int uniformLocation = GL40.glGetUniformLocation(programId, name);
+        GL40.glUniform2f(uniformLocation, vec.x, vec.y);
+    }
+
+    public void setFloat(String name, float f) {
+        int uniformLocation = GL40.glGetUniformLocation(programId, name);
+        GL40.glUniform1f(uniformLocation, f);
+    }
+
 }

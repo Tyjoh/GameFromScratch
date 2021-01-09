@@ -18,6 +18,9 @@ public class TextureAtlas {
         float tileSizeU = (float)tileWidth / texture.getWidth();
         float tileSizeV = (float)tileHeight / texture.getHeight();
 
+        float paddingW = 0.01f / texture.getWidth();
+        float paddingH = 0.01f / texture.getHeight();
+
         int numTiles = this.width * this.height;
         regions = new TextureRegion[numTiles];
 
@@ -26,18 +29,9 @@ public class TextureAtlas {
                 float u = tx * tileSizeU;
                 float v = ty * tileSizeV;
                 int id = tileCoordToId(tx, ty);
-                regions[id] = new TextureRegion(u, v, u + tileSizeU, v + tileSizeV);
+                regions[id] = new TextureRegion(u + paddingW, v + paddingH, u + tileSizeU - paddingW, v + tileSizeV - paddingH);
             }
         }
-
-//        for (int i = 0; i < regions.length; i++) {
-//            float tx = i % this.width;
-//            float ty = i / this.height;
-//
-//            float u = tx * tileSizeU;
-//            float v = ty * tileSizeV;
-//            regions[i] = new TextureRegion(u, v, u + tileSizeU, v + tileSizeV);
-//        }
     }
 
     public TextureRegion getRegionById(int id) {

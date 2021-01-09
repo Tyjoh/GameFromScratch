@@ -24,6 +24,9 @@ public class OrthographicCamera2D {
     private Matrix4f combined = new Matrix4f();
     private Matrix4f inverseCombined = new Matrix4f();
 
+    private float nativeWidth;
+    private float nativeHeight;
+
     public OrthographicCamera2D() {
         setCameraView(-1, 1, -1, 1, 0, 1);
     }
@@ -99,6 +102,11 @@ public class OrthographicCamera2D {
         this.near = near;
         this.far = far;
         updateMatrices();
+    }
+
+    public void setWindowSize(int width, int height) {
+        this.nativeWidth = width;
+        this.nativeHeight = height;
     }
 
     public void setAlpha(float dt) {
