@@ -15,10 +15,14 @@ public class GLFWInput implements Input {
     private final Map<String, Button> nameToButtonMap = new HashMap<>();
     private final Map<Integer, Button> codeToButtonMap = new HashMap<>();
 
+    private Vector2f rawMousePosition = new Vector2f();
     private Vector2f mousePosition = new Vector2f();
 
     private Button leftMouseButton = new Button("LMB", GLFW.GLFW_MOUSE_BUTTON_LEFT);
     private Button rightMouseButton = new Button("RMB", GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+
+    private int windowWidth;
+    private int windowHeight;
 
     public GLFWInput() {
 
@@ -59,7 +63,8 @@ public class GLFWInput implements Input {
     }
 
     public void onMouseMoved(double x, double y) {
-        this.mousePosition.set(x, y);
+        this.rawMousePosition.set(x, y);
+        this.updateMousePosition();
     }
 
     public void onMouseButtonPressed(int button) {
@@ -101,5 +106,21 @@ public class GLFWInput implements Input {
     @Override
     public Button getRightMouseButton() {
         return rightMouseButton;
+    }
+
+    public void setWindowSize(int width, int height) {
+        this.windowWidth = width;
+        this.windowHeight = height;
+        this.updateMousePosition();
+    }
+
+    private void updateMousePosition() {
+        float rawX = rawMousePosition.x;
+        float rawY = rawMousePosition.y;
+
+        float adjustedX = ((rawX / windowWidth) * 2) - 1;
+        float adjustedY = ((rawY / windowHeight) * 2) - 1;
+
+        this.mousePosition.set(adjustedX, -adjustedY);
     }
 }

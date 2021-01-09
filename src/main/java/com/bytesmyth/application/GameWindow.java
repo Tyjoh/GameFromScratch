@@ -22,20 +22,6 @@ public class GameWindow {
     private final GameContext context = new GameContext();
     private Game game;
 
-    public void run(Game game) {
-        this.game = game;
-
-        loop();
-
-        // Free the window callbacks and destroy the window
-        glfwFreeCallbacks(context.getWindowHandle());
-        glfwDestroyWindow(context.getWindowHandle());
-
-        // Terminate GLFW and free the error callback
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
-    }
-
     public GameContext init() {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -67,7 +53,6 @@ public class GameWindow {
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
             // Get the window size passed to glfwCreateWindow
-            glfwMaximizeWindow(window);
             glfwGetWindowSize(window, pWidth, pHeight);
 
             context.setWidth(pWidth.get(0));
@@ -88,7 +73,9 @@ public class GameWindow {
         return context;
     }
 
-    private void loop() {
+    public void run(Game game) {
+        this.game = game;
+
         GL.createCapabilities();
 
         GLFWInput input = new GLFWInput();
@@ -116,11 +103,27 @@ public class GameWindow {
 
         glfwSetWindowSizeCallback(context.getWindowHandle(), GLFWWindowSizeCallback.create((window, width, height) -> {
             glViewport(0, 0, width, height);
+            input.setWindowSize(width, height);
             context.setWidth(width);
             context.setHeight(height);
             game.onWindowResized(width, height);
         }));
 
+        this.game.init();
+        glfwMaximizeWindow(context.getWindowHandle());
+
+        loop();
+
+        // Free the window callbacks and destroy the window
+        glfwFreeCallbacks(context.getWindowHandle());
+        glfwDestroyWindow(context.getWindowHandle());
+
+        // Terminate GLFW and free the error callback
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
+    }
+
+    private void loop() {
         long nextTick = nowMillis();
         int frames = 0;
         long fpsTimer = System.currentTimeMillis();
