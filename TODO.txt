@@ -1,7 +1,8 @@
 
 TODO infrastructure:
- - Implement gui interaction + listener events.
  - Implement draggable nodes in gui system.
+    - Items transfer from item slot to 'hand' items slot. Placing / Replacing items don't need to go back to origin this way
+    - Items can be thrown on the floor when inventory window closes by checking the 'hand' item slot.
  - Implement dynamic tile objects for animations + game logic.
 
 TODO game features:

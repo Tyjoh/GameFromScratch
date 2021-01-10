@@ -32,6 +32,9 @@ public class PlayerInventoryUI extends Gui {
         slotContainer.setSize(width, height);
         inventoryPane.addNode(slotContainer);
 
+        ItemNode handSlot = new ItemNode(new ItemSlot(null, 0));
+        handSlot.setSize(CELL_SIZE, CELL_SIZE);
+        this.getMouse().setHeldNode(handSlot);
     }
 
     public void setCurrentInventory(Inventory inventory) {

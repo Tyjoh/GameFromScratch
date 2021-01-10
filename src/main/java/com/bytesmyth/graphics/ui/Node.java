@@ -103,7 +103,7 @@ public abstract class Node {
         return this;
     }
 
-    Container getParent() {
+    public Container getParent() {
         return parent;
     }
 

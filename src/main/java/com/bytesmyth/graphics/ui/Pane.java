@@ -3,10 +3,12 @@ package com.bytesmyth.graphics.ui;
 import com.bytesmyth.graphics.batch.QuadTextureBatcher;
 import com.bytesmyth.graphics.texture.NinePatch;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 public class Pane extends Container {
 
     private float opacity = 1f;
+    private Vector3f color = new Vector3f(1,1,1);
 
     public Pane() {
     }
@@ -18,7 +20,7 @@ public class Pane extends Container {
 
         Vector2f position = getGuiPosition();
 
-        batcher.setColor(1,1,1, opacity);
+        batcher.setColor(color.x, color.y, color.z, opacity);
         windowPatch.draw(position.x, position.y, getWidth(), getHeight(), batcher);
         batcher.setColor(1,1,1, 1);
 
@@ -31,6 +33,15 @@ public class Pane extends Container {
 
     public Pane setOpacity(float opacity) {
         this.opacity = opacity;
+        return this;
+    }
+
+    public Vector3f getColor() {
+        return color;
+    }
+
+    public Pane setColor(Vector3f color) {
+        this.color = color;
         return this;
     }
 }

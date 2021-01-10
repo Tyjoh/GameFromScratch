@@ -176,11 +176,9 @@ public class LifeGame implements Game {
             PlayerInventoryUI inventoryGui = (PlayerInventoryUI) guiManager.getGui(PLAYER_INVENTORY);
 
             if (guiManager.isEnabled(PLAYER_INVENTORY)) {
-                System.out.println("Disabling player inventory");
                 inventoryGui.setCurrentInventory(null);
                 guiManager.disableGui(PLAYER_INVENTORY);
             } else {
-                System.out.println("Enabling player inventory");
                 InventoryComponent inventory = world.getEntity(player).getComponent(InventoryComponent.class);
                 inventoryGui.setCurrentInventory(inventory.getInventory());
                 guiManager.enableGui(PLAYER_INVENTORY);
