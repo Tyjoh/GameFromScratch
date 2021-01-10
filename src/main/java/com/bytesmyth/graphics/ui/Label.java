@@ -21,7 +21,7 @@ public class Label extends Node {
         Vector2f size = font.getTextSize(text, fontSize);
         this.setSize(size.x, size.y);
 
-        Vector2f renderPosition = getRenderPosition();
+        Vector2f renderPosition = getGuiPosition();
 
         font.drawText(text, renderPosition.x + getWidth()/2f - size.x/2f, renderPosition.y - getHeight()/2f + size.y / 2f, fontSize, g.getBatcher());
     }

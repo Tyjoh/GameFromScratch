@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Container extends Node {
 
-    private List<Node> children = new ArrayList<>();
+    private final List<Node> children = new ArrayList<>();
 
     @Override
     public void layout() {
@@ -26,19 +26,27 @@ public class Container extends Node {
         }
     }
 
-    public void addChild(Node node) {
+    @Override
+    void pollMouseEvents(Mouse mouse) {
+        for (Node child : children) {
+            child.pollMouseEvents(mouse);
+        }
+        super.pollMouseEvents(mouse);
+    }
+
+    public void addNode(Node node) {
         this.children.add(node);
         node.setParent(this);
         node.setGui(this.getGui());
     }
 
-    public void removeChild(Node node) {
+    public void removeNode(Node node) {
         this.children.remove(node);
         node.setParent(null);
         node.setGui(null);
     }
 
-    public void clearChildren() {
+    public void clearNodes() {
         this.children.clear();
     }
 

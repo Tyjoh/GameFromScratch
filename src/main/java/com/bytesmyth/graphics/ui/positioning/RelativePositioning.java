@@ -89,7 +89,7 @@ public class RelativePositioning implements Positioning {
                 }
                 break;
             case BOTTOM:
-                if (horizontalOffset >= 0) {
+                if (verticalOffset >= 0) {
                     targetTop = bottom + node.getHeight() + verticalOffset;
                 } else {
                     throw new IllegalStateException("Vertical offset must be positive for BOTTOM alignment");

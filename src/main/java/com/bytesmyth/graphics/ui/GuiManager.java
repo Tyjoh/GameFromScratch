@@ -14,6 +14,12 @@ public class GuiManager {
     private Map<String, Gui> guis = new HashMap<>();
     private List<String> enabledGuis = new LinkedList<>();
 
+    private GuiGraphics graphics;
+
+    public GuiManager(GuiGraphics graphics) {
+        this.graphics = graphics;
+    }
+
     public void registerGui(String name, Gui gui) {
         this.guis.put(name, gui);
     }
@@ -29,15 +35,15 @@ public class GuiManager {
     public void handleInput(Input input) {
         for (String enabledGui : enabledGuis) {
             Gui gui = guis.get(enabledGui);
-            gui.handleInput(input);
+            gui.pollInput(input, graphics.getCamera());
         }
     }
 
-    public void render(GuiGraphics guiGraphics) {
-        QuadTextureBatcher batcher = guiGraphics.getBatcher();
-        OrthographicCamera2D camera = guiGraphics.getCamera();
+    public void render() {
+        QuadTextureBatcher batcher = graphics.getBatcher();
+        OrthographicCamera2D camera = graphics.getCamera();
 
-        batcher.begin(guiGraphics.getTexture());
+        batcher.begin(graphics.getTexture());
 
         for (String enabledGui : enabledGuis) {
             Gui gui = guis.get(enabledGui);
@@ -47,7 +53,7 @@ public class GuiManager {
 
             gui.layout();
 
-            gui.draw(guiGraphics);
+            gui.draw(graphics);
         }
 
         batcher.end();

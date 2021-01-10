@@ -16,21 +16,21 @@ public class InGameHud extends Gui {
         VBox vBox = new VBox();
         vBox.setPositioning(RelativePositioning.topLeft(4));
         vBox.setSize(400, 400);
-        this.addChild(vBox);
+        this.addNode(vBox);
 
         fps = new Label("");
         fps.setKey("fps_label");
-        vBox.addChild(fps);
+        vBox.addNode(fps);
         setFps(0);
 
         worldMouse = new Label("");
         worldMouse.setKey("fps_label");
-        vBox.addChild(worldMouse);
+        vBox.addNode(worldMouse);
         setWorldMousePosition(new Vector2f());
 
         uiMouse = new Label("");
         uiMouse.setKey("fps_label");
-        vBox.addChild(uiMouse);
+        vBox.addNode(uiMouse);
         setUiMousePosition(new Vector2f());
     }
 

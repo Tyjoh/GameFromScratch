@@ -1,6 +1,7 @@
 package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.application.Input;
+import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,14 +10,11 @@ public abstract class Gui extends Container {
 
     private final Map<String, Node> keyNodeMap = new HashMap<>();
 
-    public void handleInput(Input input) {
+    private final Mouse mouse = new Mouse();
 
-    }
-
-    void layout(float x, float y, float width, float height) {
-        this.setPosition(x, y);
-        this.setSize(width, height);
-        layout();
+    public void pollInput(Input input, OrthographicCamera2D camera) {
+        mouse.updateMouseState(input, camera);
+        this.pollMouseEvents(mouse);
     }
 
     @Override

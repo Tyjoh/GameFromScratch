@@ -1,6 +1,5 @@
 
 TODO infrastructure:
- - Refactor gui code to make positioning and layout make more sense.
  - Implement gui interaction + listener events.
  - Implement draggable nodes in gui system.
  - Implement dynamic tile objects for animations + game logic.

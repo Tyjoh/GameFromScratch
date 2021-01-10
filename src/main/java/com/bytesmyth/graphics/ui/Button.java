@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 public class Button extends Node {
 
     private String text;
+    private float fontSize = 12f;
 
     private Vector3f color = new Vector3f(1,1,1);
     private Vector3f textColor = new Vector3f(0,0,0);
@@ -29,20 +30,26 @@ public class Button extends Node {
         QuadTextureBatcher batcher = g.getBatcher();
         NinePatch buttonPatch = g.getButtonPatch();
 
+        Vector2f position = getGuiPosition();
         batcher.setColor(color.x, color.y, color.z, 1f);
-        buttonPatch.draw(getX(), getY(), getWidth(), getHeight(), batcher);
+        buttonPatch.draw(position.x, position.y, getWidth(), getHeight(), batcher);
 
-        int buttonFontSize = 16;
-        Vector2f size = g.getFont().getTextSize(text, buttonFontSize);
+        Vector2f textSize = g.getFont().getTextSize(text, fontSize);
+        float textX = position.x + getWidth()/2f - textSize.x/2f;
+        float textY = position.y - getHeight()/2f + textSize.y / 2f;
 
         batcher.setColor(textColor.x, textColor.y, textColor.z, 1f);
-        g.getFont().drawText(text,getX() + getWidth()/2f - size.x/2f, getY() - getHeight()/2f + size.y / 2f, buttonFontSize, batcher);
-
+        g.getFont().drawText(text, textX, textY, fontSize, batcher);
         batcher.setColor(1,1,1,1);
     }
 
     public String getText() {
         return text;
+    }
+
+    public Button setText(String text) {
+        this.text = text;
+        return this;
     }
 
     public Vector3f getColor() {
@@ -63,4 +70,12 @@ public class Button extends Node {
         return this;
     }
 
+    public float getFontSize() {
+        return fontSize;
+    }
+
+    public Button setFontSize(float fontSize) {
+        this.fontSize = fontSize;
+        return this;
+    }
 }

@@ -4,6 +4,9 @@ import com.bytesmyth.graphics.ui.positioning.DefaultPositioning;
 import com.bytesmyth.graphics.ui.positioning.Positioning;
 import org.joml.Vector2f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Node {
 
     private Gui gui;
@@ -21,6 +24,8 @@ public abstract class Node {
     private boolean pressed = false;
 
     private Positioning positioning = new DefaultPositioning();
+
+    private final List<MousePressListener> pressListeners = new ArrayList<>();
 
     protected Node() {
     }
@@ -55,6 +60,24 @@ public abstract class Node {
 
     public float getHeight() {
         return h;
+    }
+
+    public boolean contains(Vector2f guiPoint) {
+        Vector2f renderPosition = getGuiPosition();
+        float left = renderPosition.x;
+        float right = renderPosition.x + getWidth();
+        float top = renderPosition.y;
+        float bottom = renderPosition.y - getHeight();
+
+        if (guiPoint.x < left || guiPoint.x > right) {
+            return false;
+        }
+
+        if (guiPoint.y > top || guiPoint.y < bottom) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean isHovered() {
@@ -122,11 +145,11 @@ public abstract class Node {
         return this;
     }
 
-    public Vector2f getRenderPosition() {
+    public Vector2f getGuiPosition() {
         Vector2f pos = new Vector2f(getX(), getY());
 
         if(getParent() != null) {
-            pos.add(getParent().getRenderPosition());
+            pos.add(getParent().getGuiPosition());
         }
 
         return pos;
@@ -134,5 +157,53 @@ public abstract class Node {
 
     public Vector2f getPosition() {
         return new Vector2f(x, y);
+    }
+
+    void pollMouseEvents(Mouse mouse) {
+        boolean lmbPressed = mouse.getLeftButton().isPressed();
+        boolean rmbPressed = mouse.getRightButton().isPressed();
+
+        if (this.contains(mouse.getPosition())) {
+            this.hovered = true;
+
+            if (lmbPressed || rmbPressed) {
+                if (!pressed) {
+                    //only notify listeners on initial press
+                    notifyPressListeners(mouse);
+                }
+                this.pressed = true;
+            } else {
+//                if (pressed) {
+//                    notifyReleaseListeners(mouse);
+//                }
+                this.pressed = false;
+            }
+
+        } else {
+//                if (pressed) {
+//                    notifyReleaseListeners(mouse);
+//                }
+            this.hovered = false;
+            this.pressed = false;
+        }
+    }
+
+    public void addMousePressListener(MousePressListener listener) {
+        this.pressListeners.add(listener);
+    }
+
+    public void removePressListener(MousePressListener listener) {
+        this.pressListeners.remove(listener);
+    }
+
+    void notifyPressListeners(Mouse mouse) {
+        for (MousePressListener pressListener : this.pressListeners) {
+            try {
+                pressListener.onPressed(mouse);
+            } catch (Exception e) {
+                System.out.println("Exception in press listener");
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -25,17 +25,17 @@ public class PlayerInventoryUI extends Gui {
         Pane inventoryPane = new Pane();
         inventoryPane.setSize(width + CELL_SIZE, height + CELL_SIZE);
         inventoryPane.setPositioning(RelativePositioning.center());
-        this.addChild(inventoryPane);
+        this.addNode(inventoryPane);
 
         slotContainer = new Container();
         slotContainer.setPositioning(RelativePositioning.center());
         slotContainer.setSize(width, height);
-        inventoryPane.addChild(slotContainer);
+        inventoryPane.addNode(slotContainer);
 
     }
 
     public void setCurrentInventory(Inventory inventory) {
-        slotContainer.clearChildren();
+        slotContainer.clearNodes();
         if (inventory != null) {
             initializeInventory(inventory);
         }
@@ -52,7 +52,7 @@ public class PlayerInventoryUI extends Gui {
                 cell.setSize(CELL_SIZE, CELL_SIZE);
                 cell.setOpacity(0.5f);
 
-                slotContainer.addChild(cell);
+                slotContainer.addNode(cell);
 
                 slotNum++;
             }

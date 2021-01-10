@@ -64,7 +64,8 @@ public class LifeGame implements Game {
         Texture uiTexture = new Texture("/textures/gui-tileset.png");
         TextureAtlas uiAtlas = new TextureAtlas(uiTexture, 16, 16);
 
-        guiManager = new GuiManager();
+        guiGraphics = new GuiGraphics(this.uiCamera, this.uiBatcher, uiTexture);
+        guiManager = new GuiManager(guiGraphics);
 //        guiManager.registerGui("test", new TestUI());
 //        guiManager.enableGui("test");
 
@@ -146,8 +147,6 @@ public class LifeGame implements Game {
                     .setTileId(uiAtlas.tileCoordToId(0,16 + 8))
                     .setShape(new Rectangle(1f, 1f));
         }
-
-        guiGraphics = new GuiGraphics(this.uiCamera, this.uiBatcher, uiTexture);
     }
 
     @Override
@@ -162,7 +161,7 @@ public class LifeGame implements Game {
         tileMapRenderer.render(map, mapTextureAtlas);
         renderer.render(alpha);
 
-        guiManager.render(guiGraphics);
+        guiManager.render();
     }
 
     private void tickGui(float alpha) {

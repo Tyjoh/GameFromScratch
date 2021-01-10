@@ -8,7 +8,7 @@ import org.joml.Vector2f;
 
 public class ItemSlotPane extends Pane {
 
-    private ItemSlot itemSlot;
+    private final ItemSlot itemSlot;
 
     public ItemSlotPane(ItemSlot itemSlot) {
         this.itemSlot = itemSlot;
@@ -18,7 +18,7 @@ public class ItemSlotPane extends Pane {
     public void draw(GuiGraphics g) {
         super.draw(g);
 
-        Vector2f renderPos = getRenderPosition();
+        Vector2f renderPos = getGuiPosition();
 
         if (hasItems()) {
             TextureRegion textureRegion = g.getAtlas().getRegionByCoord(0, 24);

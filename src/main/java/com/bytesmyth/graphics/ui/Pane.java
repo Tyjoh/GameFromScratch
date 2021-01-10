@@ -16,7 +16,7 @@ public class Pane extends Container {
         NinePatch windowPatch = g.getWindowPatch();
         QuadTextureBatcher batcher = g.getBatcher();
 
-        Vector2f position = getRenderPosition();
+        Vector2f position = getGuiPosition();
 
         batcher.setColor(1,1,1, opacity);
         windowPatch.draw(position.x, position.y, getWidth(), getHeight(), batcher);

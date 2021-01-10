@@ -130,7 +130,7 @@ public class GameWindow {
     private void loop() {
         long nextTick = nowMillis();
         int frames = 0;
-        long fpsTimer = System.currentTimeMillis();
+        long fpsTimer = nowMillis();
         float delta = 1f / TICKS_PER_SECOND;
 
         glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
