@@ -10,6 +10,8 @@ public class TileMap {
     private ChunkPosition lookup = new ChunkPosition(0,0);
     private ChunkFactory chunkGenerator;
 
+    private TileRegistry tileRegistry = new TileRegistry();
+
     public TileMap(ChunkFactory chunkGenerator) {
         this.chunkGenerator = chunkGenerator;
         for (int x = -2; x <= 2; x++) {
@@ -17,6 +19,10 @@ public class TileMap {
                 chunks.put(new ChunkPosition(x, y), chunkGenerator.create(x, y));
             }
         }
+    }
+
+    public TileRegistry getTileRegistry() {
+        return tileRegistry;
     }
 
     public int get(String layer, int x, int y) {
@@ -31,6 +37,13 @@ public class TileMap {
         int lx = toChunkOffset(x);
         int ly = toChunkOffset(y);
         tileLayer.setTile(lx, ly, tileId);
+    }
+
+    public void set(String layer, int x, int y, String name) {
+        TileLayer tileLayer = getChunk(x, y).getLayer(layer);
+        int lx = toChunkOffset(x);
+        int ly = toChunkOffset(y);
+        tileLayer.setTile(lx, ly, tileRegistry.toId(name));
     }
 
     private TileMapChunk getChunk(int mapX, int mapY) {

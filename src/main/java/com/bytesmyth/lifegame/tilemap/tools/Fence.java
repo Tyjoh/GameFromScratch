@@ -42,6 +42,27 @@ public class Fence {
 
     }
 
+    public Fence(Config config) {
+        int centerX = 12;
+        int centerY = 5;
+
+        topLeft = config.topLeft;
+        left = config.left;
+        bottomLeft = config.bottomLeft;
+        bottom = config.bottom;
+        bottomRight = config.bottomRight;
+        right = config.right;
+        topRight = config.topRight;
+        top = config.top;
+
+        openingTop = config.openingTop;
+        openingBottom = config.openingBottom;
+
+        openingLeft = config.openingLeft;
+        openingRight = config.openingRight;
+
+    }
+
     public void border(int left, int top, int right, int bottom, TileMap map) {
 
         for (int x = left + 1; x < right; x++) {
@@ -87,5 +108,21 @@ public class Fence {
         map.set(COLLISION_LAYER, x + 1, y, 1);
         map.set(OBJECT_LAYER_1, x - 1, y, openingLeft);
         map.set(COLLISION_LAYER, x - 1, y, 1);
+    }
+
+    public static class Config {
+        public int topLeft;
+        public int left;
+        public int bottomLeft;
+        public int bottom;
+        public int bottomRight;
+        public int right;
+        public int topRight;
+        public int top;
+
+        public int openingTop;
+        public int openingBottom;
+        public int openingLeft;
+        public int openingRight;
     }
 }

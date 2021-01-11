@@ -42,7 +42,7 @@ public class GameWindow {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
         // Create the window
-        long window = glfwCreateWindow(1280, 800, "Hello World!", NULL, NULL);
+        long window = glfwCreateWindow(1920, 1080, "Hello World!", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -113,6 +113,7 @@ public class GameWindow {
 
         this.game.init();
         glfwMaximizeWindow(context.getWindowHandle());
+//        this.game.onWindowResized(context.getWidth(), context.getHeight());
 
         loop();
 

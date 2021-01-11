@@ -1,15 +1,13 @@
 
 TODO infrastructure:
- - Implement draggable nodes in gui system.
-    - Items transfer from item slot to 'hand' items slot. Placing / Replacing items don't need to go back to origin this way
-    - Items can be thrown on the floor when inventory window closes by checking the 'hand' item slot.
+ - convert to isometric
  - Implement dynamic tile objects for animations + game logic.
+ - Implement
 
 TODO game features:
  - Bush grows berries
- - Player collects berries
+ - Player collects berries (Interact with bush)
  - Player can view inventory
- - Player can transfer berries to inventory
 
 
 NPC AI
