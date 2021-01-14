@@ -1,0 +1,22 @@
+package com.bytesmyth.lifegame;
+
+import com.artemis.WorldConfiguration;
+import com.artemis.WorldConfigurationBuilder;
+import com.bytesmyth.lifegame.ecs.systems.*;
+
+public class WorldConfig {
+    public static WorldConfiguration createDefault() {
+        return new WorldConfigurationBuilder()
+                .with(new PrevTransformSystem())
+                .with(new EntityControlSystem())
+                .with(new PositionIntegrationSystem())
+                .with(new TileEntitySystem())
+                .with(new TileMapCollisionSystem())
+                .with(new ItemPickupSystem())
+                .with(new CameraFollowSystem())
+                .with(new DirectionalAnimationSystem())
+                .with(new TextureAnimationSystem())
+                .with(new TextureGraphicsRenderingSystem())
+                .build();
+    }
+}

@@ -1,25 +1,21 @@
 package com.bytesmyth.lifegame;
 
-import com.artemis.*;
-import com.bytesmyth.application.*;
-import com.bytesmyth.graphics.animation.Animation;
-import com.bytesmyth.graphics.animation.AnimationTimeline;
+import com.artemis.World;
+import com.artemis.WorldConfiguration;
+import com.bytesmyth.application.Game;
+import com.bytesmyth.application.GameContext;
+import com.bytesmyth.application.Input;
 import com.bytesmyth.graphics.batch.QuadTextureBatcher;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
-import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.graphics.ui.GuiGraphics;
 import com.bytesmyth.graphics.ui.GuiManager;
-import com.bytesmyth.lifegame.domain.item.Inventory;
-import com.bytesmyth.lifegame.ecs.components.*;
-import com.bytesmyth.lifegame.ecs.systems.*;
+import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
 import com.bytesmyth.lifegame.tilemap.TileMap;
-import com.bytesmyth.lifegame.tilemap.TileMapFactory;
 import com.bytesmyth.lifegame.tilemap.TileMapRenderer;
 import com.bytesmyth.lifegame.ui.InGameHud;
 import com.bytesmyth.lifegame.ui.PlayerInventoryUI;
-import com.bytesmyth.lifegame.ui.TestUI;
 import org.joml.Vector2f;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -31,14 +27,14 @@ public class LifeGame implements Game {
     public static final String PLAYER_INVENTORY = "player_inventory";
 
     private World world;
+    private TileMap map;
+
     private Renderer renderer;
     private TileMapRenderer tileMapRenderer;
-    private TileMap map;
 
     private TextureAtlas mapTextureAtlas;
 
     private OrthographicCamera2D uiCamera;
-
     private OrthographicCamera2D worldCamera;
     private GuiManager guiManager;
 
@@ -48,6 +44,18 @@ public class LifeGame implements Game {
 
     public LifeGame(GameContext context) {
         this.context = context;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public TileMap getMap() {
+        return map;
+    }
+
+    public Input getInput() {
+        return context.getInput();
     }
 
     public void init() {
@@ -66,86 +74,36 @@ public class LifeGame implements Game {
 
         guiGraphics = new GuiGraphics(this.uiCamera, this.uiBatcher, uiTexture);
         guiManager = new GuiManager(guiGraphics);
-//        guiManager.registerGui("test", new TestUI());
-//        guiManager.enableGui("test");
-
         guiManager.registerGui("hud", new InGameHud());
         guiManager.enableGui("hud");
 
         guiManager.registerGui(PLAYER_INVENTORY, new PlayerInventoryUI(5, 3));
 //
-
-        tileMapRenderer = new TileMapRenderer(worldCamera, batcher);
-
         Texture mapTexture = new Texture("/textures/village_tileset.png");
         mapTextureAtlas = new TextureAtlas(mapTexture, 16, 16);
 
-        map = new TileMapFactory().create(mapTextureAtlas);
+        TestMapGen testMapGen = new TestMapGen();
+        this.map = testMapGen.genMap();
 
-        WorldConfiguration config = new WorldConfigurationBuilder()
-                .with(new PrevTransformSystem())
-                .with(new EntityControlSystem())
-                .with(new PositionIntegrationSystem())
-                .with(new TileMapCollisionSystem())
-                .with(new ItemPickupSystem())
-//                .with(new InventoryControlSystem())
-                .with(new CameraFollowSystem())
-                .with(new DirectionalAnimationSystem())
-                .with(new TextureAnimationSystem())
-                .with(new TextureGraphicsRenderingSystem())
-                .build();
-
+        WorldConfiguration config = WorldConfig.createDefault();
         config.register(worldCamera);
         config.register(renderer);
         config.register(map);
         config.register(context);
         config.register(guiManager);
-
+        config.register(this);
         world = new World(config);
 
-        Texture characterTexture = new Texture("/textures/character1.png");
-        TextureAtlas textureAtlas = new TextureAtlas(characterTexture, 16, 32);
+        tileMapRenderer = new TileMapRenderer(worldCamera, batcher, DefaultTileRegistry.create(world, mapTextureAtlas));
 
-        player = world.create();
+        testMapGen.addRandomBushes(map, world);
 
-        TexturedGraphics characterGraphics = new TexturedGraphics()
-                .setTextureAtlas(textureAtlas)
-                .setTileId(0)
-                .setShape(new Rectangle(1, 2));
+        CharacterFactory characterFactory = new CharacterFactory(world);
+        this.player = characterFactory.create(16, 16);
 
-        AnimationTimeline downAnim = new AnimationTimeline("down", new int[]{0,1,2,3});
-        AnimationTimeline rightAnim = new AnimationTimeline("right", new int[]{4,5,6,7});
-        AnimationTimeline upAnim = new AnimationTimeline("up", new int[]{8,9,10,11});
-        AnimationTimeline leftAnim = new AnimationTimeline("left", new int[]{12,13,14,15});
-        Animation animation = new Animation(upAnim, downAnim, leftAnim, rightAnim);
-
-        world.edit(player)
-                .add(new Transform().setPosition(new Vector2f(16, 16)))
-                .add(new Velocity())
-                .add(new Direction())
-                .add(new UserControl())
-                .add(new CameraFollow())
-                .add(new Collider().setHitBox(new Rectangle(0.85f, 0.5f)).setOffset(new Vector2f(0, -0.3f)))
-                .add(new AnimatedTextureGraphics().setAnimation(animation).setCurrentAnimation("down"))
-                .add(new InventoryComponent().setInventory(new Inventory(15)))
-                .add(new Pickup())
-                .add(characterGraphics);
-
-        Archetype coinArchetype = new ArchetypeBuilder().add(
-                Transform.class,
-                ItemComponent.class,
-                TexturedGraphics.class
-        ).build(world);
-
-        for (int i = 0; i < 400; i++) {
-            int coin = world.create(coinArchetype);
-            float x = (float) Math.random() * 64;
-            float y = (float) Math.random() * 64;
-            world.getMapper(Transform.class).get(coin).setPosition(new Vector2f(x, y));
-            world.getMapper(TexturedGraphics.class).get(coin)
-                    .setTextureAtlas(uiAtlas)
-                    .setTileId(uiAtlas.tileCoordToId(0,16 + 8))
-                    .setShape(new Rectangle(1f, 1f));
+        CoinFactory coinFactory = new CoinFactory(world, uiAtlas);
+        for (int i = 0; i < 100; i++) {
+            coinFactory.create((float) Math.random() * 64, (float) Math.random() * 64);
         }
     }
 

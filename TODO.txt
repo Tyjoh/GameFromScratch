@@ -1,13 +1,28 @@
 
 TODO infrastructure:
- - convert to isometric
  - Implement dynamic tile objects for animations + game logic.
- - Implement
+ - Implement chests
+ - Implement game state persistence
+    - Store tiles
 
 TODO game features:
  - Bush grows berries
  - Player collects berries (Interact with bush)
  - Player can view inventory
+ - Player can store items in a chest
+ - Chest appears to be open when a player uses it.
+
+
+Dynamic tile system
+
+    How to render dynamic tiles
+    How to choose what dynamic tiles to tick
+    How to iterate dynamic tiles
+
+
+    How to initialize?
+        ChunkLoader(textureAtlas) <- uses internal tile factory for logic tiles? If not pass in custom tile factories
+        ChunkLoader.load(map, layer, chunkX, chunkY)
 
 
 NPC AI
@@ -61,3 +76,15 @@ Example NPC progression
  - Npc decides to not fertilize farm
  - Crop yields less, money goes down
  - Npc knows that not fertilizing = less money
+
+
+
+Things to do:
+    Mine
+        - prospecting mechanic
+        - strip mines take up large areas of land,
+        - underground mines possible for some resources.
+    Farming
+    Engineering
+        - Factorio style mechanics
+        - Small scale engineering allows players to customize + optimize blocks by developing a technology.

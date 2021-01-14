@@ -47,7 +47,7 @@ public class TileMapCollisionSystem extends IteratingSystem {
 
             for (int x = minX; x <= maxX; x++) {
                 for (int y = minY; y <= maxY; y++) {
-                    if (map.get("collision", x, y) == 0) {
+                    if (map.getTile("collision", x, y) == null) {
                         continue;
                     }
 
