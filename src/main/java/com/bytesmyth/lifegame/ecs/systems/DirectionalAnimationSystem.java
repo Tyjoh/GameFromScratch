@@ -5,6 +5,7 @@ import com.artemis.annotations.All;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.lifegame.ecs.components.AnimatedTextureGraphics;
 import com.bytesmyth.lifegame.ecs.components.Direction;
+import org.joml.Vector2f;
 import org.joml.Vector2ic;
 
 @All({AnimatedTextureGraphics.class, Direction.class})
@@ -15,7 +16,7 @@ public class DirectionalAnimationSystem extends IteratingSystem {
 
     @Override
     protected void process(int entityId) {
-        Vector2ic direction = mDirection.get(entityId).getDir();
+        Vector2f direction = mDirection.get(entityId).getDir();
         AnimatedTextureGraphics animatedGraphics = mAnimatedGraphics.get(entityId);
 
         if (direction.length() == 0) {

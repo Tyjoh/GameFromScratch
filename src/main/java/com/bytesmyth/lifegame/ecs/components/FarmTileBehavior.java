@@ -5,11 +5,11 @@ import com.bytesmyth.lifegame.tilemap.TileMap;
 
 public class FarmTileBehavior implements TileBehavior {
 
-    private final int mature;
+    private int mature;
     private int age = 0;
 
-    public FarmTileBehavior(int matureTicks) {
-        this.mature = matureTicks;
+    public FarmTileBehavior() {
+        genMatureTime();
     }
 
     public boolean isMature() {
@@ -19,5 +19,14 @@ public class FarmTileBehavior implements TileBehavior {
     @Override
     public void update(TileMap map, Entity entity) {
         age++;
+    }
+
+    public void harvest() {
+        age = 0;
+        genMatureTime();
+    }
+
+    private void genMatureTime() {
+        this.mature = (int) (750 + Math.random() * 2000);
     }
 }

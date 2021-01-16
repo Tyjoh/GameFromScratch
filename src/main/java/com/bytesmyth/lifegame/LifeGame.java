@@ -11,6 +11,7 @@ import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.graphics.ui.GuiGraphics;
 import com.bytesmyth.graphics.ui.GuiManager;
+import com.bytesmyth.lifegame.domain.item.ItemRegistry;
 import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 import com.bytesmyth.lifegame.tilemap.TileMapRenderer;
@@ -72,7 +73,9 @@ public class LifeGame implements Game {
         Texture uiTexture = new Texture("/textures/gui-tileset.png");
         TextureAtlas uiAtlas = new TextureAtlas(uiTexture, 16, 16);
 
-        guiGraphics = new GuiGraphics(this.uiCamera, this.uiBatcher, uiTexture);
+        ItemRegistry itemRegistry = DefaultItemRegistry.create(uiAtlas);
+
+        guiGraphics = new GuiGraphics(this.uiCamera, this.uiBatcher, uiTexture, itemRegistry);
         guiManager = new GuiManager(guiGraphics);
         guiManager.registerGui("hud", new InGameHud());
         guiManager.enableGui("hud");
@@ -83,7 +86,7 @@ public class LifeGame implements Game {
         mapTextureAtlas = new TextureAtlas(mapTexture, 16, 16);
 
         TestMapGen testMapGen = new TestMapGen();
-        this.map = testMapGen.genMap();
+        this.map = testMapGen.newMap();
 
         WorldConfiguration config = WorldConfig.createDefault();
         config.register(worldCamera);
@@ -96,15 +99,12 @@ public class LifeGame implements Game {
 
         tileMapRenderer = new TileMapRenderer(worldCamera, batcher, DefaultTileRegistry.create(world, mapTextureAtlas));
 
-        testMapGen.addRandomBushes(map, world);
+        testMapGen.addRandomBushes(map, world, 30, 0.45f);
+        testMapGen.addRandomRocks(map, 30);
+        testMapGen.addRandomCoins(world, uiAtlas, 15);
 
         CharacterFactory characterFactory = new CharacterFactory(world);
         this.player = characterFactory.create(16, 16);
-
-        CoinFactory coinFactory = new CoinFactory(world, uiAtlas);
-        for (int i = 0; i < 100; i++) {
-            coinFactory.create((float) Math.random() * 64, (float) Math.random() * 64);
-        }
     }
 
     @Override

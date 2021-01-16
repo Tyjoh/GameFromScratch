@@ -3,6 +3,8 @@ package com.bytesmyth.lifegame.ui;
 import com.bytesmyth.graphics.ui.*;
 import com.bytesmyth.graphics.ui.positioning.RelativePositioning;
 import com.bytesmyth.lifegame.domain.item.Inventory;
+import com.bytesmyth.lifegame.domain.item.ItemRegistry;
+import com.bytesmyth.lifegame.domain.item.ItemRenderer;
 import com.bytesmyth.lifegame.domain.item.ItemSlot;
 
 public class PlayerInventoryUI extends Gui {

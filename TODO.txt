@@ -1,16 +1,22 @@
+Current Focus:
+ - Implement chest with barrel / crate texture.
+
+Next Focuses:
+ - Consolidate graphics initialization + usage.
+ - Consolidate world initialization + usage.
+ - Consolidate UI initialization + usage.
+ - Cleanup game init and access to graphics/gui/world etc.
+ - Create first pass at entity factory system.
+ - Make camera an entity, refactor tweening to tween any entity towards another.
+
 
 TODO infrastructure:
- - Implement dynamic tile objects for animations + game logic.
  - Implement chests
  - Implement game state persistence
     - Store tiles
 
 TODO game features:
- - Bush grows berries
- - Player collects berries (Interact with bush)
- - Player can view inventory
  - Player can store items in a chest
- - Chest appears to be open when a player uses it.
 
 
 Dynamic tile system

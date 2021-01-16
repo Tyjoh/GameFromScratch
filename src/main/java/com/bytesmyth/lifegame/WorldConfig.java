@@ -12,6 +12,7 @@ public class WorldConfig {
                 .with(new PositionIntegrationSystem())
                 .with(new TileEntitySystem())
                 .with(new TileMapCollisionSystem())
+                .with(new InteractSystem())
                 .with(new ItemPickupSystem())
                 .with(new CameraFollowSystem())
                 .with(new DirectionalAnimationSystem())

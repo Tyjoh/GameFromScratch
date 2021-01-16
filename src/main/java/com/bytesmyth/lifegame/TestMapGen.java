@@ -1,18 +1,14 @@
 package com.bytesmyth.lifegame;
 
-import com.artemis.Archetype;
-import com.artemis.ArchetypeBuilder;
-import com.artemis.Entity;
 import com.artemis.World;
-import com.bytesmyth.lifegame.ecs.components.FarmTileBehavior;
-import com.bytesmyth.lifegame.ecs.components.TileEntity;
+import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 import com.bytesmyth.lifegame.tilemap.TileMapLayer;
 
 public class TestMapGen {
 
-    public TileMap genMap() {
+    public TileMap newMap() {
         TileMap map = new TileMap(64);
         TileMapLayer ground = map.createLayer("ground");
         TileMapLayer collision = map.createLayer("collision");
@@ -35,12 +31,33 @@ public class TestMapGen {
         return map;
     }
 
-    public void addRandomBushes(TileMap map, World world) {
+    public void addRandomRocks(TileMap map, int count) {
+        TileMapLayer collision = map.getLayer("collision");
         TileMapLayer object1 = map.getLayer("1");
 
+        for (int i = 0; i < count; i++) {
+            int x = (int) (Math.random() * 64);
+            int y = (int) (Math.random() * 64);
+            object1.setTile(x, y, new Tile("rock"));
+            collision.setTile(x, y, new Tile("solid"));
+        }
+    }
+
+    public void addRandomCoins(World world, TextureAtlas atlas, int count) {
+        CoinFactory coinFactory = new CoinFactory(world, atlas);
+        for (int i = 0; i < count; i++) {
+            coinFactory.create((float) Math.random() * 64, (float) Math.random() * 64);
+        }
+    }
+
+    public void addRandomBushes(TileMap map, World world, int count, float spreadFactor) {
+        TileMapLayer object1 = map.getLayer("1");
+
+        BushFactory bushFactory = new BushFactory(world, map);
+
         //seed bushes
-        for (int i = 0; i < 30; i++) {
-            createBush(world, map, (int) (Math.random() * map.getWidth()), (int) (Math.random() * map.getHeight()));
+        for (int i = 0; i < count; i++) {
+            bushFactory.create((int) (Math.random() * map.getWidth()), (int) (Math.random() * map.getHeight()));
         }
 
         //expand bushes
@@ -56,24 +73,12 @@ public class TestMapGen {
                                 || above != null && above.getId().equals("bush")
                                 || below != null && below.getId().equals("bush");
 
-                if (adjacentBush && Math.random() < 0.4) {
-                    createBush(world, map, x, y);
+                if (adjacentBush && Math.random() < spreadFactor) {
+                    bushFactory.create(x, y);
                 }
 
             }
         }
-    }
-
-    public void createBush(World world, TileMap map, int x, int y) {
-        Tile bushTile = new Tile("bush");
-        map.getLayer("1").setTile(x, y, bushTile);
-        map.getLayer("collision").setTile(x, y, new Tile("solid"));
-
-        Entity entity = world.createEntity();
-        bushTile.setDynamicEntityId(entity.getId());
-        TileEntity tileEntity = new TileEntity("1", x, y);
-        tileEntity.setBehavior(new FarmTileBehavior((int) (500 + Math.random() * 3000)));
-        entity.edit().add(tileEntity);
     }
 
 }

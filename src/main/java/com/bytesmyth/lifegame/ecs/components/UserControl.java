@@ -8,4 +8,5 @@ public class UserControl extends Component {
     public float getControlSpeed() {
         return controlSpeed;
     }
+
 }

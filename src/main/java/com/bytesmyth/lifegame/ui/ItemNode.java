@@ -3,6 +3,7 @@ package com.bytesmyth.lifegame.ui;
 import com.bytesmyth.graphics.texture.TextureRegion;
 import com.bytesmyth.graphics.ui.GuiGraphics;
 import com.bytesmyth.graphics.ui.Node;
+import com.bytesmyth.lifegame.domain.item.ItemRenderer;
 import com.bytesmyth.lifegame.domain.item.ItemSlot;
 import org.joml.Vector2f;
 
@@ -19,7 +20,8 @@ public class ItemNode extends Node {
         Vector2f renderPos = getGuiPosition();
 
         if (hasItems()) {
-            TextureRegion textureRegion = g.getAtlas().getRegionByCoord(0, 24);
+            ItemRenderer renderer = g.getItemRegistry().getRenderer(itemSlot.getItem().getName());
+            TextureRegion textureRegion = renderer.render(itemSlot.getItem());
             g.getBatcher().draw(renderPos.x, renderPos.y, renderPos.x + getWidth(), renderPos.y - getHeight(), textureRegion);
 
             int fontSize = 12;

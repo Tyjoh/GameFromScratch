@@ -1,14 +1,15 @@
 package com.bytesmyth.lifegame.ecs.components;
 
 import com.artemis.Component;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 public class Direction extends Component {
 
-    private Vector2i dir = new Vector2i();
+    private Vector2f dir = new Vector2f();
 
-    public Vector2ic getDir() {
+    public Vector2f getDir() {
         return dir;
     }
 

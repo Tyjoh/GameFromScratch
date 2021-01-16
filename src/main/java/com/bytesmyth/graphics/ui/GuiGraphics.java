@@ -6,6 +6,7 @@ import com.bytesmyth.graphics.font.BitmapFont;
 import com.bytesmyth.graphics.texture.NinePatch;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
+import com.bytesmyth.lifegame.domain.item.ItemRegistry;
 import org.joml.Vector2f;
 
 public class GuiGraphics {
@@ -14,17 +15,19 @@ public class GuiGraphics {
     private final QuadTextureBatcher batcher;
     private final Texture texture;
 
+    private final ItemRegistry itemRegistry;
     private final TextureAtlas atlas;
     private final BitmapFont font;
     private final NinePatch windowPatch;
     private final NinePatch buttonPatch;
 
-    public GuiGraphics(OrthographicCamera2D camera, QuadTextureBatcher batcher, Texture texture) {
+    public GuiGraphics(OrthographicCamera2D camera, QuadTextureBatcher batcher, Texture texture, ItemRegistry itemRegistry) {
         this.camera = camera;
         this.batcher = batcher;
         this.texture = texture;
         this.atlas = new TextureAtlas(texture, 16, 16);
         this.font = new BitmapFont(texture, "mono");
+        this.itemRegistry = itemRegistry;
 
         windowPatch = new NinePatch(atlas, 0,16);
         buttonPatch = new NinePatch(atlas, 3,16);
@@ -70,4 +73,7 @@ public class GuiGraphics {
         return font;
     }
 
+    public ItemRegistry getItemRegistry() {
+        return itemRegistry;
+    }
 }

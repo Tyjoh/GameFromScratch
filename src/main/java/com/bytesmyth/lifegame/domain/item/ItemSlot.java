@@ -104,4 +104,11 @@ public class ItemSlot {
         if (this.isEmpty()) throw new IllegalStateException("Cannot transfer items from empty slot");
         if (!dest.isEmpty() && !containsSameItems(dest)) throw new IllegalArgumentException("Cannot transfer items to slot with different items");
     }
+
+    public void add(Item item, int count) {
+        if (count > this.getAvailableSpace()) throw new IllegalArgumentException("Not enough space in inventory");
+
+        this.item = item;
+        this.count += count;
+    }
 }
