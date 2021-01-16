@@ -7,24 +7,21 @@ import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.application.Input;
 import com.bytesmyth.lifegame.LifeGame;
 import com.bytesmyth.lifegame.ecs.components.Direction;
-import com.bytesmyth.lifegame.ecs.components.Interaction;
+import com.bytesmyth.lifegame.ecs.components.InteractiveComponent;
 import com.bytesmyth.lifegame.ecs.components.Transform;
 import com.bytesmyth.lifegame.ecs.components.UserControl;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 import com.bytesmyth.lifegame.tilemap.TileMapLayer;
 import org.joml.Vector2f;
-import org.joml.Vector2i;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class InteractSystem extends IteratingSystem {
 
     private ComponentMapper<UserControl> mUserControl;
     private ComponentMapper<Transform> mTransform;
-    private ComponentMapper<Interaction> mInteraction;
+    private ComponentMapper<InteractiveComponent> mInteraction;
     private ComponentMapper<Direction> mDirection;
 
     @Wire
@@ -59,8 +56,8 @@ public class InteractSystem extends IteratingSystem {
         Tile currentTile = objectLayer1.getTile(px, py);
         Tile facingTile = objectLayer1.getTile(fx, fy);
 
-        Optional<Interaction> currentTileInteraction = getInteraction(currentTile);
-        Optional<Interaction> facingTileInteraction = getInteraction(facingTile);
+        Optional<InteractiveComponent> currentTileInteraction = getInteraction(currentTile);
+        Optional<InteractiveComponent> facingTileInteraction = getInteraction(facingTile);
 
         if (currentTileInteraction.isPresent()) {
             currentTileInteraction.get().interact(world.getEntity(entityId));
@@ -72,7 +69,7 @@ public class InteractSystem extends IteratingSystem {
 
     }
 
-    private Optional<Interaction> getInteraction(Tile tile) {
+    private Optional<InteractiveComponent> getInteraction(Tile tile) {
         if (tile == null) return Optional.empty();
         if (!tile.isDynamic()) return Optional.empty();
 
@@ -86,10 +83,10 @@ public class InteractSystem extends IteratingSystem {
     private static class InteractCandidate {
         private float distance;
         private float dot;
-        private Interaction interaction;
+        private InteractiveComponent interactiveComponent;
 
-        private InteractCandidate(Interaction interaction, float distance, float dot) {
-            this.interaction = interaction;
+        private InteractCandidate(InteractiveComponent interactiveComponent, float distance, float dot) {
+            this.interactiveComponent = interactiveComponent;
             this.distance = distance;
             this.dot = dot;
         }

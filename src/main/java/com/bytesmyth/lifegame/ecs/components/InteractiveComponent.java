@@ -2,17 +2,16 @@ package com.bytesmyth.lifegame.ecs.components;
 
 import com.artemis.Component;
 import com.artemis.Entity;
-import com.bytesmyth.lifegame.FarmInteractionHandler;
 
-public class Interaction extends Component {
+public class InteractiveComponent extends Component {
 
     private InteractionHandler interactionHandler;
 
-    public Interaction(FarmInteractionHandler interactionHandler) {
+    public InteractiveComponent(InteractionHandler interactionHandler) {
         this.interactionHandler = interactionHandler;
     }
 
-    public Interaction() {
+    public InteractiveComponent() {
 
     }
 
@@ -20,7 +19,7 @@ public class Interaction extends Component {
         return interactionHandler;
     }
 
-    public Interaction setInteractionHandler(InteractionHandler interactionHandler) {
+    public InteractiveComponent setInteractionHandler(InteractionHandler interactionHandler) {
         this.interactionHandler = interactionHandler;
         return this;
     }

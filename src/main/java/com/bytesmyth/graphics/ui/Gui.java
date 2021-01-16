@@ -14,10 +14,23 @@ public abstract class Gui extends Container {
     private final Map<String, Node> keyNodeMap = new HashMap<>();
 
     private final Mouse mouse = new Mouse();
+    private boolean enabled = false;
 
     public void pollInput(Input input, OrthographicCamera2D camera) {
         mouse.updateMouseState(input, camera);
         this.pollMouseEvents(mouse);
+    }
+
+    public void enable() {
+        this.enabled = true;
+    }
+
+    public void disable() {
+        this.enabled = false;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.bytesmyth.lifegame.tilemap.TileMap;
 
 public class TileEntitySystem extends IteratingSystem {
 
-    private ComponentMapper<TileEntity> tileEntities;
+    private ComponentMapper<TileEntity> mTileEntities;
 
     @Wire
     private TileMap map;
@@ -20,28 +20,32 @@ public class TileEntitySystem extends IteratingSystem {
 
     @Override
     protected void initialize() {
-        this.subscription.addSubscriptionListener(new TileEntityLinker(world, map));
+        this.subscription.addSubscriptionListener(new TileEntityLinker(world, map, mTileEntities));
     }
 
     @Override
     protected void process(int entityId) {
-        TileEntity tileEntity = tileEntities.get(entityId);
+        TileEntity tileEntity = mTileEntities.get(entityId);
         tileEntity.getBehavior().update(map, world.getEntity(entityId));
     }
 
     private static class TileEntityLinker implements EntitySubscription.SubscriptionListener {
         private final World world;
         private final TileMap tileMap;
+        private ComponentMapper<TileEntity> mTileEntities;
 
-        private TileEntityLinker(World world, TileMap tileMap) {
+        private TileEntityLinker(World world, TileMap tileMap, ComponentMapper<TileEntity> mTileEntities) {
             this.world = world;
             this.tileMap = tileMap;
+            this.mTileEntities = mTileEntities;
         }
 
         @Override
         public void inserted(IntBag entities) {
             for (int id = 0; id < entities.size(); id++) {
-                TileEntity tileEntity = world.getEntity(id).getComponent(TileEntity.class);
+                if (!mTileEntities.has(id)) continue;
+
+                TileEntity tileEntity = mTileEntities.get(id);
                 tileMap.getTile(tileEntity.getLayer(), tileEntity.getX(), tileEntity.getY()).setDynamicEntityId(id);
             }
         }

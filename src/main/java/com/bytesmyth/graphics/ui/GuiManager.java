@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GuiManager {
 
     private Map<String, Gui> guis = new HashMap<>();
-    private List<String> enabledGuis = new LinkedList<>();
 
     private GuiGraphics graphics;
 
@@ -25,17 +25,18 @@ public class GuiManager {
     }
 
     public void enableGui(String name) {
-        enabledGuis.add(name);
+        guis.get(name).enable();
     }
 
     public void disableGui(String name) {
-        enabledGuis.remove(name);
+        guis.get(name).disable();
     }
 
     public void handleInput(Input input) {
-        for (String enabledGui : enabledGuis) {
-            Gui gui = guis.get(enabledGui);
-            gui.pollInput(input, graphics.getCamera());
+        for (Gui gui : guis.values()) {
+            if (gui.isEnabled()) {
+                gui.pollInput(input, graphics.getCamera());
+            }
         }
     }
 
@@ -45,25 +46,29 @@ public class GuiManager {
 
         batcher.begin(graphics.getTexture());
 
-        for (String enabledGui : enabledGuis) {
-            Gui gui = guis.get(enabledGui);
+        for (Gui gui : guis.values()) {
+            if (gui.isEnabled()) {
+                gui.setPosition(-camera.getWidth() / 2f, camera.getHeight() / 2f);
+                gui.setSize(camera.getWidth(), camera.getHeight());
 
-            gui.setPosition(-camera.getWidth()/2f, camera.getHeight()/2f);
-            gui.setSize(camera.getWidth(), camera.getHeight());
+                gui.layout();
 
-            gui.layout();
-
-            gui.draw(graphics);
+                gui.draw(graphics);
+            }
         }
 
         batcher.end();
     }
 
-    public Gui getGui(String hud) {
-        return guis.get(hud);
+    public Gui getGui(String key) {
+        return guis.get(key);
+    }
+
+    public List<String> getEnabledGuis() {
+        return guis.entrySet().stream().filter(e -> e.getValue().isEnabled()).map(Map.Entry::getKey).collect(Collectors.toList());
     }
 
     public boolean isEnabled(String guiId) {
-        return enabledGuis.contains(guiId);
+        return guis.get(guiId).isEnabled();
     }
 }

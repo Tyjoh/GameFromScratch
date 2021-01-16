@@ -1,7 +1,7 @@
-Current Focus:
+TODO Current:
  - Implement chest with barrel / crate texture.
 
-Next Focuses:
+TODO Next:
  - Consolidate graphics initialization + usage.
  - Consolidate world initialization + usage.
  - Consolidate UI initialization + usage.
@@ -11,12 +11,8 @@ Next Focuses:
 
 
 TODO infrastructure:
- - Implement chests
  - Implement game state persistence
     - Store tiles
-
-TODO game features:
- - Player can store items in a chest
 
 
 Dynamic tile system

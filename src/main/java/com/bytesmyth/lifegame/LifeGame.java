@@ -16,8 +16,11 @@ import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 import com.bytesmyth.lifegame.tilemap.TileMapRenderer;
 import com.bytesmyth.lifegame.ui.InGameHud;
+import com.bytesmyth.lifegame.ui.InventoryTransferGui;
 import com.bytesmyth.lifegame.ui.PlayerInventoryUI;
 import org.joml.Vector2f;
+
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -26,6 +29,7 @@ public class LifeGame implements Game {
     private final GameContext context;
 
     public static final String PLAYER_INVENTORY = "player_inventory";
+    public static final String TRANSFER_INVENTORY = "transfer_inventory";
 
     private World world;
     private TileMap map;
@@ -81,6 +85,7 @@ public class LifeGame implements Game {
         guiManager.enableGui("hud");
 
         guiManager.registerGui(PLAYER_INVENTORY, new PlayerInventoryUI(5, 3));
+        guiManager.registerGui(TRANSFER_INVENTORY, new InventoryTransferGui(5, 3));
 //
         Texture mapTexture = new Texture("/textures/village_tileset.png");
         mapTextureAtlas = new TextureAtlas(mapTexture, 16, 16);
@@ -103,6 +108,10 @@ public class LifeGame implements Game {
         testMapGen.addRandomRocks(map, 30);
         testMapGen.addRandomCoins(world, uiAtlas, 15);
 
+        ChestFactory chestFactory = new ChestFactory(map, world, guiManager);
+        chestFactory.create(19, 18);
+        chestFactory.create(13, 18);
+
         CharacterFactory characterFactory = new CharacterFactory(world);
         this.player = characterFactory.create(16, 16);
     }
@@ -123,12 +132,13 @@ public class LifeGame implements Game {
     }
 
     private void tickGui(float alpha) {
-        guiManager.handleInput(context.getInput());
-
         InGameHud hud = (InGameHud) guiManager.getGui("hud");
         hud.setUiMousePosition(uiCamera.toCameraCoordinates(context.getInput().getMousePosition()));
         hud.setWorldMousePosition(worldCamera.toCameraCoordinates(context.getInput().getMousePosition()));
         hud.setFps(context.getFps());
+
+        List<String> enabledGuis = guiManager.getEnabledGuis();
+        boolean otherGuiOpen = !(enabledGuis.size() == 1 && enabledGuis.contains("hud"));
 
         if (context.getInput().getKey("E").isJustPressed()) {
             PlayerInventoryUI inventoryGui = (PlayerInventoryUI) guiManager.getGui(PLAYER_INVENTORY);
@@ -136,12 +146,14 @@ public class LifeGame implements Game {
             if (guiManager.isEnabled(PLAYER_INVENTORY)) {
                 inventoryGui.setCurrentInventory(null);
                 guiManager.disableGui(PLAYER_INVENTORY);
-            } else {
+            } else if (!otherGuiOpen) {
                 InventoryComponent inventory = world.getEntity(player).getComponent(InventoryComponent.class);
                 inventoryGui.setCurrentInventory(inventory.getInventory());
                 guiManager.enableGui(PLAYER_INVENTORY);
             }
         }
+
+        guiManager.handleInput(context.getInput());
     }
 
     @Override

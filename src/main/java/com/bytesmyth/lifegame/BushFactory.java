@@ -3,7 +3,7 @@ package com.bytesmyth.lifegame;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.bytesmyth.lifegame.ecs.components.FarmTileBehavior;
-import com.bytesmyth.lifegame.ecs.components.Interaction;
+import com.bytesmyth.lifegame.ecs.components.InteractiveComponent;
 import com.bytesmyth.lifegame.ecs.components.TileEntity;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
@@ -29,6 +29,6 @@ public class BushFactory {
         tileEntity.setBehavior(new FarmTileBehavior());
         entity.edit().add(tileEntity);
 
-        entity.edit().add(new Interaction(new FarmInteractionHandler(entity)));
+        entity.edit().add(new InteractiveComponent(new FarmInteractionHandler(entity)));
     }
 }
