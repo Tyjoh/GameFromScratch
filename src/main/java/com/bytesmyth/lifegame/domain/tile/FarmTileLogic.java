@@ -1,14 +1,14 @@
-package com.bytesmyth.lifegame.ecs.components;
+package com.bytesmyth.lifegame.domain.tile;
 
 import com.artemis.Entity;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 
-public class FarmTileBehavior implements TileBehavior {
+public class FarmTileLogic implements TileLogic {
 
     private int mature;
     private int age = 0;
 
-    public FarmTileBehavior() {
+    public FarmTileLogic() {
         genMatureTime();
     }
 

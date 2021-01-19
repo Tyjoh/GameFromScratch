@@ -5,17 +5,17 @@ import com.artemis.annotations.All;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.graphics.animation.AnimationTimeline;
 import com.bytesmyth.lifegame.ecs.components.AnimatedTextureGraphics;
-import com.bytesmyth.lifegame.ecs.components.TexturedGraphics;
+import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
 
-@All({TexturedGraphics.class, AnimatedTextureGraphics.class})
+@All({SpriteGraphicsComponent.class, AnimatedTextureGraphics.class})
 public class TextureAnimationSystem extends IteratingSystem {
 
-    private ComponentMapper<TexturedGraphics> mTexturedGraphics;
+    private ComponentMapper<SpriteGraphicsComponent> mTexturedGraphics;
     private ComponentMapper<AnimatedTextureGraphics> mAnimatedTexturedGraphics;
 
     @Override
     protected void process(int i) {
-        TexturedGraphics textureGraphics = mTexturedGraphics.get(i);
+        SpriteGraphicsComponent textureGraphics = mTexturedGraphics.get(i);
         AnimatedTextureGraphics animation = mAnimatedTexturedGraphics.get(i);
 
         if (animation.isAnimating()) {

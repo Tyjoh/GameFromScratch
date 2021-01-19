@@ -24,7 +24,7 @@ public class CharacterFactory {
 
         int player = world.create();
 
-        TexturedGraphics characterGraphics = new TexturedGraphics()
+        SpriteGraphicsComponent characterGraphics = new SpriteGraphicsComponent()
                 .setTextureAtlas(textureAtlas)
                 .setTileId(0)
                 .setShape(new Rectangle(1, 2));
@@ -36,15 +36,15 @@ public class CharacterFactory {
         Animation animation = new Animation(upAnim, downAnim, leftAnim, rightAnim);
 
         world.edit(player)
-                .add(new Transform().setPosition(new Vector2f(x, y)))
-                .add(new Velocity())
-                .add(new Direction())
+                .add(new TransformComponent().setPosition(new Vector2f(x, y)))
+                .add(new VelocityComponent())
+                .add(new DirectionComponent())
                 .add(new UserControl())
-                .add(new CameraFollow())
-                .add(new Collider().setHitBox(new Rectangle(0.85f, 0.5f)).setOffset(new Vector2f(0, -0.3f)))
+                .add(new CameraFollowComponent())
+                .add(new ColliderComponent().setHitBox(new Rectangle(0.85f, 0.5f)).setOffset(new Vector2f(0, -0.3f)))
                 .add(new AnimatedTextureGraphics().setAnimation(animation).setCurrentAnimation("down"))
                 .add(new InventoryComponent().setInventory(new Inventory(15)))
-                .add(new Pickup())
+                .add(new ItemPickupComponent())
                 .add(characterGraphics);
 
         return player;

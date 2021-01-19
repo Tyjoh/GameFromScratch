@@ -1,8 +1,9 @@
-package com.bytesmyth.lifegame;
+package com.bytesmyth.lifegame.domain.interaction;
 
 import com.artemis.Entity;
 import com.bytesmyth.lifegame.domain.item.Item;
 import com.bytesmyth.lifegame.domain.item.ItemSlot;
+import com.bytesmyth.lifegame.domain.tile.FarmTileLogic;
 import com.bytesmyth.lifegame.ecs.components.*;
 
 import java.util.Optional;
@@ -17,7 +18,7 @@ public class FarmInteractionHandler implements InteractionHandler {
 
     @Override
     public void interact(Entity entity) {
-        FarmTileBehavior behavior = (FarmTileBehavior) bush.getComponent(TileEntity.class).getBehavior();
+        FarmTileLogic behavior = (FarmTileLogic) bush.getComponent(TileComponent.class).getBehavior();
         if (behavior.isMature()) {
             Item item = new Item("berry");
             System.out.println("Harvesting bush with id " + bush.getId());

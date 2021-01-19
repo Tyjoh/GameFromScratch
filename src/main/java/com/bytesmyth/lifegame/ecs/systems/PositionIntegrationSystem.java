@@ -3,29 +3,29 @@ package com.bytesmyth.lifegame.ecs.systems;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.bytesmyth.lifegame.ecs.components.Transform;
-import com.bytesmyth.lifegame.ecs.components.Velocity;
+import com.bytesmyth.lifegame.ecs.components.TransformComponent;
+import com.bytesmyth.lifegame.ecs.components.VelocityComponent;
 import org.joml.Vector2f;
 
 public class PositionIntegrationSystem extends IteratingSystem {
 
-    private ComponentMapper<Transform> mTransform;
-    private ComponentMapper<Velocity> mVelocity;
+    private ComponentMapper<TransformComponent> mTransform;
+    private ComponentMapper<VelocityComponent> mVelocity;
 
     private Vector2f tempVelocity = new Vector2f();
 
     public PositionIntegrationSystem() {
-        super(Aspect.all(Transform.class, Velocity.class));
+        super(Aspect.all(TransformComponent.class, VelocityComponent.class));
     }
 
     @Override
     protected void process(int i) {
-        Transform transform = mTransform.get(i);
-        Velocity velocity = mVelocity.get(i);
+        TransformComponent transformComponent = mTransform.get(i);
+        VelocityComponent velocityComponent = mVelocity.get(i);
 
-        tempVelocity.set(velocity.getVelocity());
+        tempVelocity.set(velocityComponent.getVelocity());
         tempVelocity.mul(world.delta);
 
-        transform.translate(tempVelocity);
+        transformComponent.translate(tempVelocity);
     }
 }

@@ -4,7 +4,7 @@ import com.bytesmyth.graphics.batch.QuadTextureBatcher;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureRegion;
-import com.bytesmyth.lifegame.ecs.components.TexturedGraphics;
+import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class Renderer {
         private Vector2f position;
         private Vector2f prevPosition;
 
-        private void set(TexturedGraphics graphics, Vector2f position, Vector2f prevPosition) {
+        private void set(SpriteGraphicsComponent graphics, Vector2f position, Vector2f prevPosition) {
             this.shape = graphics.getShape();
             this.texture = graphics.getTextureAtlas().getTexture();
             this.region = graphics.getTextureAtlas().getRegionById(graphics.getTileId());

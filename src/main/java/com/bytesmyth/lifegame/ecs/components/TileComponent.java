@@ -1,19 +1,20 @@
 package com.bytesmyth.lifegame.ecs.components;
 
 import com.artemis.Component;
+import com.bytesmyth.lifegame.domain.tile.TileLogic;
 
-public class TileEntity extends Component {
+public class TileComponent extends Component {
     private String layer;
     private int x;
     private int y;
 
-    private TileBehavior behavior = (w, e) -> {};
+    private TileLogic behavior = (w, e) -> {};
 
-    public TileEntity() {
+    public TileComponent() {
 
     }
 
-    public TileEntity(String layer, int x, int y) {
+    public TileComponent(String layer, int x, int y) {
         this.layer = layer;
         this.x = x;
         this.y = y;
@@ -31,11 +32,11 @@ public class TileEntity extends Component {
         return y;
     }
 
-    public TileBehavior getBehavior() {
+    public TileLogic getBehavior() {
         return behavior;
     }
 
-    public void setBehavior(TileBehavior behavior) {
+    public void setBehavior(TileLogic behavior) {
         this.behavior = behavior;
     }
 }

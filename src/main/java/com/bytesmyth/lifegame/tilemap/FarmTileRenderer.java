@@ -2,8 +2,8 @@ package com.bytesmyth.lifegame.tilemap;
 
 import com.artemis.World;
 import com.bytesmyth.graphics.texture.TextureRegion;
-import com.bytesmyth.lifegame.ecs.components.FarmTileBehavior;
-import com.bytesmyth.lifegame.ecs.components.TileEntity;
+import com.bytesmyth.lifegame.domain.tile.FarmTileLogic;
+import com.bytesmyth.lifegame.ecs.components.TileComponent;
 
 public class FarmTileRenderer implements TileRenderer {
 
@@ -19,8 +19,8 @@ public class FarmTileRenderer implements TileRenderer {
 
     @Override
     public TextureRegion render(int worldX, int worldY, Tile tile) {
-        TileEntity tileEntity = world.getEntity(tile.getEntityId()).getComponent(TileEntity.class);
-        FarmTileBehavior farmTileBehavior = (FarmTileBehavior) tileEntity.getBehavior();
+        TileComponent tileComponent = world.getEntity(tile.getEntityId()).getComponent(TileComponent.class);
+        FarmTileLogic farmTileBehavior = (FarmTileLogic) tileComponent.getBehavior();
         if (farmTileBehavior.isMature()) {
             return mature;
         } else {

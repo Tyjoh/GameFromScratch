@@ -1,13 +1,13 @@
 TODO Current:
- - Implement chest with barrel / crate texture.
+ - Consolidate graphics initialization + usage.
 
 TODO Next:
- - Consolidate graphics initialization + usage.
  - Consolidate world initialization + usage.
  - Consolidate UI initialization + usage.
  - Cleanup game init and access to graphics/gui/world etc.
  - Create first pass at entity factory system.
  - Make camera an entity, refactor tweening to tween any entity towards another.
+ - First pass at lighting system.
 
 
 TODO infrastructure:
@@ -61,7 +61,7 @@ NPC AI
             - pick up wood ?
             - walk to fence section
             - build section
-            - pickup wood
+            - itemPickup wood
 
 
 

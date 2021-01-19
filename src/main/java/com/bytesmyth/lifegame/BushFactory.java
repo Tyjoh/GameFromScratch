@@ -2,9 +2,10 @@ package com.bytesmyth.lifegame;
 
 import com.artemis.Entity;
 import com.artemis.World;
-import com.bytesmyth.lifegame.ecs.components.FarmTileBehavior;
+import com.bytesmyth.lifegame.domain.interaction.FarmInteractionHandler;
+import com.bytesmyth.lifegame.domain.tile.FarmTileLogic;
 import com.bytesmyth.lifegame.ecs.components.InteractiveComponent;
-import com.bytesmyth.lifegame.ecs.components.TileEntity;
+import com.bytesmyth.lifegame.ecs.components.TileComponent;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 
@@ -25,9 +26,9 @@ public class BushFactory {
         Entity entity = world.createEntity();
         bushTile.setDynamicEntityId(entity.getId());
 
-        TileEntity tileEntity = new TileEntity("1", x, y);
-        tileEntity.setBehavior(new FarmTileBehavior());
-        entity.edit().add(tileEntity);
+        TileComponent tileComponent = new TileComponent("1", x, y);
+        tileComponent.setBehavior(new FarmTileLogic());
+        entity.edit().add(tileComponent);
 
         entity.edit().add(new InteractiveComponent(new FarmInteractionHandler(entity)));
     }

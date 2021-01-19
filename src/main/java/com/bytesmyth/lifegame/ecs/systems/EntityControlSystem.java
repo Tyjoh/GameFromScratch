@@ -6,19 +6,19 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.application.GameContext;
 import com.bytesmyth.application.Input;
-import com.bytesmyth.lifegame.ecs.components.Direction;
+import com.bytesmyth.lifegame.ecs.components.DirectionComponent;
 import com.bytesmyth.lifegame.ecs.components.UserControl;
-import com.bytesmyth.lifegame.ecs.components.Transform;
-import com.bytesmyth.lifegame.ecs.components.Velocity;
+import com.bytesmyth.lifegame.ecs.components.TransformComponent;
+import com.bytesmyth.lifegame.ecs.components.VelocityComponent;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
-@All({UserControl.class, Transform.class, Velocity.class})
+@All({UserControl.class, TransformComponent.class, VelocityComponent.class})
 public class EntityControlSystem extends IteratingSystem {
 
     private ComponentMapper<UserControl> mEntityControl;
-    private ComponentMapper<Velocity> mVelocity;
-    private ComponentMapper<Direction> mDirection;
+    private ComponentMapper<VelocityComponent> mVelocity;
+    private ComponentMapper<DirectionComponent> mDirection;
 
     private Vector2f controlDir = new Vector2f();
     private Vector2i dir = new Vector2i();
@@ -34,7 +34,7 @@ public class EntityControlSystem extends IteratingSystem {
     @Override
     protected void process(int i) {
         UserControl userControl = mEntityControl.get(i);
-        Velocity velocity = mVelocity.get(i);
+        VelocityComponent velocityComponent = mVelocity.get(i);
 
         Input input = gameContext.getInput();
 
@@ -57,7 +57,7 @@ public class EntityControlSystem extends IteratingSystem {
             controlDir.normalize();
         }
 
-        velocity.getVelocity().set(controlDir).mul(userControl.getControlSpeed());
+        velocityComponent.getVelocity().set(controlDir).mul(userControl.getControlSpeed());
 
         if (dir.lengthSquared() > 0 && mDirection.has(i)) {
             mDirection.get(i).setDir(dir);

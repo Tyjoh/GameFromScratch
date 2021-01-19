@@ -4,7 +4,7 @@ import com.artemis.Component;
 import org.joml.Vector2f;
 
 
-public class Transform extends Component {
+public class TransformComponent extends Component {
 
     private Vector2f position = new Vector2f();
     private Vector2f prevPosition = new Vector2f();
@@ -13,7 +13,7 @@ public class Transform extends Component {
         this.position.add(delta);
     }
 
-    public Transform setPosition(Vector2f position) {
+    public TransformComponent setPosition(Vector2f position) {
         this.position.set(position);
         return this;
     }

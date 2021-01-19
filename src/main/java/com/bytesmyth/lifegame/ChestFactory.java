@@ -3,10 +3,11 @@ package com.bytesmyth.lifegame;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.bytesmyth.graphics.ui.GuiManager;
+import com.bytesmyth.lifegame.domain.interaction.InventoryInteractionHandler;
 import com.bytesmyth.lifegame.domain.item.Inventory;
 import com.bytesmyth.lifegame.ecs.components.InteractiveComponent;
 import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
-import com.bytesmyth.lifegame.ecs.components.TileEntity;
+import com.bytesmyth.lifegame.ecs.components.TileComponent;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 
@@ -35,9 +36,9 @@ public class ChestFactory {
         Entity entity = world.createEntity();
         crateTile.setDynamicEntityId(entity.getId());
 
-        TileEntity tileEntity = new TileEntity("1", x, y);
+        TileComponent tileComponent = new TileComponent("1", x, y);
         entity.edit().add(new InventoryComponent().setInventory(new Inventory(15)));
         entity.edit().add(new InteractiveComponent(new InventoryInteractionHandler(guiManager, entity)));
-        entity.edit().add(tileEntity);
+        entity.edit().add(tileComponent);
     }
 }

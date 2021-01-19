@@ -7,17 +7,17 @@ import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.graphics.texture.TextureRegion;
 import com.bytesmyth.lifegame.Renderer;
-import com.bytesmyth.lifegame.ecs.components.TexturedGraphics;
-import com.bytesmyth.lifegame.ecs.components.Transform;
-import com.bytesmyth.lifegame.ecs.components.Velocity;
+import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
+import com.bytesmyth.lifegame.ecs.components.TransformComponent;
+import com.bytesmyth.lifegame.ecs.components.VelocityComponent;
 import org.joml.Vector2f;
 
-@All({Transform.class, TexturedGraphics.class})
+@All({TransformComponent.class, SpriteGraphicsComponent.class})
 public class TextureGraphicsRenderingSystem extends IteratingSystem {
 
-    private ComponentMapper<Transform> mTransform;
-    private ComponentMapper<TexturedGraphics> mTexturedGraphics;
-    private ComponentMapper<Velocity> mVelocity;
+    private ComponentMapper<TransformComponent> mTransform;
+    private ComponentMapper<SpriteGraphicsComponent> mTexturedGraphics;
+    private ComponentMapper<VelocityComponent> mVelocity;
 
     @Wire
     private Renderer renderer;
@@ -30,12 +30,12 @@ public class TextureGraphicsRenderingSystem extends IteratingSystem {
 
     @Override
     protected void process(int i) {
-        Transform transform = mTransform.get(i);
+        TransformComponent transformComponent = mTransform.get(i);
 
-        Vector2f position = transform.getPosition();
-        Vector2f prevPosition = transform.getPrevPosition();
+        Vector2f position = transformComponent.getPosition();
+        Vector2f prevPosition = transformComponent.getPrevPosition();
 
-        TexturedGraphics graphics = mTexturedGraphics.get(i);
+        SpriteGraphicsComponent graphics = mTexturedGraphics.get(i);
 
         TextureAtlas atlas = graphics.getTextureAtlas();
         TextureRegion region = atlas.getRegionById(graphics.getTileId());

@@ -2,7 +2,7 @@ package com.bytesmyth.lifegame.ecs.components;
 
 import com.artemis.Component;
 
-public class Pickup extends Component {
+public class ItemPickupComponent extends Component {
 
     private float attractRadius = 3f;
     private float pickupRadius = 0.75f;
@@ -11,7 +11,7 @@ public class Pickup extends Component {
         return attractRadius;
     }
 
-    public Pickup setAttractRadius(float attractRadius) {
+    public ItemPickupComponent setAttractRadius(float attractRadius) {
         this.attractRadius = attractRadius;
         return this;
     }
@@ -20,7 +20,7 @@ public class Pickup extends Component {
         return pickupRadius;
     }
 
-    public Pickup setPickupRadius(float pickupRadius) {
+    public ItemPickupComponent setPickupRadius(float pickupRadius) {
         this.pickupRadius = pickupRadius;
         return this;
     }

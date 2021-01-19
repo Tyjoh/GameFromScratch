@@ -4,7 +4,7 @@ import com.artemis.Component;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 
-public class TexturedGraphics extends Component {
+public class SpriteGraphicsComponent extends Component {
 
     private TextureAtlas textureAtlas;
     private int tileId;
@@ -22,17 +22,17 @@ public class TexturedGraphics extends Component {
         return shape;
     }
 
-    public TexturedGraphics setTextureAtlas(TextureAtlas textureAtlas) {
+    public SpriteGraphicsComponent setTextureAtlas(TextureAtlas textureAtlas) {
         this.textureAtlas = textureAtlas;
         return this;
     }
 
-    public TexturedGraphics setTileId(int tileId) {
+    public SpriteGraphicsComponent setTileId(int tileId) {
         this.tileId = tileId;
         return this;
     }
 
-    public TexturedGraphics setShape(Rectangle shape) {
+    public SpriteGraphicsComponent setShape(Rectangle shape) {
         this.shape = shape;
         return this;
     }

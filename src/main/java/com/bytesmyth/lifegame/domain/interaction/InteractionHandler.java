@@ -1,4 +1,4 @@
-package com.bytesmyth.lifegame.ecs.components;
+package com.bytesmyth.lifegame.domain.interaction;
 
 import com.artemis.Entity;
 

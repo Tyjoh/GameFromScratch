@@ -5,7 +5,7 @@ import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-public class Direction extends Component {
+public class DirectionComponent extends Component {
 
     private Vector2f dir = new Vector2f();
 

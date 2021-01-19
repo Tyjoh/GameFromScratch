@@ -3,7 +3,7 @@ package com.bytesmyth.lifegame.ecs.components;
 import com.artemis.Component;
 import org.joml.Vector2f;
 
-public class Velocity extends Component {
+public class VelocityComponent extends Component {
 
     private Vector2f velocity = new Vector2f();
 

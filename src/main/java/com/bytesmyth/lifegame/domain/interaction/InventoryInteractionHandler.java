@@ -1,8 +1,8 @@
-package com.bytesmyth.lifegame;
+package com.bytesmyth.lifegame.domain.interaction;
 
 import com.artemis.Entity;
 import com.bytesmyth.graphics.ui.GuiManager;
-import com.bytesmyth.lifegame.ecs.components.InteractionHandler;
+import com.bytesmyth.lifegame.domain.interaction.InteractionHandler;
 import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
 import com.bytesmyth.lifegame.ui.InventoryTransferGui;
 

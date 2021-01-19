@@ -4,15 +4,14 @@ import com.artemis.ComponentMapper;
 import com.artemis.annotations.All;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.lifegame.ecs.components.AnimatedTextureGraphics;
-import com.bytesmyth.lifegame.ecs.components.Direction;
+import com.bytesmyth.lifegame.ecs.components.DirectionComponent;
 import org.joml.Vector2f;
-import org.joml.Vector2ic;
 
-@All({AnimatedTextureGraphics.class, Direction.class})
+@All({AnimatedTextureGraphics.class, DirectionComponent.class})
 public class DirectionalAnimationSystem extends IteratingSystem {
 
     private ComponentMapper<AnimatedTextureGraphics> mAnimatedGraphics;
-    private ComponentMapper<Direction> mDirection;
+    private ComponentMapper<DirectionComponent> mDirection;
 
     @Override
     protected void process(int entityId) {

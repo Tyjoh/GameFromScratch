@@ -6,17 +6,17 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.lifegame.tilemap.TileMap;
-import com.bytesmyth.lifegame.ecs.components.Collider;
-import com.bytesmyth.lifegame.ecs.components.Transform;
-import com.bytesmyth.lifegame.ecs.components.Velocity;
+import com.bytesmyth.lifegame.ecs.components.ColliderComponent;
+import com.bytesmyth.lifegame.ecs.components.TransformComponent;
+import com.bytesmyth.lifegame.ecs.components.VelocityComponent;
 import org.joml.Vector2f;
 
 public class TileMapCollisionSystem extends IteratingSystem {
     private static final Rectangle TILE = new Rectangle(1, 1);
 
-    private ComponentMapper<Collider> mCollider;
-    private ComponentMapper<Transform> mTransform;
-    private ComponentMapper<Velocity> mVelocity;
+    private ComponentMapper<ColliderComponent> mCollider;
+    private ComponentMapper<TransformComponent> mTransform;
+    private ComponentMapper<VelocityComponent> mVelocity;
 
     @Wire
     private TileMap map;
@@ -26,14 +26,14 @@ public class TileMapCollisionSystem extends IteratingSystem {
 
 
     public TileMapCollisionSystem() {
-        super(Aspect.all(Collider.class, Transform.class));
+        super(Aspect.all(ColliderComponent.class, TransformComponent.class));
     }
 
     @Override
     protected void process(int entityId) {
-        Collider collider = mCollider.get(entityId);
-        Transform transform = mTransform.get(entityId);
-        position.set(transform.getPosition()).add(collider.getOffset());
+        ColliderComponent collider = mCollider.get(entityId);
+        TransformComponent transformComponent = mTransform.get(entityId);
+        position.set(transformComponent.getPosition()).add(collider.getOffset());
 
         int minX = (int) (position.x - collider.getHitBox().getHalfWidth());
         int maxX = (int) (position.x + collider.getHitBox().getHalfWidth()) + 1;
@@ -81,7 +81,7 @@ public class TileMapCollisionSystem extends IteratingSystem {
             }
         }
 
-        transform.setPosition(position.sub(collider.getOffset()));
+        transformComponent.setPosition(position.sub(collider.getOffset()));
     }
 
     private Overlap getOverlap(Rectangle hitBox, Vector2f position, Vector2f tilePos) {

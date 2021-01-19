@@ -6,9 +6,9 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.application.Input;
 import com.bytesmyth.lifegame.LifeGame;
-import com.bytesmyth.lifegame.ecs.components.Direction;
+import com.bytesmyth.lifegame.ecs.components.DirectionComponent;
 import com.bytesmyth.lifegame.ecs.components.InteractiveComponent;
-import com.bytesmyth.lifegame.ecs.components.Transform;
+import com.bytesmyth.lifegame.ecs.components.TransformComponent;
 import com.bytesmyth.lifegame.ecs.components.UserControl;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
@@ -20,15 +20,15 @@ import java.util.Optional;
 public class InteractSystem extends IteratingSystem {
 
     private ComponentMapper<UserControl> mUserControl;
-    private ComponentMapper<Transform> mTransform;
+    private ComponentMapper<TransformComponent> mTransform;
     private ComponentMapper<InteractiveComponent> mInteraction;
-    private ComponentMapper<Direction> mDirection;
+    private ComponentMapper<DirectionComponent> mDirection;
 
     @Wire
     private LifeGame game;
 
     public InteractSystem() {
-        super(Aspect.all(UserControl.class, Transform.class));
+        super(Aspect.all(UserControl.class, TransformComponent.class));
     }
 
     @Override
@@ -40,9 +40,9 @@ public class InteractSystem extends IteratingSystem {
 
         TileMap map = game.getMap();
 
-        Transform transform = mTransform.get(entityId);
+        TransformComponent transformComponent = mTransform.get(entityId);
 
-        Vector2f pos = transform.getPosition();
+        Vector2f pos = transformComponent.getPosition();
         Vector2f dir = mDirection.get(entityId).getDir();
 
         int px = (int) (pos.x);

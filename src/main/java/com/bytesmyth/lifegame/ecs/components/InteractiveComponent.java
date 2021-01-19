@@ -2,6 +2,7 @@ package com.bytesmyth.lifegame.ecs.components;
 
 import com.artemis.Component;
 import com.artemis.Entity;
+import com.bytesmyth.lifegame.domain.interaction.InteractionHandler;
 
 public class InteractiveComponent extends Component {
 
