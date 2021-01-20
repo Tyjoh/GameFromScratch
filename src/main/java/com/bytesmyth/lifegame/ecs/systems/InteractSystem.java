@@ -45,10 +45,10 @@ public class InteractSystem extends IteratingSystem {
         Vector2f pos = transformComponent.getPosition();
         Vector2f dir = mDirection.get(entityId).getDir();
 
-        int px = (int) (pos.x);
+        int px = (int) (pos.x + 0.5f);
         int py = (int) (pos.y);
 
-        int fx = (int) (pos.x + Math.signum(dir.x));
+        int fx = (int) (pos.x + 0.5f + Math.signum(dir.x));
         int fy = (int) (pos.y + Math.signum(dir.y));
 
         TileMapLayer objectLayer1 = map.getLayer("1");

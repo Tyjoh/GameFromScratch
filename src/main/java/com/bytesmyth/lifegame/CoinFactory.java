@@ -4,6 +4,8 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.World;
 import com.bytesmyth.graphics.mesh.Rectangle;
+import com.bytesmyth.graphics.sprite.Sprite;
+import com.bytesmyth.graphics.sprite.StaticSprite;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.lifegame.ecs.components.ItemComponent;
 import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
@@ -14,25 +16,25 @@ public class CoinFactory {
 
     private final World world;
     private final Archetype coinArchetype;
-    private TextureAtlas uiAtlas;
+    private final Sprite sprite;
 
     public CoinFactory(World world, TextureAtlas uiAtlas) {
         this.world = world;
-        coinArchetype = new ArchetypeBuilder().add(
-                TransformComponent.class,
-                ItemComponent.class,
-                SpriteGraphicsComponent.class
-        ).build(world);
-        this.uiAtlas = uiAtlas;
+        coinArchetype = new ArchetypeBuilder()
+                .add(TransformComponent.class)
+                .add(ItemComponent.class)
+                .add(SpriteGraphicsComponent.class)
+                .build(world);
+
+        this.sprite = new StaticSprite(uiAtlas.getTexture(), uiAtlas.getRegionByCoord(0,24))
+                .setSize(0.75f, 0.75f)
+                .setOrigin(0.75f/2f, 0.75f/2f);
     }
 
     public int create(float x, float y) {
         int coin = world.create(coinArchetype);
         world.getMapper(TransformComponent.class).get(coin).setPosition(new Vector2f(x, y));
-        world.getMapper(SpriteGraphicsComponent.class).get(coin)
-                .setTextureAtlas(uiAtlas)
-                .setTileId(uiAtlas.tileCoordToId(0,16 + 8))
-                .setShape(new Rectangle(1f, 1f));
+        world.getMapper(SpriteGraphicsComponent.class).get(coin).setSprite(sprite);
         return coin;
     }
 

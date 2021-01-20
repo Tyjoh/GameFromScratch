@@ -1,10 +1,12 @@
 package com.bytesmyth.lifegame;
 
 import com.artemis.World;
+import com.bytesmyth.graphics.animation.AnimationMap;
 import com.bytesmyth.graphics.animation.Animation;
-import com.bytesmyth.graphics.animation.AnimationTimeline;
+import com.bytesmyth.graphics.animation.Frame;
 import com.bytesmyth.graphics.mesh.Rectangle;
-import com.bytesmyth.graphics.texture.Texture;
+import com.bytesmyth.graphics.sprite.AnimatedSprite;
+import com.bytesmyth.graphics.sprite.Sprite;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.lifegame.domain.item.Inventory;
 import com.bytesmyth.lifegame.ecs.components.*;
@@ -13,27 +15,27 @@ import org.joml.Vector2f;
 public class CharacterFactory {
 
     private World world;
+    private TextureAtlas atlas;
 
-    public CharacterFactory(World world) {
+    public CharacterFactory(World world, TextureAtlas atlas) {
         this.world = world;
+        this.atlas = atlas;
     }
 
     public int create(float x, float y) {
-        Texture characterTexture = new Texture("/textures/character1.png");
-        TextureAtlas textureAtlas = new TextureAtlas(characterTexture, 16, 32);
-
         int player = world.create();
 
-        SpriteGraphicsComponent characterGraphics = new SpriteGraphicsComponent()
-                .setTextureAtlas(textureAtlas)
-                .setTileId(0)
-                .setShape(new Rectangle(1, 2));
+        Animation downAnim = new Animation("down", toFrames(0,1,2,3));
+        Animation rightAnim = new Animation("right", toFrames(4,5,6,7));
+        Animation upAnim = new Animation("up", toFrames(8,9,10,11));
+        Animation leftAnim = new Animation("left", toFrames(12,13,14,15));
+        AnimationMap animationMap = new AnimationMap(upAnim, downAnim, leftAnim, rightAnim);
 
-        AnimationTimeline downAnim = new AnimationTimeline("down", new int[]{0,1,2,3});
-        AnimationTimeline rightAnim = new AnimationTimeline("right", new int[]{4,5,6,7});
-        AnimationTimeline upAnim = new AnimationTimeline("up", new int[]{8,9,10,11});
-        AnimationTimeline leftAnim = new AnimationTimeline("left", new int[]{12,13,14,15});
-        Animation animation = new Animation(upAnim, downAnim, leftAnim, rightAnim);
+        Sprite sprite = new AnimatedSprite(atlas.getTexture(), animationMap, "down")
+                .setSize(1, 2)
+                .setOrigin(0.5f, 1f);
+
+        SpriteGraphicsComponent characterGraphics = new SpriteGraphicsComponent(sprite);
 
         world.edit(player)
                 .add(new TransformComponent().setPosition(new Vector2f(x, y)))
@@ -42,11 +44,18 @@ public class CharacterFactory {
                 .add(new UserControl())
                 .add(new CameraFollowComponent())
                 .add(new ColliderComponent().setHitBox(new Rectangle(0.85f, 0.5f)).setOffset(new Vector2f(0, -0.3f)))
-                .add(new AnimatedTextureGraphics().setAnimation(animation).setCurrentAnimation("down"))
                 .add(new InventoryComponent().setInventory(new Inventory(15)))
                 .add(new ItemPickupComponent())
                 .add(characterGraphics);
 
         return player;
+    }
+
+    private Frame[] toFrames(int... tileIds) {
+        Frame[] regions = new Frame[tileIds.length];
+        for (int i = 0; i < tileIds.length; i++) {
+            regions[i] = new Frame(atlas.getRegionById(tileIds[i]));
+        }
+        return regions;
     }
 }

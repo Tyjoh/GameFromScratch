@@ -19,6 +19,7 @@ import com.bytesmyth.lifegame.ui.InGameHud;
 import com.bytesmyth.lifegame.ui.InventoryTransferGui;
 import com.bytesmyth.lifegame.ui.PlayerInventoryUI;
 import org.joml.Vector2f;
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class LifeGame implements Game {
     private World world;
     private TileMap map;
 
-    private Renderer renderer;
+    private InterpolatedRenderer renderer;
     private TileMapRenderer tileMapRenderer;
 
     private TextureAtlas mapTextureAtlas;
@@ -71,7 +72,7 @@ public class LifeGame implements Game {
         uiCamera.setPosition(new Vector2f(0, 0));
 
         QuadTextureBatcher batcher = new QuadTextureBatcher(worldCamera);
-        renderer = new Renderer(batcher);
+        renderer = new InterpolatedRenderer(batcher);
 
         uiBatcher = new QuadTextureBatcher(uiCamera);
         Texture uiTexture = new Texture("/textures/gui-tileset.png");
@@ -112,7 +113,9 @@ public class LifeGame implements Game {
         chestFactory.create(19, 18);
         chestFactory.create(13, 18);
 
-        CharacterFactory characterFactory = new CharacterFactory(world);
+        Texture characterTexture = new Texture("/textures/character1.png");
+        TextureAtlas characterAtlas = new TextureAtlas(characterTexture, 16, 32);
+        CharacterFactory characterFactory = new CharacterFactory(world, characterAtlas);
         this.player = characterFactory.create(16, 16);
     }
 

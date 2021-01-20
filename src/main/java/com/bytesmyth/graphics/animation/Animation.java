@@ -1,19 +1,44 @@
 package com.bytesmyth.graphics.animation;
 
-import java.util.HashMap;
-
 public class Animation {
 
-    private HashMap<String, AnimationTimeline> timelines = new HashMap<>();
+    private String name;
+    private Frame[] frames;
 
-    public Animation(AnimationTimeline... timelines) {
-        for (AnimationTimeline timeline : timelines) {
-            this.timelines.put(timeline.getName().toLowerCase(), timeline);
+    public Animation(String name, Frame[] frames) {
+        this.name = name;
+        this.frames = frames;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int size() {
+        return frames.length;
+    }
+
+    public Frame getFrame(int i) {
+        return frames[i];
+    }
+
+    public int getDurationTicks() {
+        int total = 0;
+        for (Frame frame : frames) {
+            total += frame.getFrameTicks();
         }
+        return total;
     }
 
-    public AnimationTimeline getTimeline(String name) {
-        return timelines.get(name.toLowerCase());
+    public Frame getFrameByTick(int animationTick) {
+        int currentFrameTick = 0;
+        for (Frame frame : frames) {
+            int nextFrameTick = currentFrameTick + frame.getFrameTicks();
+            if (animationTick < nextFrameTick) {
+                return frame;
+            }
+            currentFrameTick = nextFrameTick;
+        }
+        throw new IllegalArgumentException("Animation tick out of bounds: " + animationTick + ". Total tick duration: " + getDurationTicks());
     }
-
 }

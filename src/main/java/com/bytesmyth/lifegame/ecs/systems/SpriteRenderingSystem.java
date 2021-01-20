@@ -4,23 +4,20 @@ import com.artemis.ComponentMapper;
 import com.artemis.annotations.All;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
-import com.bytesmyth.graphics.texture.TextureAtlas;
-import com.bytesmyth.graphics.texture.TextureRegion;
-import com.bytesmyth.lifegame.Renderer;
+import com.bytesmyth.graphics.sprite.Sprite;
+import com.bytesmyth.lifegame.InterpolatedRenderer;
 import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
 import com.bytesmyth.lifegame.ecs.components.TransformComponent;
-import com.bytesmyth.lifegame.ecs.components.VelocityComponent;
 import org.joml.Vector2f;
 
 @All({TransformComponent.class, SpriteGraphicsComponent.class})
-public class TextureGraphicsRenderingSystem extends IteratingSystem {
+public class SpriteRenderingSystem extends IteratingSystem {
 
     private ComponentMapper<TransformComponent> mTransform;
-    private ComponentMapper<SpriteGraphicsComponent> mTexturedGraphics;
-    private ComponentMapper<VelocityComponent> mVelocity;
+    private ComponentMapper<SpriteGraphicsComponent> mSpriteGraphics;
 
     @Wire
-    private Renderer renderer;
+    private InterpolatedRenderer renderer;
 
     @Override
     protected void begin() {
@@ -31,15 +28,14 @@ public class TextureGraphicsRenderingSystem extends IteratingSystem {
     @Override
     protected void process(int i) {
         TransformComponent transformComponent = mTransform.get(i);
-
         Vector2f position = transformComponent.getPosition();
         Vector2f prevPosition = transformComponent.getPrevPosition();
 
-        SpriteGraphicsComponent graphics = mTexturedGraphics.get(i);
+        SpriteGraphicsComponent graphics = mSpriteGraphics.get(i);
+        Sprite sprite = graphics.getSprite();
 
-        TextureAtlas atlas = graphics.getTextureAtlas();
-        TextureRegion region = atlas.getRegionById(graphics.getTileId());
+        sprite.tick(world.delta);
 
-        renderer.queueTextureGraphics(graphics.getShape(), position, prevPosition, atlas.getTexture(), region);
+        renderer.queueSprite(sprite, position, prevPosition);
     }
 }

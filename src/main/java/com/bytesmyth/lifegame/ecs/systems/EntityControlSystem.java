@@ -6,10 +6,9 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.application.GameContext;
 import com.bytesmyth.application.Input;
-import com.bytesmyth.lifegame.ecs.components.DirectionComponent;
-import com.bytesmyth.lifegame.ecs.components.UserControl;
-import com.bytesmyth.lifegame.ecs.components.TransformComponent;
-import com.bytesmyth.lifegame.ecs.components.VelocityComponent;
+import com.bytesmyth.graphics.sprite.AnimatedSprite;
+import com.bytesmyth.graphics.sprite.Sprite;
+import com.bytesmyth.lifegame.ecs.components.*;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
@@ -19,6 +18,7 @@ public class EntityControlSystem extends IteratingSystem {
     private ComponentMapper<UserControl> mEntityControl;
     private ComponentMapper<VelocityComponent> mVelocity;
     private ComponentMapper<DirectionComponent> mDirection;
+    private ComponentMapper<SpriteGraphicsComponent> mSpriteGraphics;
 
     private Vector2f controlDir = new Vector2f();
     private Vector2i dir = new Vector2i();
@@ -40,16 +40,22 @@ public class EntityControlSystem extends IteratingSystem {
 
         dir.zero();
 
-        if (input.getKey("A").isPressed()) {
-            dir.x = -1;
-        } else if (input.getKey("D").isPressed()) {
-            dir.x = 1;
-        }
+        String animationKey = "down";
 
         if (input.getKey("W").isPressed()) {
             dir.y = 1;
+            animationKey = "up";
         } else if(input.getKey("S").isPressed()) {
             dir.y = -1;
+            animationKey = "down";
+        }
+
+        if (input.getKey("A").isPressed()) {
+            dir.x = -1;
+            animationKey = "left";
+        } else if (input.getKey("D").isPressed()) {
+            dir.x = 1;
+            animationKey = "right";
         }
 
         controlDir.set(dir);
@@ -61,6 +67,12 @@ public class EntityControlSystem extends IteratingSystem {
 
         if (dir.lengthSquared() > 0 && mDirection.has(i)) {
             mDirection.get(i).setDir(dir);
+            if (mSpriteGraphics.has(i)) {
+                Sprite sprite = mSpriteGraphics.get(i).getSprite();
+                if (sprite instanceof AnimatedSprite) {
+                    ((AnimatedSprite)sprite).setCurrentAnimation(animationKey);
+                }
+            }
         }
     }
 }

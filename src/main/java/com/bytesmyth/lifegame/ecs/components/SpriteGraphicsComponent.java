@@ -1,39 +1,26 @@
 package com.bytesmyth.lifegame.ecs.components;
 
 import com.artemis.Component;
-import com.bytesmyth.graphics.mesh.Rectangle;
-import com.bytesmyth.graphics.texture.TextureAtlas;
+import com.bytesmyth.graphics.sprite.Sprite;
+import org.joml.Vector4f;
 
 public class SpriteGraphicsComponent extends Component {
 
-    private TextureAtlas textureAtlas;
-    private int tileId;
-    private Rectangle shape;
+    private Sprite sprite;
 
-    public TextureAtlas getTextureAtlas() {
-        return textureAtlas;
+    public SpriteGraphicsComponent(Sprite sprite) {
+        this.sprite = sprite;
     }
 
-    public int getTileId() {
-        return tileId;
+    public SpriteGraphicsComponent() {
     }
 
-    public Rectangle getShape() {
-        return shape;
+    public Sprite getSprite() {
+        return sprite;
     }
 
-    public SpriteGraphicsComponent setTextureAtlas(TextureAtlas textureAtlas) {
-        this.textureAtlas = textureAtlas;
-        return this;
-    }
-
-    public SpriteGraphicsComponent setTileId(int tileId) {
-        this.tileId = tileId;
-        return this;
-    }
-
-    public SpriteGraphicsComponent setShape(Rectangle shape) {
-        this.shape = shape;
+    public SpriteGraphicsComponent setSprite(Sprite sprite) {
+        this.sprite = sprite;
         return this;
     }
 }
