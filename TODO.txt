@@ -6,25 +6,60 @@ TODO Next:
  - Consolidate UI initialization + usage.
  - Cleanup game init and access to graphics/gui/world etc.
  - Create first pass at entity factory system.
- - Make camera an entity, refactor tweening to tween any entity towards another.
+ - Make camera an entity, refactor tweening to tween any entity towards another. Remove prev position from inside camera
  - First pass at lighting system.
 
 
 TODO infrastructure:
+ - Chunking / Room system
+    - Buildings should be as large on the outside as they are in.
+    - When behind a building it should fade out
+    - When in a building the roof and some walls should become transparent
+ - Level editing + persistence
  - Implement game state persistence
     - Store tiles
 
 
-Dynamic tile system
+Graphics Engine design
+    Current approach / usage:
+     - Interpolated rendering for between game ticks
+     - Static rendering for tiles + game objects
+     - Static rendering for Gui
 
-    How to render dynamic tiles
-    How to choose what dynamic tiles to tick
-    How to iterate dynamic tiles
+    New Approach 1:
+     - All rendering goes through interpolated rendering system:
+        - Add support for non sprites.
+        - Tile maps use same sprite registry as entity sprites.
+        - Tile maps render through interpolated system.
+        - Interpolated system interpolates camera position for each frame.
+
+     - Benefits:
+        - Will easily be able to introduce z ordering.
+        - Will be able to change rendering techniques fairly easily.
+
+     - Can split up down the road for performance reasons if required.
 
 
-    How to initialize?
-        ChunkLoader(textureAtlas) <- uses internal tile factory for logic tiles? If not pass in custom tile factories
-        ChunkLoader.load(map, layer, chunkX, chunkY)
+
+Mechanics:
+    Development Types
+        Engineering
+        Science
+
+    Development Action
+        Automatable
+        Requires players to actively solve problems to improve trajectory of Development
+
+    Developed Tech has to be stored as 'Trade Secrets'
+        In chest on paper
+        On flash drive
+        On servers
+
+    Trade secret stealing
+    Building + town development
+    Robbery + policing
+
+
 
 
 NPC AI

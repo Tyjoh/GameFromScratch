@@ -2,6 +2,7 @@ package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.application.Input;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
+import com.bytesmyth.lifegame.Graphics;
 import com.bytesmyth.lifegame.domain.item.Item;
 import com.bytesmyth.lifegame.domain.item.ItemSlot;
 import com.bytesmyth.lifegame.ui.ItemNode;
@@ -15,6 +16,9 @@ public abstract class Gui extends Container {
 
     private final Mouse mouse = new Mouse();
     private boolean enabled = false;
+
+    private GuiTheme theme = new GuiTheme();
+    private Graphics graphics;
 
     public void pollInput(Input input, OrthographicCamera2D camera) {
         mouse.updateMouseState(input, camera);
@@ -33,8 +37,16 @@ public abstract class Gui extends Container {
         return enabled;
     }
 
+    void setGraphics(Graphics graphics) {
+        this.graphics = graphics;
+    }
+
+    public GuiTheme getTheme() {
+        return theme;
+    }
+
     @Override
-    public void draw(GuiGraphics g) {
+    public void draw(Graphics g) {
         super.draw(g);
 
         if (mouse.isHoldingNode()) {
@@ -45,7 +57,7 @@ public abstract class Gui extends Container {
     }
 
     @Override
-    Gui getGui() {
+    public Gui getGui() {
         return this;
     }
 

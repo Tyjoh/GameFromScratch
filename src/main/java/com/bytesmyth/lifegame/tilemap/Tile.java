@@ -1,5 +1,7 @@
 package com.bytesmyth.lifegame.tilemap;
 
+import com.bytesmyth.graphics.sprite.Sprite;
+
 public class Tile {
 
     private TileMapLayer layer;
@@ -7,6 +9,8 @@ public class Tile {
     private final String id;
     private boolean dynamic;
     private int entityId;
+
+    private Sprite sprite;
 
     public Tile(String id) {
         this.dynamic = false;
@@ -37,5 +41,14 @@ public class Tile {
     public void setDynamicEntityId(int id) {
         this.entityId = id;
         this.dynamic = true;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
+    }
+
+    public Tile setSprite(Sprite sprite) {
+        this.sprite = sprite;
+        return this;
     }
 }

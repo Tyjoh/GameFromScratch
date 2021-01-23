@@ -1,9 +1,8 @@
 package com.bytesmyth.graphics.texture;
 
-import com.bytesmyth.graphics.batch.QuadTextureBatcher;
+import com.bytesmyth.graphics.batch.SpriteBatcher;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import org.joml.Vector2f;
-import org.joml.Vector4f;
 
 public class NinePatch {
 
@@ -16,11 +15,12 @@ public class NinePatch {
     private final TextureRegion topRight;
     private final TextureRegion top;
     private final TextureRegion center;
-    private final TextureAtlas atlas;
+    private final Texture texture;
+    private int scale;
 
-    public NinePatch(TextureAtlas atlas, int left, int top) {
-        this.atlas = atlas;
-
+    public NinePatch(TextureAtlas atlas, int left, int top, int scale) {
+        this.texture = atlas.getTexture();
+        this.scale = scale;
         this.topLeft = atlas.getRegionByCoord(left, top);
         this.left = atlas.getRegionByCoord(left, top + 1);
         this.bottomLeft = atlas.getRegionByCoord(left, top + 2);
@@ -32,12 +32,10 @@ public class NinePatch {
         this.center = atlas.getRegionByCoord(left + 1, top + 1);
     }
 
-    public void draw(float x, float y, float w, float h, QuadTextureBatcher batcher) {
+    public void draw(float x, float y, float w, float h, SpriteBatcher batcher) {
         if (w < 1.3f || h < 1.3f) {
             throw new IllegalArgumentException("Must have width and height >= 1.3");
         }
-
-        float scale = 16;
 
         Rectangle corner = new Rectangle(scale, scale);
         Rectangle verticalMiddle = new Rectangle(w - scale * 2, scale);
@@ -59,6 +57,6 @@ public class NinePatch {
     }
 
     public Texture getTexture() {
-        return atlas.getTexture();
+        return texture;
     }
 }

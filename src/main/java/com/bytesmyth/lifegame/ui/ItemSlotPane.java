@@ -2,6 +2,7 @@ package com.bytesmyth.lifegame.ui;
 
 import com.bytesmyth.graphics.ui.*;
 import com.bytesmyth.graphics.ui.positioning.RelativePositioning;
+import com.bytesmyth.lifegame.Graphics;
 import com.bytesmyth.lifegame.domain.item.Item;
 import com.bytesmyth.lifegame.domain.item.ItemSlot;
 import org.joml.Vector3f;
@@ -31,7 +32,7 @@ public class ItemSlotPane extends Pane {
     }
 
     @Override
-    public void draw(GuiGraphics g) {
+    public void draw(Graphics g) {
         if (isHovered()) {
             setColor(new Vector3f(0.75f, 0.75f, 0.75f));
         } else {

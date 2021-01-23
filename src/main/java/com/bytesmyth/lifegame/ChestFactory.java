@@ -13,23 +13,24 @@ import com.bytesmyth.lifegame.tilemap.TileMap;
 
 public class ChestFactory {
 
-    private TileMap map;
-    private World world;
+    private LifeGame game;
     private GuiManager guiManager;
 
-    public ChestFactory(TileMap map, World world, GuiManager guiManager) {
-        this.map = map;
-        this.world = world;
+    public ChestFactory(LifeGame game, GuiManager guiManager) {
+        this.game = game;
         this.guiManager = guiManager;
     }
 
     public void create(int x, int y) {
+        TileMap map = game.getMap();
+        World world = game.getWorld();
+
         Tile tile = map.getLayer("1").getTile(x, y);
         if (tile != null && tile.isDynamic()) {
             world.delete(tile.getEntityId());
         }
 
-        Tile crateTile = new Tile("crate");
+        Tile crateTile = new Tile("crate").setSprite(game.getSpriteRegistry().getSprite("crate"));
         map.getLayer("1").setTile(x, y, crateTile);
         map.getLayer("collision").setTile(x, y, new Tile("solid"));
 

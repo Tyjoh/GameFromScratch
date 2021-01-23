@@ -1,16 +1,39 @@
 package com.bytesmyth.resources;
 
+import com.bytesmyth.graphics.font.BitmapFont;
+import com.bytesmyth.graphics.texture.Texture;
 import org.lwjgl.BufferUtils;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Resources {
+public class Assets {
+
+    private static Map<String, Texture> textures = new HashMap<>();
+    private static Map<String, BitmapFont> fonts = new HashMap<>();
+
+    public static Texture loadTexture(String path) {
+        if (!textures.containsKey(path)) {
+            textures.put(path, new Texture(path));
+        }
+        return textures.get(path);
+    }
+
+    public static BitmapFont loadFont(String name) {
+        if (!fonts.containsKey(name)) {
+            Texture texture = loadTexture("/font/" + name + ".png");
+            String fontDescriptor = Assets.loadText("/font/" + name + ".fnt");
+            fonts.put(name, new BitmapFont(texture, fontDescriptor));
+        }
+        return fonts.get(name);
+    }
 
     public static String loadText(String path) {
         try {
-            InputStream resourceAsStream = Resources.class.getResourceAsStream(path);
+            InputStream resourceAsStream = Assets.class.getResourceAsStream(path);
 
             if(resourceAsStream == null) {
                 throw new ResourceNotFoundException(path);
@@ -26,7 +49,7 @@ public class Resources {
     }
 
     public static ByteBuffer loadBytes(String path) {
-        try (InputStream resourceAsStream = Resources.class.getResourceAsStream(path)) {
+        try (InputStream resourceAsStream = Assets.class.getResourceAsStream(path)) {
             if(resourceAsStream == null) {
                 throw new ResourceNotFoundException(path);
             }

@@ -1,7 +1,8 @@
 package com.bytesmyth.graphics.ui;
 
-import com.bytesmyth.graphics.batch.QuadTextureBatcher;
+import com.bytesmyth.graphics.batch.SpriteBatcher;
 import com.bytesmyth.graphics.texture.NinePatch;
+import com.bytesmyth.lifegame.Graphics;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -18,7 +19,7 @@ public class Button extends Node {
     }
 
     @Override
-    public void draw(GuiGraphics g) {
+    public void draw(Graphics g) {
         Vector3f color = new Vector3f(this.color);
 
         if (isPressed()) {
@@ -27,19 +28,20 @@ public class Button extends Node {
             color.mul(0.85f);
         }
 
-        QuadTextureBatcher batcher = g.getBatcher();
-        NinePatch buttonPatch = g.getButtonPatch();
+        SpriteBatcher batcher = g.getBatcher();
+        GuiTheme theme = this.getGui().getTheme();
 
+        NinePatch button = theme.getButton();
         Vector2f position = getGuiPosition();
         batcher.setColor(color.x, color.y, color.z, 1f);
-        buttonPatch.draw(position.x, position.y, getWidth(), getHeight(), batcher);
+        button.draw(position.x, position.y, getWidth(), getHeight(), batcher);
 
-        Vector2f textSize = g.getFont().getTextSize(text, fontSize);
+        Vector2f textSize = theme.getFont().getTextSize(text, fontSize);
         float textX = position.x + getWidth()/2f - textSize.x/2f;
         float textY = position.y - getHeight()/2f + textSize.y / 2f;
 
         batcher.setColor(textColor.x, textColor.y, textColor.z, 1f);
-        g.getFont().drawText(text, textX, textY, fontSize, batcher);
+        theme.getFont().drawText(text, textX, textY, fontSize, batcher);
         batcher.setColor(1,1,1,1);
     }
 

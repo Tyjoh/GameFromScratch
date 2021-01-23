@@ -5,7 +5,7 @@ import com.artemis.annotations.All;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.graphics.sprite.Sprite;
-import com.bytesmyth.lifegame.InterpolatedRenderer;
+import com.bytesmyth.lifegame.Graphics;
 import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
 import com.bytesmyth.lifegame.ecs.components.TransformComponent;
 import org.joml.Vector2f;
@@ -17,7 +17,7 @@ public class SpriteRenderingSystem extends IteratingSystem {
     private ComponentMapper<SpriteGraphicsComponent> mSpriteGraphics;
 
     @Wire
-    private InterpolatedRenderer renderer;
+    private Graphics renderer;
 
     @Override
     protected void begin() {

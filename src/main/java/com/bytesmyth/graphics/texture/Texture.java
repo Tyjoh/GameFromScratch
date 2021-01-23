@@ -1,7 +1,7 @@
 package com.bytesmyth.graphics.texture;
 
 import com.bytesmyth.resources.ResourceLoadException;
-import com.bytesmyth.resources.Resources;
+import com.bytesmyth.resources.Assets;
 import org.lwjgl.opengl.GL40;
 
 import java.nio.ByteBuffer;
@@ -32,7 +32,7 @@ public class Texture {
         GL40.glTexParameteri(GL40.GL_TEXTURE_2D, GL40.GL_TEXTURE_MIN_FILTER, GL40.GL_NEAREST);
         GL40.glTexParameteri(GL40.GL_TEXTURE_2D, GL40.GL_TEXTURE_MAG_FILTER, GL40.GL_NEAREST);
 
-        ByteBuffer bytes = Resources.loadBytes(path);
+        ByteBuffer bytes = Assets.loadBytes(path);
 
         int[] width = new int[1];
         int[] height = new int[1];

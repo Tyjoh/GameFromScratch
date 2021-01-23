@@ -9,7 +9,7 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL40;
 
-public class QuadTextureBatcher {
+public class SpriteBatcher {
 
     private static final int NUM_VERTICES = 4;
     private static final int VERTEX_SIZE = 9;
@@ -32,11 +32,11 @@ public class QuadTextureBatcher {
     private Vector4f color = new Vector4f(1,1,1,1);
     private OrthographicCamera2D camera;
 
-    public QuadTextureBatcher(OrthographicCamera2D camera) {
+    public SpriteBatcher(OrthographicCamera2D camera) {
         this(camera, new Shader("default"));
     }
 
-    public QuadTextureBatcher(OrthographicCamera2D camera, Shader shader) {
+    public SpriteBatcher(OrthographicCamera2D camera, Shader shader) {
         this.shader = shader;
         this.camera = camera;
         vertexData = new float[maxQuads * NUM_VERTICES * VERTEX_SIZE];

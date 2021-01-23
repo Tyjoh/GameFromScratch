@@ -1,26 +1,33 @@
 package com.bytesmyth.lifegame;
 
-import com.bytesmyth.graphics.batch.QuadTextureBatcher;
-import com.bytesmyth.graphics.mesh.Rectangle;
+import com.bytesmyth.graphics.batch.SpriteBatcher;
+import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.sprite.Sprite;
 import com.bytesmyth.graphics.texture.Texture;
-import com.bytesmyth.graphics.texture.TextureRegion;
-import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class InterpolatedRenderer {
+public class Graphics {
 
-    private final QuadTextureBatcher batcher;
+    private final SpriteBatcher batcher;
+    private final OrthographicCamera2D camera;
 
     private final List<TextureGraphicElement> quadTextureQueue = new ArrayList<>();
     private int queueLength = 0;
 
-    public InterpolatedRenderer(QuadTextureBatcher batcher) {
-        this.batcher = batcher;
+    private final SpriteRegistry spriteRegistry;
+    private final float widthScale;
+
+    public Graphics(OrthographicCamera2D camera, SpriteRegistry spriteRegistry, float widthScale) {
+        this.batcher = new SpriteBatcher(camera);
+        this.camera = camera;
+        this.spriteRegistry = spriteRegistry;
+        this.widthScale = widthScale;
+
         for (int i = 0; i < 100; i++) {
             quadTextureQueue.add(new TextureGraphicElement());
         }
@@ -41,7 +48,7 @@ public class InterpolatedRenderer {
         queueSprite(sprite, position, position);
     }
 
-    public void render(float dt) {
+    public void render(float alpha) {
         Vector2f position = new Vector2f();
 
         List<TextureGraphicElement> sublist = quadTextureQueue.subList(0, queueLength);
@@ -57,7 +64,7 @@ public class InterpolatedRenderer {
         }
 
         for (TextureGraphicElement e : sublist) {
-            position.set(e.prevPosition).lerp(e.position, dt);
+            position.set(e.prevPosition).lerp(e.position, alpha);
             Sprite sprite = e.sprite;
 
             if (sprite.getTexture().getId() != prevTextureId) {
@@ -93,10 +100,38 @@ public class InterpolatedRenderer {
         return e;
     }
 
+    public Vector4f getViewBounds() {
+        return camera.getViewBounds();
+    }
+
+    public Vector2f toCameraCoordinates(Vector2f screen) {
+        return camera.toCameraCoordinates(screen);
+    }
+
+    public SpriteRegistry getSpriteRegistry() {
+        return spriteRegistry;
+    }
+
+    public void setScreenSize(int width, int height) {
+        float ratio = width / widthScale;
+        float heightWorld = height / ratio;
+
+        camera.setWindowSize(width, height);
+        camera.setCameraView(-widthScale / 2f, widthScale / 2f, -heightWorld / 2f, heightWorld / 2f, 0, 100);
+    }
+
+    public OrthographicCamera2D getCamera() {
+        return camera;
+    }
+
+    public SpriteBatcher getBatcher() {
+        return batcher;
+    }
+
     private static class TextureGraphicElement {
         private Sprite sprite;
-        private Vector2f position = new Vector2f();
-        private Vector2f prevPosition = new Vector2f();
+        private final Vector2f position = new Vector2f();
+        private final Vector2f prevPosition = new Vector2f();
 
         public TextureGraphicElement setSprite(Sprite sprite) {
             this.sprite = sprite;

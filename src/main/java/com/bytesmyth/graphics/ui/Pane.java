@@ -1,7 +1,8 @@
 package com.bytesmyth.graphics.ui;
 
-import com.bytesmyth.graphics.batch.QuadTextureBatcher;
+import com.bytesmyth.graphics.batch.SpriteBatcher;
 import com.bytesmyth.graphics.texture.NinePatch;
+import com.bytesmyth.lifegame.Graphics;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -14,14 +15,14 @@ public class Pane extends Container {
     }
 
     @Override
-    public void draw(GuiGraphics g) {
-        NinePatch windowPatch = g.getWindowPatch();
-        QuadTextureBatcher batcher = g.getBatcher();
+    public void draw(Graphics g) {
+        NinePatch window = getGui().getTheme().getWindow();
+        SpriteBatcher batcher = g.getBatcher();
 
         Vector2f position = getGuiPosition();
 
         batcher.setColor(color.x, color.y, color.z, opacity);
-        windowPatch.draw(position.x, position.y, getWidth(), getHeight(), batcher);
+        window.draw(position.x, position.y, getWidth(), getHeight(), batcher);
         batcher.setColor(1,1,1, 1);
 
         super.draw(g);

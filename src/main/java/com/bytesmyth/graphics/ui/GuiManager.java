@@ -1,11 +1,11 @@
 package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.application.Input;
-import com.bytesmyth.graphics.batch.QuadTextureBatcher;
+import com.bytesmyth.graphics.batch.SpriteBatcher;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
+import com.bytesmyth.lifegame.Graphics;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,13 +14,14 @@ public class GuiManager {
 
     private Map<String, Gui> guis = new HashMap<>();
 
-    private GuiGraphics graphics;
+    private Graphics graphics;
 
-    public GuiManager(GuiGraphics graphics) {
+    public GuiManager(Graphics graphics) {
         this.graphics = graphics;
     }
 
     public void registerGui(String name, Gui gui) {
+        gui.setGraphics(graphics);
         this.guis.put(name, gui);
     }
 
@@ -41,12 +42,11 @@ public class GuiManager {
     }
 
     public void render() {
-        QuadTextureBatcher batcher = graphics.getBatcher();
+        SpriteBatcher batcher = graphics.getBatcher();
         OrthographicCamera2D camera = graphics.getCamera();
 
-        batcher.begin(graphics.getTexture());
-
         for (Gui gui : guis.values()) {
+            batcher.begin(gui.getTheme().getTexture());
             if (gui.isEnabled()) {
                 gui.setPosition(-camera.getWidth() / 2f, camera.getHeight() / 2f);
                 gui.setSize(camera.getWidth(), camera.getHeight());
@@ -55,9 +55,8 @@ public class GuiManager {
 
                 gui.draw(graphics);
             }
+            batcher.end();
         }
-
-        batcher.end();
     }
 
     public Gui getGui(String key) {

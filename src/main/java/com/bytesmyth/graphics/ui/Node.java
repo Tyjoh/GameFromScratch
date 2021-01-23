@@ -2,6 +2,7 @@ package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.graphics.ui.positioning.DefaultPositioning;
 import com.bytesmyth.graphics.ui.positioning.Positioning;
+import com.bytesmyth.lifegame.Graphics;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public abstract class Node {
     protected Node() {
     }
 
-    public void draw(GuiGraphics g) { }
+    public void draw(Graphics g) { }
 
     public void layout() { }
 
@@ -107,7 +108,7 @@ public abstract class Node {
         return parent;
     }
 
-    Gui getGui() {
+    public Gui getGui() {
         return gui;
     }
 

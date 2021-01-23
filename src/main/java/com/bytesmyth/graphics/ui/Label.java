@@ -1,6 +1,7 @@
 package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.graphics.font.BitmapFont;
+import com.bytesmyth.lifegame.Graphics;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -15,8 +16,8 @@ public class Label extends Node {
     }
 
     @Override
-    public void draw(GuiGraphics g) {
-        BitmapFont font = g.getFont();
+    public void draw(Graphics g) {
+        BitmapFont font = getGui().getTheme().getFont();
 
         Vector2f size = font.getTextSize(text, fontSize);
         this.setSize(size.x, size.y);

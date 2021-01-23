@@ -1,6 +1,6 @@
 package com.bytesmyth.graphics.shader;
 
-import com.bytesmyth.resources.Resources;
+import com.bytesmyth.resources.Assets;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -47,7 +47,7 @@ public class Shader {
     }
 
     private static int loadShader(String sourcePath, int shaderType) {
-        String source = Resources.loadText(sourcePath);
+        String source = Assets.loadText(sourcePath);
         int shaderId = GL40.glCreateShader(shaderType);
         GL40.glShaderSource(shaderId, source);
         GL40.glCompileShader(shaderId);

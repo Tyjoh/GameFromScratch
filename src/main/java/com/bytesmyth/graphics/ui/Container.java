@@ -1,5 +1,6 @@
 package com.bytesmyth.graphics.ui;
 
+import com.bytesmyth.lifegame.Graphics;
 import org.joml.Vector2f;
 
 import java.util.*;
@@ -20,7 +21,7 @@ public class Container extends Node {
     }
 
     @Override
-    public void draw(GuiGraphics g) {
+    public void draw(Graphics g) {
         for (Node child : children) {
             child.draw(g);
         }

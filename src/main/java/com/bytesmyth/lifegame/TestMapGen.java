@@ -1,59 +1,61 @@
 package com.bytesmyth.lifegame;
 
-import com.artemis.World;
-import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 import com.bytesmyth.lifegame.tilemap.TileMapLayer;
 
 public class TestMapGen {
 
+    private final LifeGame game;
+
+    public TestMapGen(LifeGame game) {
+        this.game = game;
+    }
+
     public TileMap newMap() {
         TileMap map = new TileMap(64);
+        SpriteRegistry spriteRegistry = game.getSpriteRegistry();
         TileMapLayer ground = map.createLayer("ground");
-        TileMapLayer collision = map.createLayer("collision");
-        TileMapLayer object1 = map.createLayer("1");
-        TileMapLayer object2 = map.createLayer("2");
+        map.createLayer("collision");
+        map.createLayer("1");
+        map.createLayer("2");
 
         for (int y = 0; y < map.getHeight(); y++) {
             for (int x = 0; x < map.getWidth(); x++) {
-                ground.setTile(x, y, new Tile("grass"));
-
-                float v = (float) Math.random();
-
-                if (v < 0.02) {
-                    object1.setTile(x, y, new Tile("rock"));
-                    collision.setTile(x, y, new Tile("solid"));
-                }
+                ground.setTile(x, y, new Tile("grass").setSprite(spriteRegistry.getSprite("grass")));
             }
         }
 
         return map;
     }
 
-    public void addRandomRocks(TileMap map, int count) {
+    public void addRandomRocks(int count) {
+        TileMap map = game.getMap();
+        SpriteRegistry spriteRegistry = game.getSpriteRegistry();
+
         TileMapLayer collision = map.getLayer("collision");
         TileMapLayer object1 = map.getLayer("1");
 
         for (int i = 0; i < count; i++) {
             int x = (int) (Math.random() * 64);
             int y = (int) (Math.random() * 64);
-            object1.setTile(x, y, new Tile("rock"));
+            object1.setTile(x, y, new Tile("rock").setSprite(spriteRegistry.getSprite("rock")));
             collision.setTile(x, y, new Tile("solid"));
         }
     }
 
-    public void addRandomCoins(World world, TextureAtlas atlas, int count) {
-        CoinFactory coinFactory = new CoinFactory(world, atlas);
+    public void addRandomCoins(int count) {
+        CoinFactory coinFactory = new CoinFactory(game);
         for (int i = 0; i < count; i++) {
             coinFactory.create((float) Math.random() * 64, (float) Math.random() * 64);
         }
     }
 
-    public void addRandomBushes(TileMap map, World world, int count, float spreadFactor) {
+    public void addRandomBushes(int count, float spreadFactor) {
+        TileMap map = game.getMap();
         TileMapLayer object1 = map.getLayer("1");
 
-        BushFactory bushFactory = new BushFactory(world, map);
+        BushFactory bushFactory = new BushFactory(game);
 
         //seed bushes
         for (int i = 0; i < count; i++) {

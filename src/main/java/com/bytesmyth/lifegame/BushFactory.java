@@ -12,14 +12,16 @@ import com.bytesmyth.lifegame.tilemap.TileMap;
 public class BushFactory {
     private final World world;
     private final TileMap map;
+    private final SpriteRegistry spriteRegistry;
 
-    public BushFactory(World world, TileMap map) {
-        this.world = world;
-        this.map = map;
+    public BushFactory(LifeGame game) {
+        this.world = game.getWorld();
+        this.map = game.getMap();
+        this.spriteRegistry = game.getSpriteRegistry();
     }
 
     public void create(int x, int y) {
-        Tile bushTile = new Tile("bush");
+        Tile bushTile = new Tile("bush").setSprite(spriteRegistry.getSprite("bush"));
         map.getLayer("1").setTile(x, y, bushTile);
         map.getLayer("collision").setTile(x, y, new Tile("solid"));
 

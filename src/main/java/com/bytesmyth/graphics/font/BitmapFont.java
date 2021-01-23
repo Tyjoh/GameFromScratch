@@ -1,10 +1,9 @@
 package com.bytesmyth.graphics.font;
 
-import com.bytesmyth.graphics.batch.QuadTextureBatcher;
+import com.bytesmyth.graphics.batch.SpriteBatcher;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureRegion;
-import com.bytesmyth.resources.Resources;
 import org.joml.Vector2f;
 
 import java.util.HashMap;
@@ -22,10 +21,9 @@ public class BitmapFont {
 
     private float fontScale = 32f;//TODO: read from font file
 
-    public BitmapFont(Texture texture, String name) {
+    public BitmapFont(Texture texture, String descriptor) {
         this.fontTexture = texture;
-        String fontText = Resources.loadText("/font/" + name + ".fnt");
-        initGlyphs(fontText);
+        initGlyphs(descriptor);
     }
 
     private void initGlyphs(String fontText) {
@@ -47,7 +45,6 @@ public class BitmapFont {
 
             Map<String, Integer> params = toParams(line);
 
-
             Glyph glyph = new Glyph();
             glyph.charId = params.get("id");
             float u = params.get("x") / (float) fontTexture.getWidth();
@@ -67,7 +64,7 @@ public class BitmapFont {
         return fontTexture;
     }
 
-    public void drawText(String text, float x, float y, float fontSize, QuadTextureBatcher batcher) {
+    public void drawText(String text, float x, float y, float fontSize, SpriteBatcher batcher) {
         float scaledFontSize = fontSize / fontScale;
         float cursorX = x;
         float cursorY = y;
