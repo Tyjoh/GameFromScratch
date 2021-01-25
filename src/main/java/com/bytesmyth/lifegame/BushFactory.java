@@ -21,7 +21,7 @@ public class BushFactory {
     }
 
     public void create(int x, int y) {
-        Tile bushTile = new Tile("bush").setSprite(spriteRegistry.getSprite("bush"));
+        Tile bushTile = new Tile("bush");
         map.getLayer("1").setTile(x, y, bushTile);
         map.getLayer("collision").setTile(x, y, new Tile("solid"));
 

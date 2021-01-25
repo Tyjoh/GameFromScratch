@@ -4,6 +4,7 @@ import com.bytesmyth.graphics.batch.SpriteBatcher;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.sprite.Sprite;
 import com.bytesmyth.graphics.texture.Texture;
+import com.bytesmyth.graphics.texture.TextureRegion;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -39,13 +40,29 @@ public class Graphics {
 
     public void queueSprite(Sprite sprite, Vector2f position, Vector2f prevPosition) {
         TextureGraphicElement element = getQueueElement();
-        element.setSprite(sprite)
+        element.setTexture(sprite.getTexture())
+                .setRegion(sprite.getTextureRegion())
                 .setPosition(position)
-                .setPrevPosition(prevPosition);
+                .setPrevPosition(prevPosition)
+                .setOrigin(sprite.getOrigin().x, sprite.getOrigin().y)
+                .setSize(sprite.getWidth(), sprite.getHeight());
     }
 
     public void queueSprite(Sprite sprite, Vector2f position) {
         queueSprite(sprite, position, position);
+    }
+
+    public void queueQuad(Texture texture, TextureRegion textureRegion, Vector2f pos, Vector2f prevPos) {
+        getQueueElement().setTexture(texture)
+                .setRegion(textureRegion)
+                .setPosition(pos)
+                .setPrevPosition(prevPos)
+                .setOrigin(0, 0)
+                .setSize(1, 1);
+    }
+
+    public void queueQuad(Texture texture, TextureRegion textureRegion, Vector2f pos) {
+        queueQuad(texture, textureRegion, pos, pos);
     }
 
     public void render(float alpha) {
@@ -54,32 +71,31 @@ public class Graphics {
         List<TextureGraphicElement> sublist = quadTextureQueue.subList(0, queueLength);
         if (sublist.isEmpty()) return;
 
-        sublist.sort(Comparator.comparing(e -> e.sprite.getTexture().getId()));
+        sublist.sort(Comparator.comparing(e -> e));
 
         int prevTextureId = -1;
         if (sublist.size() > 0) {
-            Texture texture = sublist.get(0).sprite.getTexture();
+            Texture texture = sublist.get(0).texture;
             batcher.begin(texture);
             prevTextureId = texture.getId();
         }
 
         for (TextureGraphicElement e : sublist) {
             position.set(e.prevPosition).lerp(e.position, alpha);
-            Sprite sprite = e.sprite;
 
-            if (sprite.getTexture().getId() != prevTextureId) {
+            if (e.texture.getId() != prevTextureId) {
                 batcher.end();
             }
 
-            batcher.begin(sprite.getTexture());
-            prevTextureId = sprite.getTexture().getId();
+            batcher.begin(e.texture);
+            prevTextureId = e.texture.getId();
 
-            float x1 = position.x - sprite.getOrigin().x;
-            float y1 = position.y + sprite.getOrigin().y;
-            float x2 = x1 + sprite.getWidth();
-            float y2 = y1 - sprite.getHeight();
+            float x1 = position.x - e.origin.x;
+            float y1 = position.y + e.origin.y;
+            float x2 = x1 + e.size.x;
+            float y2 = y1 - e.size.y;
 
-            batcher.draw(x1, y1, x2, y2, sprite.getTextureRegion());
+            batcher.draw(x1, y1, x2, y2, e.region);
         }
 
         if (sublist.size() > 0) {
@@ -128,13 +144,23 @@ public class Graphics {
         return batcher;
     }
 
-    private static class TextureGraphicElement {
-        private Sprite sprite;
+    private static class TextureGraphicElement implements Comparable<TextureGraphicElement> {
+        private Texture texture;
+        private TextureRegion region;
+
+        private Vector2f origin = new Vector2f();
+        private Vector2f size = new Vector2f();
+
         private final Vector2f position = new Vector2f();
         private final Vector2f prevPosition = new Vector2f();
 
-        public TextureGraphicElement setSprite(Sprite sprite) {
-            this.sprite = sprite;
+        public TextureGraphicElement setTexture(Texture texture) {
+            this.texture = texture;
+            return this;
+        }
+
+        public TextureGraphicElement setRegion(TextureRegion region) {
+            this.region = region;
             return this;
         }
 
@@ -146,6 +172,22 @@ public class Graphics {
         public TextureGraphicElement setPrevPosition(Vector2f prevPosition) {
             this.prevPosition.set(prevPosition);
             return this;
+        }
+
+
+        public TextureGraphicElement setOrigin(float x, float y) {
+            this.origin.set(x, y);
+            return this;
+        }
+
+        public TextureGraphicElement setSize(float w, float h) {
+            this.size.set(w, h);
+            return this;
+        }
+
+        @Override
+        public int compareTo(TextureGraphicElement o) {
+            return this.texture.getId() - o.texture.getId();
         }
     }
 

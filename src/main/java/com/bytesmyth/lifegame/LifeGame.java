@@ -8,10 +8,10 @@ import com.bytesmyth.application.Input;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
+import com.bytesmyth.graphics.texture.TextureRegion;
 import com.bytesmyth.graphics.ui.GuiManager;
 import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
-import com.bytesmyth.lifegame.tilemap.TileMap;
-import com.bytesmyth.lifegame.tilemap.TileMapRenderer;
+import com.bytesmyth.lifegame.tilemap.*;
 import com.bytesmyth.lifegame.ui.InGameHud;
 import com.bytesmyth.lifegame.ui.InventoryTransferGui;
 import com.bytesmyth.lifegame.ui.PlayerInventoryUI;
@@ -20,6 +20,7 @@ import org.joml.Vector2f;
 
 import java.util.List;
 
+import static com.bytesmyth.lifegame.tilemap.RectangleAutoTiler.BOTTOM;
 import static org.lwjgl.opengl.GL11.*;
 
 public class LifeGame implements Game {
@@ -70,6 +71,7 @@ public class LifeGame implements Game {
         //initialize world graphics rendering systems
         OrthographicCamera2D worldCamera = new OrthographicCamera2D();
         worldCamera.setPosition(new Vector2f(16, 16));
+        worldCamera.writePrevTransform();
         worldGraphics = new Graphics(worldCamera, spriteRegistry, 32);
 
         //initialize ui graphics rendering systems
@@ -86,8 +88,44 @@ public class LifeGame implements Game {
         guiManager.registerGui(TRANSFER_INVENTORY, new InventoryTransferGui(5, 3));
 
         //initialize game world
-        TestMapGen testMapGen = new TestMapGen(this);
-        this.map = testMapGen.newMap();
+//        TestMapGen testMapGen = new TestMapGen(this);
+//        this.map = testMapGen.newMap();
+
+        Texture groundTiles = Assets.loadTexture("/textures/ground_tiles.png");
+        TextureAtlas atlas = new TextureAtlas(groundTiles, 16, 16);
+
+        TileRegistry tileRegistry = DefaultTileRegistry.create(atlas);
+        TileMapGen2 mapGen = new TileMapGen2(tileRegistry);
+        map = mapGen.blankGrass();
+
+        mapGen.addAutoTileDemo(16, 16, map);
+
+        Tiler globalTiler = tileRegistry.getCombinedTiler();
+        TileMapLayer l0 = map.getLayer("0");
+        TileMapLayer l1 = map.getLayer("1");
+        TileMapLayer l2 = map.getLayer("2");
+
+        for (int y = 0; y < map.getHeight(); y++) {
+            for (int x = 0; x < map.getWidth(); x++) {
+                globalTiler.tile(x, y, l0);
+                globalTiler.tile(x, y, l1);
+                globalTiler.tile(x, y, l2);
+            }
+        }
+
+//        mapGen.addWall(20,  20, map);
+//        mapGen.addWall(21,  20, map);
+//        mapGen.addWall(22,  20, map);
+//
+//        mapGen.addWall(22,  17, map);
+//        mapGen.addWall(21,  17, map);
+//        mapGen.addWall(20,  17, map);
+//
+//        mapGen.addWall(22,  14, map);
+//        mapGen.addWall(21,  14, map);
+//
+//        mapGen.addWall(21,  11, map);
+//        mapGen.addWall(22,  11, map);
 
         WorldConfiguration config = WorldConfig.createDefault();
         //TODO: only pass in 'LifeGame'. Add getters for world, map, graphics, context etc.
@@ -99,16 +137,16 @@ public class LifeGame implements Game {
         config.register(this);
         world = new World(config);
 
-        tileMapRenderer = new TileMapRenderer(worldGraphics);
+        tileMapRenderer = new TileMapRenderer(worldGraphics, groundTiles);
 
-        testMapGen.addRandomBushes(30, 0.45f);
-        testMapGen.addRandomRocks(30);
-        testMapGen.addRandomCoins(15);
+//        testMapGen.addRandomBushes(30, 0.45f);
+//        testMapGen.addRandomRocks(30);
+//        testMapGen.addRandomCoins(15);
 
-        ChestFactory chestFactory = new ChestFactory(this, guiManager);
-        chestFactory.create(19, 18);
-        chestFactory.create(13, 18);
-
+//        ChestFactory chestFactory = new ChestFactory(this, guiManager);
+//        chestFactory.create(19, 18);
+//        chestFactory.create(13, 18);
+//
         Texture characterTexture = new Texture("/textures/character1.png");
         TextureAtlas characterAtlas = new TextureAtlas(characterTexture, 16, 32);
         CharacterFactory characterFactory = new CharacterFactory(world, characterAtlas);

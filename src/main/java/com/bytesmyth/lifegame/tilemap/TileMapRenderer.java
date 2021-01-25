@@ -1,6 +1,7 @@
 package com.bytesmyth.lifegame.tilemap;
 
 import com.bytesmyth.graphics.sprite.Sprite;
+import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.lifegame.Graphics;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -11,11 +12,13 @@ import java.util.List;
 public class TileMapRenderer {
 
     private final Graphics graphics;
+    private Texture texture;
 
-    private List<String> renderLayers = Arrays.asList("ground", "1", "2");
+    private List<String> renderLayers = Arrays.asList("0", "1", "2");
 
-    public TileMapRenderer(Graphics graphics) {
+    public TileMapRenderer(Graphics graphics, Texture texture) {
         this.graphics = graphics;
+        this.texture = texture;
     }
 
     public void render(TileMap map) {
@@ -32,13 +35,13 @@ public class TileMapRenderer {
             for (int y = minY; y <= maxY; y++) {
                 for (int x = minX; x <= maxX; x++) {
                     Tile tile = map.getTile(renderLayer, x, y);
-                    if (tile == null || tile.getSprite() == null) {
+                    if (tile == null || tile.getTextureRegion() == null) {
                         continue;
                     }
 
-                    Sprite tileSprite = tile.getSprite();
                     tilePos.set(x - 0.5f, y + 0.5f);
-                    graphics.queueSprite(tileSprite, tilePos);
+
+                    graphics.queueQuad(texture, tile.getTextureRegion(), tilePos);
                 }
             }
         }

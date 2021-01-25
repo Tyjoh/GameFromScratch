@@ -22,7 +22,7 @@ public class TestMapGen {
 
         for (int y = 0; y < map.getHeight(); y++) {
             for (int x = 0; x < map.getWidth(); x++) {
-                ground.setTile(x, y, new Tile("grass").setSprite(spriteRegistry.getSprite("grass")));
+//                ground.setTile(x, y, new Tile("grass").setSprite(spriteRegistry.getSprite("grass")));
             }
         }
 
@@ -39,7 +39,7 @@ public class TestMapGen {
         for (int i = 0; i < count; i++) {
             int x = (int) (Math.random() * 64);
             int y = (int) (Math.random() * 64);
-            object1.setTile(x, y, new Tile("rock").setSprite(spriteRegistry.getSprite("rock")));
+//            object1.setTile(x, y, new Tile("rock").setSprite(spriteRegistry.getSprite("rock")));
             collision.setTile(x, y, new Tile("solid"));
         }
     }
@@ -70,10 +70,10 @@ public class TestMapGen {
                 Tile right = object1.getTile(x + 1, y);
                 Tile below = object1.getTile(x, y - 1);
                 Tile above = object1.getTile(x, y + 1);
-                boolean adjacentBush = left != null && left.getId().equals("bush")
-                                || right != null && right.getId().equals("bush")
-                                || above != null && above.getId().equals("bush")
-                                || below != null && below.getId().equals("bush");
+                boolean adjacentBush = left != null && left.getType().equals("bush")
+                                || right != null && right.getType().equals("bush")
+                                || above != null && above.getType().equals("bush")
+                                || below != null && below.getType().equals("bush");
 
                 if (adjacentBush && Math.random() < spreadFactor) {
                     bushFactory.create(x, y);

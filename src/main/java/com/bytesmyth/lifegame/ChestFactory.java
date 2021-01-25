@@ -30,7 +30,7 @@ public class ChestFactory {
             world.delete(tile.getEntityId());
         }
 
-        Tile crateTile = new Tile("crate").setSprite(game.getSpriteRegistry().getSprite("crate"));
+        Tile crateTile = new Tile("crate");
         map.getLayer("1").setTile(x, y, crateTile);
         map.getLayer("collision").setTile(x, y, new Tile("solid"));
 

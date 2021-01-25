@@ -1,33 +1,54 @@
 package com.bytesmyth.lifegame.tilemap;
 
-import com.bytesmyth.graphics.sprite.Sprite;
+import com.bytesmyth.graphics.texture.TextureRegion;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Tile {
 
     private TileMapLayer layer;
 
-    private final String id;
+    private String type;
+    private String variant;
+
     private boolean dynamic;
     private int entityId;
 
-    private Sprite sprite;
+    private TextureRegion textureRegion;
 
-    public Tile(String id) {
+    public Tile(String type, String variant) {
+        this.type = type;
+        this.variant = variant;
+
         this.dynamic = false;
-        this.id = id;
         this.entityId = -1;//invalid id.
+    }
+
+    public Tile(String type) {
+        this(type, null);
     }
 
     public TileMapLayer getLayer() {
         return layer;
     }
 
-    void setLayer(TileMapLayer layer) {
+    Tile setLayer(TileMapLayer layer) {
         this.layer = layer;
+        return this;
     }
 
-    public String getId() {
-        return id;
+    public String getType() {
+        return type;
+    }
+
+    public String getVariant() {
+        return variant;
+    }
+
+    public Tile setVariant(String variant) {
+        this.variant = variant;
+        return this;
     }
 
     public boolean isDynamic() {
@@ -38,17 +59,18 @@ public class Tile {
         return entityId;
     }
 
-    public void setDynamicEntityId(int id) {
+    public Tile setDynamicEntityId(int id) {
         this.entityId = id;
         this.dynamic = true;
+        return this;
     }
 
-    public Sprite getSprite() {
-        return sprite;
+    public TextureRegion getTextureRegion() {
+        return textureRegion;
     }
 
-    public Tile setSprite(Sprite sprite) {
-        this.sprite = sprite;
+    public Tile setTextureRegion(TextureRegion textureRegion) {
+        this.textureRegion = textureRegion;
         return this;
     }
 }
