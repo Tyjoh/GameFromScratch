@@ -18,6 +18,10 @@ public interface Sprite {
     float getWidth();
     float getHeight();
 
+    default boolean flipHorizontal() {
+        return false;
+    }
+
     default void tick(float delta) {
     }
 

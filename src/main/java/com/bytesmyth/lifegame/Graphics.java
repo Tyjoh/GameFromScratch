@@ -45,7 +45,8 @@ public class Graphics {
                 .setPosition(position)
                 .setPrevPosition(prevPosition)
                 .setOrigin(sprite.getOrigin().x, sprite.getOrigin().y)
-                .setSize(sprite.getWidth(), sprite.getHeight());
+                .setSize(sprite.getWidth(), sprite.getHeight())
+                .setFlipHorizontal(sprite.flipHorizontal());
     }
 
     public void queueSprite(Sprite sprite, Vector2f position) {
@@ -95,7 +96,17 @@ public class Graphics {
             float x2 = x1 + e.size.x;
             float y2 = y1 - e.size.y;
 
-            batcher.draw(x1, y1, x2, y2, e.region);
+            float u1 = e.region.getU1();
+            float v1 = e.region.getV1();
+            float u2 = e.region.getU2();
+            float v2 = e.region.getV2();
+
+            if (e.flipHorizontal) {
+                u1 = e.region.getU2();
+                u2 = e.region.getU1();
+            }
+
+            batcher.draw(x1, y1, x2, y2, u1, v1, u2, v2);
         }
 
         if (sublist.size() > 0) {
@@ -112,6 +123,9 @@ public class Graphics {
         }
 
         TextureGraphicElement e = quadTextureQueue.get(queueLength);
+        e.setFlipHorizontal(false);
+        e.setSize(1,1);
+        e.setOrigin(0, 0);
         queueLength++;
         return e;
     }
@@ -154,6 +168,8 @@ public class Graphics {
         private final Vector2f position = new Vector2f();
         private final Vector2f prevPosition = new Vector2f();
 
+        private boolean flipHorizontal = false;
+
         public TextureGraphicElement setTexture(Texture texture) {
             this.texture = texture;
             return this;
@@ -188,6 +204,11 @@ public class Graphics {
         @Override
         public int compareTo(TextureGraphicElement o) {
             return this.texture.getId() - o.texture.getId();
+        }
+
+        public TextureGraphicElement setFlipHorizontal(boolean flipHorizontal) {
+            this.flipHorizontal = flipHorizontal;
+            return this;
         }
     }
 

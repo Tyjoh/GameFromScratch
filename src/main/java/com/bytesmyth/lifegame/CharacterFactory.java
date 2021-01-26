@@ -25,15 +25,13 @@ public class CharacterFactory {
     public int create(float x, float y) {
         int player = world.create();
 
-        Animation downAnim = new Animation("down", toFrames(0,1,2,3));
-        Animation rightAnim = new Animation("right", toFrames(4,5,6,7));
-        Animation upAnim = new Animation("up", toFrames(8,9,10,11));
-        Animation leftAnim = new Animation("left", toFrames(12,13,14,15));
-        AnimationMap animationMap = new AnimationMap(upAnim, downAnim, leftAnim, rightAnim);
+        Animation idle = new Animation("idle", toFrames(0));
+        Animation running = new Animation("running", toFrames(1,2,3));
+        AnimationMap animationMap = new AnimationMap(idle, running);
 
-        Sprite sprite = new AnimatedSprite(atlas.getTexture(), animationMap, "down")
-                .setSize(1, 2)
-                .setOrigin(0.5f, 1f);
+        Sprite sprite = new AnimatedSprite(atlas.getTexture(), animationMap, "idle")
+                .setSize(1, 1)
+                .setOrigin(0.5f, 0.5f);
 
         SpriteGraphicsComponent characterGraphics = new SpriteGraphicsComponent(sprite);
 
@@ -54,7 +52,7 @@ public class CharacterFactory {
     private Frame[] toFrames(int... tileIds) {
         Frame[] regions = new Frame[tileIds.length];
         for (int i = 0; i < tileIds.length; i++) {
-            regions[i] = new Frame(atlas.getRegionById(tileIds[i]));
+            regions[i] = new Frame(atlas.getRegionById(tileIds[i]), 3);
         }
         return regions;
     }

@@ -60,13 +60,13 @@ public class LifeGame implements Game {
 
     public void init() {
         //initialize textures and sprite mapping system.
-        Texture worldTileset = Assets.loadTexture("/textures/village_tileset.png");
-        TextureAtlas worldAtlas = new TextureAtlas(worldTileset, 16, 16);
+//        Texture worldTileset = Assets.loadTexture("/textures/village_tileset.png");
+//        TextureAtlas worldAtlas = new TextureAtlas(worldTileset, 16, 16);
 
-        Texture uiTileset = Assets.loadTexture("/textures/gui-tileset.png");
-        TextureAtlas uiAtlas = new TextureAtlas(uiTileset, 16,16);
+//        Texture uiTileset = Assets.loadTexture("/textures/gui-tileset.png");
+//        TextureAtlas uiAtlas = new TextureAtlas(uiTileset, 16,16);
 
-        spriteRegistry = DefaultSpriteRegistry.create(worldAtlas, uiAtlas);
+//        spriteRegistry = DefaultSpriteRegistry.create(worldAtlas, uiAtlas);
 
         //initialize world graphics rendering systems
         OrthographicCamera2D worldCamera = new OrthographicCamera2D();
@@ -87,10 +87,6 @@ public class LifeGame implements Game {
         guiManager.registerGui(PLAYER_INVENTORY, new PlayerInventoryUI(5, 3));
         guiManager.registerGui(TRANSFER_INVENTORY, new InventoryTransferGui(5, 3));
 
-        //initialize game world
-//        TestMapGen testMapGen = new TestMapGen(this);
-//        this.map = testMapGen.newMap();
-
         Texture groundTiles = Assets.loadTexture("/textures/ground_tiles.png");
         TextureAtlas atlas = new TextureAtlas(groundTiles, 16, 16);
 
@@ -98,7 +94,10 @@ public class LifeGame implements Game {
         TileMapGen2 mapGen = new TileMapGen2(tileRegistry);
         map = mapGen.blankGrass();
 
-        mapGen.addAutoTileDemo(16, 16, map);
+        mapGen.addAutoTileDemo(32, 32, map);
+        mapGen.addAutoTileDemo(9, 23, map);
+        mapGen.rectangle(0, 1, 63, 63, 2, map);
+        mapGen.rectangle(2, 2, 5, 5, 2, map);
 
         Tiler globalTiler = tileRegistry.getCombinedTiler();
         TileMapLayer l0 = map.getLayer("0");
@@ -113,20 +112,6 @@ public class LifeGame implements Game {
             }
         }
 
-//        mapGen.addWall(20,  20, map);
-//        mapGen.addWall(21,  20, map);
-//        mapGen.addWall(22,  20, map);
-//
-//        mapGen.addWall(22,  17, map);
-//        mapGen.addWall(21,  17, map);
-//        mapGen.addWall(20,  17, map);
-//
-//        mapGen.addWall(22,  14, map);
-//        mapGen.addWall(21,  14, map);
-//
-//        mapGen.addWall(21,  11, map);
-//        mapGen.addWall(22,  11, map);
-
         WorldConfiguration config = WorldConfig.createDefault();
         //TODO: only pass in 'LifeGame'. Add getters for world, map, graphics, context etc.
         config.register(worldCamera);
@@ -139,16 +124,8 @@ public class LifeGame implements Game {
 
         tileMapRenderer = new TileMapRenderer(worldGraphics, groundTiles);
 
-//        testMapGen.addRandomBushes(30, 0.45f);
-//        testMapGen.addRandomRocks(30);
-//        testMapGen.addRandomCoins(15);
-
-//        ChestFactory chestFactory = new ChestFactory(this, guiManager);
-//        chestFactory.create(19, 18);
-//        chestFactory.create(13, 18);
-//
-        Texture characterTexture = new Texture("/textures/character1.png");
-        TextureAtlas characterAtlas = new TextureAtlas(characterTexture, 16, 32);
+        Texture characterTexture = new Texture("/textures/main_character.png");
+        TextureAtlas characterAtlas = new TextureAtlas(characterTexture, 16, 16);
         CharacterFactory characterFactory = new CharacterFactory(world, characterAtlas);
         this.playerEntity = characterFactory.create(16, 16);
     }
@@ -214,5 +191,9 @@ public class LifeGame implements Game {
 
     public SpriteRegistry getSpriteRegistry() {
         return spriteRegistry;
+    }
+
+    public Vector2f getWorldMousePosition() {
+        return worldGraphics.toCameraCoordinates(getInput().getMousePosition());
     }
 }

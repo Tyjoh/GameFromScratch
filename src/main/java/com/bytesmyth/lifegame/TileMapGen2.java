@@ -48,9 +48,7 @@ public class TileMapGen2 {
     }
 
     public void addAutoTileDemo(int cx, int cy, TileMap map) {
-        TileMapLayer layer1 = map.getLayer("1");
         TileMapLayer layer2 = map.getLayer("2");
-        TileMapLayer collision = map.getLayer("collision");
 
         for (int y = cy - 7; y < cy + 8; y++) {
             for (int x = cx - 2; x < cx + 3; x++) {
@@ -88,6 +86,14 @@ public class TileMapGen2 {
             }
         }
 
+        addDirtAndCollision(map);
+    }
+
+    private void addDirtAndCollision(TileMap map) {
+        TileMapLayer layer1 = map.getLayer("1");
+        TileMapLayer layer2 = map.getLayer("2");
+        TileMapLayer collision = map.getLayer("collision");
+
         for (int y = 0; y < map.getHeight(); y++) {
             for (int x = 0; x < map.getWidth(); x++) {
                 Tile tile = layer2.getTile(x, y);
@@ -106,7 +112,6 @@ public class TileMapGen2 {
                 }
             }
         }
-
     }
 
     private boolean is(Tile tile, String type) {
@@ -132,5 +137,23 @@ public class TileMapGen2 {
         if (tile != null && tile.getType().equals(type) && tile.getVariant() == null) {
             layer.setTile(x, y, tileRegistry.create(type, variant));
         }
+    }
+
+    public void rectangle(int x1, int y1, int x2, int y2, int thickness, TileMap map) {
+        TileMapLayer layer2 = map.getLayer("2");
+
+        for (int thick = 0; thick < thickness; thick++) {
+            for (int y = y1; y <= y2; y++) {
+                layer2.setTile(x1 + thick, y, new Tile("top_grass"));
+                layer2.setTile(x2 - thick, y, new Tile("top_grass"));
+            }
+
+            for (int x = x1; x <= x2; x++) {
+                layer2.setTile(x, y1 + thick, new Tile("top_grass"));
+                layer2.setTile(x, y2 - thick, new Tile("top_grass"));
+            }
+        }
+
+        addDirtAndCollision(map);
     }
 }

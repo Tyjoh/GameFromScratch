@@ -13,6 +13,14 @@ public class DirectionComponent extends Component {
         return dir;
     }
 
+    public void setLeft() {
+        this.dir.set(-1, 0);
+    }
+
+    public void setRight() {
+        this.dir.set(1, 0);
+    }
+
     public void setDir(Vector2i dir) {
         if (dir.lengthSquared() == 0) {
             throw new IllegalArgumentException("Invalid direction " + dir);

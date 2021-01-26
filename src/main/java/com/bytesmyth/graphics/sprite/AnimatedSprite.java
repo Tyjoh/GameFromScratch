@@ -19,6 +19,8 @@ public class AnimatedSprite implements Sprite {
     private String currentAnimation;
     private int animationTick = 0;
 
+    private boolean flipHorizontal = false;
+
     public AnimatedSprite(Texture texture, AnimationMap animationMap, String initialAnimation) {
         this.texture = texture;
         this.animationMap = animationMap;
@@ -80,5 +82,15 @@ public class AnimatedSprite implements Sprite {
             this.animationTick = 0;
             this.currentAnimation = animationName;
         }
+    }
+
+    @Override
+    public boolean flipHorizontal() {
+        return flipHorizontal;
+    }
+
+    public AnimatedSprite setFlipHorizontal(boolean flipHorizontal) {
+        this.flipHorizontal = flipHorizontal;
+        return this;
     }
 }
