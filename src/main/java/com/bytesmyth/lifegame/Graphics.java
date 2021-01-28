@@ -1,6 +1,6 @@
 package com.bytesmyth.lifegame;
 
-import com.bytesmyth.graphics.batch.SpriteBatcher;
+import com.bytesmyth.graphics.sprite.SpriteBatcher;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.sprite.Sprite;
 import com.bytesmyth.graphics.texture.Texture;
@@ -45,8 +45,7 @@ public class Graphics {
                 .setPosition(position)
                 .setPrevPosition(prevPosition)
                 .setOrigin(sprite.getOrigin().x, sprite.getOrigin().y)
-                .setSize(sprite.getWidth(), sprite.getHeight())
-                .setFlipHorizontal(sprite.flipHorizontal());
+                .setSize(sprite.getWidth(), sprite.getHeight());
     }
 
     public void queueSprite(Sprite sprite, Vector2f position) {
@@ -101,11 +100,6 @@ public class Graphics {
             float u2 = e.region.getU2();
             float v2 = e.region.getV2();
 
-            if (e.flipHorizontal) {
-                u1 = e.region.getU2();
-                u2 = e.region.getU1();
-            }
-
             batcher.draw(x1, y1, x2, y2, u1, v1, u2, v2);
         }
 
@@ -123,7 +117,6 @@ public class Graphics {
         }
 
         TextureGraphicElement e = quadTextureQueue.get(queueLength);
-        e.setFlipHorizontal(false);
         e.setSize(1,1);
         e.setOrigin(0, 0);
         queueLength++;
@@ -168,8 +161,6 @@ public class Graphics {
         private final Vector2f position = new Vector2f();
         private final Vector2f prevPosition = new Vector2f();
 
-        private boolean flipHorizontal = false;
-
         public TextureGraphicElement setTexture(Texture texture) {
             this.texture = texture;
             return this;
@@ -206,10 +197,6 @@ public class Graphics {
             return this.texture.getId() - o.texture.getId();
         }
 
-        public TextureGraphicElement setFlipHorizontal(boolean flipHorizontal) {
-            this.flipHorizontal = flipHorizontal;
-            return this;
-        }
     }
 
 }

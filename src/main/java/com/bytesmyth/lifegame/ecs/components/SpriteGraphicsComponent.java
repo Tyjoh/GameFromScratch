@@ -2,25 +2,30 @@ package com.bytesmyth.lifegame.ecs.components;
 
 import com.artemis.Component;
 import com.bytesmyth.graphics.sprite.Sprite;
-import org.joml.Vector4f;
+import com.bytesmyth.graphics.sprite.SpriteProvider;
 
 public class SpriteGraphicsComponent extends Component {
 
-    private Sprite sprite;
+    private SpriteProvider spriteProvider;
 
     public SpriteGraphicsComponent(Sprite sprite) {
-        this.sprite = sprite;
+        this.spriteProvider = () -> sprite;
     }
 
     public SpriteGraphicsComponent() {
     }
 
     public Sprite getSprite() {
-        return sprite;
+        return spriteProvider.getSprite();
     }
 
     public SpriteGraphicsComponent setSprite(Sprite sprite) {
-        this.sprite = sprite;
+        this.spriteProvider = () -> sprite;
+        return this;
+    }
+
+    public SpriteGraphicsComponent setSpriteProvider(SpriteProvider provider) {
+        this.spriteProvider = provider;
         return this;
     }
 }

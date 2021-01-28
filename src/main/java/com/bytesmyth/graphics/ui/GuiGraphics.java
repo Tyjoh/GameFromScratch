@@ -1,13 +1,8 @@
 package com.bytesmyth.graphics.ui;
 
-import com.bytesmyth.graphics.batch.SpriteBatcher;
+import com.bytesmyth.graphics.sprite.SpriteBatcher;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
-import com.bytesmyth.graphics.font.BitmapFont;
-import com.bytesmyth.graphics.texture.NinePatch;
-import com.bytesmyth.graphics.texture.Texture;
-import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.lifegame.domain.item.ItemRegistry;
-import org.joml.Vector2f;
 
 //TODO: use generic graphics object that is used for world rendering.
 public class GuiGraphics {

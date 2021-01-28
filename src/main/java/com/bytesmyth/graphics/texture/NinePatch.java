@@ -1,6 +1,6 @@
 package com.bytesmyth.graphics.texture;
 
-import com.bytesmyth.graphics.batch.SpriteBatcher;
+import com.bytesmyth.graphics.sprite.SpriteBatcher;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import org.joml.Vector2f;
 

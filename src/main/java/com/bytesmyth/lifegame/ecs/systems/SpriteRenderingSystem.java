@@ -33,9 +33,6 @@ public class SpriteRenderingSystem extends IteratingSystem {
 
         SpriteGraphicsComponent graphics = mSpriteGraphics.get(i);
         Sprite sprite = graphics.getSprite();
-
-        sprite.tick(world.delta);
-
         renderer.queueSprite(sprite, position, prevPosition);
     }
 }

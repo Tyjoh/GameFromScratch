@@ -1,6 +1,6 @@
 package com.bytesmyth.graphics.font;
 
-import com.bytesmyth.graphics.batch.SpriteBatcher;
+import com.bytesmyth.graphics.sprite.SpriteBatcher;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureRegion;

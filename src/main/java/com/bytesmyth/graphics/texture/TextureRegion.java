@@ -29,4 +29,12 @@ public class TextureRegion {
     public float getV2() {
         return v2;
     }
+
+    public TextureRegion getFlippedX() {
+        return new TextureRegion(u2, v1, u1, v2);
+    }
+
+    public TextureRegion getFlippedY() {
+        return new TextureRegion(u1, v2, u2, v1);
+    }
 }

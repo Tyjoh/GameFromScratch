@@ -1,7 +1,7 @@
 package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.application.Input;
-import com.bytesmyth.graphics.batch.SpriteBatcher;
+import com.bytesmyth.graphics.sprite.SpriteBatcher;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.lifegame.Graphics;
 

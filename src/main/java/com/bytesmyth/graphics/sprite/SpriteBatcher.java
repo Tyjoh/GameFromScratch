@@ -1,10 +1,11 @@
-package com.bytesmyth.graphics.batch;
+package com.bytesmyth.graphics.sprite;
 
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.mesh.Rectangle;
 import com.bytesmyth.graphics.shader.Shader;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureRegion;
+import org.joml.Matrix2d;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL40;
@@ -130,6 +131,10 @@ public class SpriteBatcher {
         //reset
         vertexIndex = 0;
         numQuads = 0;
+    }
+
+    public void draw(Sprite sprite, float x, float y) {
+
     }
 
     public void draw(float x1, float y1, float x2, float y2, float u1, float v1, float u2, float v2) {

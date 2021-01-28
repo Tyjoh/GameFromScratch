@@ -6,7 +6,7 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.application.Input;
 import com.bytesmyth.lifegame.LifeGame;
-import com.bytesmyth.lifegame.ecs.components.DirectionComponent;
+import com.bytesmyth.lifegame.ecs.components.LookDirectionComponent;
 import com.bytesmyth.lifegame.ecs.components.InteractiveComponent;
 import com.bytesmyth.lifegame.ecs.components.TransformComponent;
 import com.bytesmyth.lifegame.ecs.components.UserControl;
@@ -22,7 +22,7 @@ public class InteractSystem extends IteratingSystem {
     private ComponentMapper<UserControl> mUserControl;
     private ComponentMapper<TransformComponent> mTransform;
     private ComponentMapper<InteractiveComponent> mInteraction;
-    private ComponentMapper<DirectionComponent> mDirection;
+    private ComponentMapper<LookDirectionComponent> mDirection;
 
     @Wire
     private LifeGame game;
@@ -43,7 +43,7 @@ public class InteractSystem extends IteratingSystem {
         TransformComponent transformComponent = mTransform.get(entityId);
 
         Vector2f pos = transformComponent.getPosition();
-        Vector2f dir = mDirection.get(entityId).getDir();
+        Vector2f dir = mDirection.get(entityId).getLookDir();
 
         int px = (int) (pos.x + 0.5f);
         int py = (int) (pos.y);

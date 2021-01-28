@@ -5,8 +5,6 @@ import com.artemis.annotations.All;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.application.Input;
-import com.bytesmyth.graphics.sprite.AnimatedSprite;
-import com.bytesmyth.graphics.sprite.Sprite;
 import com.bytesmyth.lifegame.LifeGame;
 import com.bytesmyth.lifegame.ecs.components.*;
 import org.joml.Vector2f;
@@ -15,14 +13,14 @@ import org.joml.Vector2i;
 @All({UserControl.class, TransformComponent.class, VelocityComponent.class})
 public class EntityControlSystem extends IteratingSystem {
 
-    private ComponentMapper<UserControl> mEntityControl;
-    private ComponentMapper<VelocityComponent> mVelocity;
-    private ComponentMapper<DirectionComponent> mDirection;
-    private ComponentMapper<SpriteGraphicsComponent> mSpriteGraphics;
+    private ComponentMapper<UserControl> mUserControl;
     private ComponentMapper<TransformComponent> mTransform;
+    private ComponentMapper<VelocityComponent> mVelocity;
 
-    private Vector2f controlDir = new Vector2f();
-    private Vector2i dir = new Vector2i();
+    private ComponentMapper<LookDirectionComponent> mDirection;
+
+    private final Vector2f controlDir = new Vector2f();
+    private final Vector2i dir = new Vector2i();
 
     @Wire
     private LifeGame game;
@@ -34,29 +32,23 @@ public class EntityControlSystem extends IteratingSystem {
 
     @Override
     protected void process(int entityId) {
-        UserControl userControl = mEntityControl.get(entityId);
+        UserControl userControl = mUserControl.get(entityId);
         VelocityComponent velocityComponent = mVelocity.get(entityId);
 
         Input input = game.getInput();
 
         dir.zero();
 
-        String animationKey = "idle";
-
         if (input.getKey("W").isPressed()) {
             dir.y = 1;
-            animationKey = "running";
         } else if(input.getKey("S").isPressed()) {
             dir.y = -1;
-            animationKey = "running";
         }
 
         if (input.getKey("A").isPressed()) {
             dir.x = -1;
-            animationKey = "running";
         } else if (input.getKey("D").isPressed()) {
             dir.x = 1;
-            animationKey = "running";
         }
 
         controlDir.set(dir);
@@ -69,22 +61,10 @@ public class EntityControlSystem extends IteratingSystem {
         Vector2f position = mTransform.get(entityId).getPosition();
         Vector2f mouse = game.getWorldMousePosition();
 
-        boolean facingLeft = false;
-        if (mouse.x < position.x) {
-            facingLeft = true;
+        Vector2f lookDirection = new Vector2f(mouse).sub(position);
+        if (mDirection.has(entityId)) {
+            mDirection.get(entityId).setLookDir(lookDirection);
         }
 
-        if (mSpriteGraphics.has(entityId)) {
-            Sprite sprite = mSpriteGraphics.get(entityId).getSprite();
-            if (sprite instanceof AnimatedSprite) {
-                AnimatedSprite animatedSprite = (AnimatedSprite) sprite;
-                animatedSprite.setCurrentAnimation(animationKey);
-                animatedSprite.setFlipHorizontal(facingLeft);
-            }
-        }
-
-        if (dir.lengthSquared() > 0 && mDirection.has(entityId)) {
-            mDirection.get(entityId).setDir(dir);
-        }
     }
 }

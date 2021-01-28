@@ -1,6 +1,6 @@
 package com.bytesmyth.graphics.ui;
 
-import com.bytesmyth.graphics.batch.SpriteBatcher;
+import com.bytesmyth.graphics.sprite.SpriteBatcher;
 import com.bytesmyth.graphics.texture.NinePatch;
 import com.bytesmyth.lifegame.Graphics;
 import org.joml.Vector2f;
