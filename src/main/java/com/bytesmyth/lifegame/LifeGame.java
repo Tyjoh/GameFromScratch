@@ -5,10 +5,10 @@ import com.artemis.WorldConfiguration;
 import com.bytesmyth.application.Game;
 import com.bytesmyth.application.GameContext;
 import com.bytesmyth.application.Input;
+import com.bytesmyth.graphics.Graphics;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
-import com.bytesmyth.graphics.texture.TextureRegion;
 import com.bytesmyth.graphics.ui.GuiManager;
 import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
 import com.bytesmyth.lifegame.tilemap.*;
@@ -20,7 +20,6 @@ import org.joml.Vector2f;
 
 import java.util.List;
 
-import static com.bytesmyth.lifegame.tilemap.RectangleAutoTiler.BOTTOM;
 import static org.lwjgl.opengl.GL11.*;
 
 public class LifeGame implements Game {

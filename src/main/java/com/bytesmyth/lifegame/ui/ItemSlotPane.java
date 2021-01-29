@@ -2,8 +2,7 @@ package com.bytesmyth.lifegame.ui;
 
 import com.bytesmyth.graphics.ui.*;
 import com.bytesmyth.graphics.ui.positioning.RelativePositioning;
-import com.bytesmyth.lifegame.Graphics;
-import com.bytesmyth.lifegame.domain.item.Item;
+import com.bytesmyth.graphics.Graphics;
 import com.bytesmyth.lifegame.domain.item.ItemSlot;
 import org.joml.Vector3f;
 

@@ -37,23 +37,20 @@ public class NinePatch {
             throw new IllegalArgumentException("Must have width and height >= 1.3");
         }
 
-        Rectangle corner = new Rectangle(scale, scale);
-        Rectangle verticalMiddle = new Rectangle(w - scale * 2, scale);
-        Rectangle horizontalMiddle = new Rectangle(scale, h - scale * 2);
-        Rectangle center = new Rectangle(w - scale * 2, h - scale * 2);
+        //corners
+        batcher.draw(x, y-scale, x + scale, y, topLeft);
+        batcher.draw(x + w - scale, y-scale, x + w, y, topRight);
+        batcher.draw(x,y-h, x + scale, y-h+scale, bottomLeft);
+        batcher.draw(x+w-scale, y-h, x + w, y-h+scale, bottomRight);
 
-        Vector2f position = new Vector2f();
-        batcher.draw(corner, topLeft, position.set(x + corner.getHalfWidth(), y - corner.getHalfHeight()));
-        batcher.draw(corner, topRight, position.set(x + w - corner.getHalfWidth(), y - corner.getHalfHeight()));
-        batcher.draw(corner, bottomLeft, position.set(x + corner.getHalfWidth(), y - h + corner.getHalfHeight()));
-        batcher.draw(corner, bottomRight, position.set(x + w - corner.getHalfWidth(), y - h + corner.getHalfHeight()));
+        //edges
+        batcher.draw(x + scale, y-scale, x + w - scale, y, top);
+        batcher.draw(x + scale, y-h, x + w - scale, y-h+scale, bottom);
+        batcher.draw(x, y-h+scale, x + scale, y-scale, left);
+        batcher.draw(x+w-scale, y-h+scale, x + w, y-scale, right);
 
-        batcher.draw(verticalMiddle, top, position.set(x + w/2f, y - corner.getHalfHeight()));
-        batcher.draw(verticalMiddle, bottom, position.set(x + w/2f, y - h + corner.getHalfHeight()));
-        batcher.draw(horizontalMiddle, left, position.set(x + corner.getHalfWidth(), y - h/2f));
-        batcher.draw(horizontalMiddle, right, position.set(x + w - corner.getHalfWidth(), y - h/2f));
-
-        batcher.draw(center, this.center, position.set(x + w/2f, y - h/2f));
+        //center
+        batcher.draw(x+scale, y-h+scale, x+w-scale, y-scale, center);
     }
 
     public Texture getTexture() {

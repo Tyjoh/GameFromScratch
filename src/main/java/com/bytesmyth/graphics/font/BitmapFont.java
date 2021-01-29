@@ -69,7 +69,6 @@ public class BitmapFont {
         float cursorX = x;
         float cursorY = y;
 
-        Vector2f position = new Vector2f();
         for (char c : text.toCharArray()) {
             if (c == ' ') {
                 cursorX += spaceWidth * scaledFontSize;
@@ -84,11 +83,15 @@ public class BitmapFont {
 
             Glyph glyph = glyphMap.get((int) c);
 
-            Rectangle rectangle = new Rectangle(glyph.width * scaledFontSize, glyph.height * scaledFontSize);
-            float cx = rectangle.getHalfWidth() + cursorX + glyph.xOffset * scaledFontSize;
-            float cy = -rectangle.getHalfHeight() + cursorY - glyph.yOffset * scaledFontSize;
+            float xOffset = glyph.xOffset * scaledFontSize;
+            float yOffset = glyph.yOffset * scaledFontSize;
+            float width = glyph.width * scaledFontSize;
+            float height = glyph.height * scaledFontSize;
+            float cx = width/2f + cursorX + xOffset;
+            float cy = -height + cursorY - yOffset;
 
-            batcher.draw(rectangle, glyph.region, position.set(cx, cy));
+            batcher.draw(cx, cy, cx + width, cy + height, glyph.region);
+
             cursorX += glyph.xAdvance * scaledFontSize;
         }
     }

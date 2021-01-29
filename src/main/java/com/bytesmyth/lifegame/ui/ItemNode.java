@@ -2,11 +2,8 @@ package com.bytesmyth.lifegame.ui;
 
 import com.bytesmyth.graphics.font.BitmapFont;
 import com.bytesmyth.graphics.sprite.Sprite;
-import com.bytesmyth.graphics.texture.TextureRegion;
-import com.bytesmyth.graphics.ui.GuiGraphics;
 import com.bytesmyth.graphics.ui.Node;
-import com.bytesmyth.lifegame.Graphics;
-import com.bytesmyth.lifegame.domain.item.ItemRenderer;
+import com.bytesmyth.graphics.Graphics;
 import com.bytesmyth.lifegame.domain.item.ItemSlot;
 import org.joml.Vector2f;
 

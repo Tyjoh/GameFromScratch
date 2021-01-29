@@ -1,9 +1,9 @@
 package com.bytesmyth.lifegame.tilemap;
 
-import com.bytesmyth.graphics.sprite.Sprite;
+import com.bytesmyth.graphics.StaticTextureQuadGraphicsElement;
 import com.bytesmyth.graphics.texture.Texture;
-import com.bytesmyth.lifegame.Graphics;
-import org.joml.Vector2f;
+import com.bytesmyth.graphics.Graphics;
+import com.bytesmyth.util.Pool;
 import org.joml.Vector4f;
 
 import java.util.Arrays;
@@ -29,21 +29,25 @@ public class TileMapRenderer {
         int minY = Math.max((int) viewBounds.z - 1, 0);
         int maxY = Math.min((int) viewBounds.w + 1, map.getHeight()-1);
 
-        Vector2f tilePos = new Vector2f();
+        int layer = 0;
+        Pool<StaticTextureQuadGraphicsElement> graphicsPool = graphics.getElementPool(StaticTextureQuadGraphicsElement.class);
 
         for (String renderLayer : renderLayers) {
+            TileMapLayer mapLayer = map.getLayer(renderLayer);
             for (int y = minY; y <= maxY; y++) {
                 for (int x = minX; x <= maxX; x++) {
-                    Tile tile = map.getTile(renderLayer, x, y);
+                    Tile tile = mapLayer.getTile(x, y);
                     if (tile == null || tile.getTextureRegion() == null) {
                         continue;
                     }
 
-                    tilePos.set(x - 0.5f, y + 0.5f);
-
-                    graphics.queueQuad(texture, tile.getTextureRegion(), tilePos);
+                    StaticTextureQuadGraphicsElement element = graphicsPool.get();
+                    element.set(texture, tile.getTextureRegion(), x, y, 1, 1, layer);
+                    graphics.enqueue(element);
                 }
             }
+
+            layer++;
         }
     }
 }

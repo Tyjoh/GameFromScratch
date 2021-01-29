@@ -2,10 +2,7 @@ package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.application.Input;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
-import com.bytesmyth.lifegame.Graphics;
-import com.bytesmyth.lifegame.domain.item.Item;
-import com.bytesmyth.lifegame.domain.item.ItemSlot;
-import com.bytesmyth.lifegame.ui.ItemNode;
+import com.bytesmyth.graphics.Graphics;
 
 import java.util.HashMap;
 import java.util.Map;

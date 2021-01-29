@@ -1,7 +1,7 @@
 package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.graphics.font.BitmapFont;
-import com.bytesmyth.lifegame.Graphics;
+import com.bytesmyth.graphics.Graphics;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

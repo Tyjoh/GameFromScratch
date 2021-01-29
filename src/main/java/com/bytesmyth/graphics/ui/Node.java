@@ -2,7 +2,7 @@ package com.bytesmyth.graphics.ui;
 
 import com.bytesmyth.graphics.ui.positioning.DefaultPositioning;
 import com.bytesmyth.graphics.ui.positioning.Positioning;
-import com.bytesmyth.lifegame.Graphics;
+import com.bytesmyth.graphics.Graphics;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;

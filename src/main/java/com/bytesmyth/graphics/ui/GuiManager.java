@@ -3,7 +3,7 @@ package com.bytesmyth.graphics.ui;
 import com.bytesmyth.application.Input;
 import com.bytesmyth.graphics.sprite.SpriteBatcher;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
-import com.bytesmyth.lifegame.Graphics;
+import com.bytesmyth.graphics.Graphics;
 
 import java.util.HashMap;
 import java.util.List;
