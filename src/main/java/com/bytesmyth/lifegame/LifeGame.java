@@ -7,10 +7,12 @@ import com.bytesmyth.application.GameContext;
 import com.bytesmyth.application.Input;
 import com.bytesmyth.graphics.Graphics;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
+import com.bytesmyth.graphics.sprite.Sprite;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.graphics.ui.GuiManager;
 import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
+import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
 import com.bytesmyth.lifegame.tilemap.*;
 import com.bytesmyth.lifegame.ui.InGameHud;
 import com.bytesmyth.lifegame.ui.InventoryTransferGui;
@@ -146,7 +148,6 @@ public class LifeGame implements Game {
 
         worldGraphics.getCamera().setAlpha(alpha);
 
-        tileMapRenderer.render(map);
         worldGraphics.render(alpha);
         guiManager.render();
     }

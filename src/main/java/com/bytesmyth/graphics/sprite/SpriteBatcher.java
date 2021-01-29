@@ -101,12 +101,14 @@ public class SpriteBatcher {
     public void end() {
         if (numQuads > 0) {
             flush();
+
         }
 
-        currentTexture.unbind();
+        if (currentTexture != null ) currentTexture.unbind();
         shader.unbind();
 
         currentTexture = null;
+
         color.set(1,1,1,1);
     }
 
