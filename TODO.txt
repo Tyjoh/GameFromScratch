@@ -1,8 +1,6 @@
 TODO Current:
- - Consolidate graphics initialization + usage.
 
 TODO Next:
- - Consolidate world initialization + usage.
  - Consolidate UI initialization + usage.
  - Cleanup game init and access to graphics/gui/world etc.
  - Create first pass at entity factory system.
@@ -11,7 +9,7 @@ TODO Next:
 
 
 TODO infrastructure:
- - Chunking / Room system
+ - Chunking / Room / Level (ie. underground/upstairs) system
     - Buildings should be as large on the outside as they are in.
     - When behind a building it should fade out
     - When in a building the roof and some walls should become transparent

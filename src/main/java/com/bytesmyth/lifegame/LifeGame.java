@@ -7,12 +7,12 @@ import com.bytesmyth.application.GameContext;
 import com.bytesmyth.application.Input;
 import com.bytesmyth.graphics.Graphics;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
-import com.bytesmyth.graphics.sprite.Sprite;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.graphics.ui.GuiManager;
+import com.bytesmyth.lifegame.control.*;
 import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
-import com.bytesmyth.lifegame.ecs.components.SpriteGraphicsComponent;
+import com.bytesmyth.lifegame.ecs.components.TransformComponent;
 import com.bytesmyth.lifegame.tilemap.*;
 import com.bytesmyth.lifegame.ui.InGameHud;
 import com.bytesmyth.lifegame.ui.InventoryTransferGui;
@@ -34,13 +34,13 @@ public class LifeGame implements Game {
     private World world;
     private TileMap map;
     private GuiManager guiManager;
+    private Controls controls;
 
     private TileMapRenderer tileMapRenderer;
     private Graphics worldGraphics;
     private Graphics uiGraphics;
 
     private int playerEntity;
-    private int cameraEntity;
     private SpriteRegistry spriteRegistry;
 
     public LifeGame(GameContext context) {
@@ -55,8 +55,8 @@ public class LifeGame implements Game {
         return map;
     }
 
-    public Input getInput() {
-        return context.getInput();
+    public Controls getControls() {
+        return controls;
     }
 
     public void init() {
@@ -79,6 +79,15 @@ public class LifeGame implements Game {
         OrthographicCamera2D uiCamera = new OrthographicCamera2D();
         uiCamera.setPosition(new Vector2f(0, 0));
         uiGraphics = new Graphics(uiCamera, spriteRegistry, 1024);
+
+        KeyboardVectorControl movement = new KeyboardVectorControl();
+        ActivationControl interact = new KeyboardActivationControl("F");
+        ToggleControl inventoryControl = new KeyboardToggleControl("E");
+        VectorControl lookDirection = new MouseDirectionVectorControl(worldGraphics::toCameraCoordinates, () ->
+            world.getEntity(playerEntity).getComponent(TransformComponent.class).getPosition()
+        );
+
+        controls = new Controls(movement, lookDirection, interact, inventoryControl);
 
         //initialize gui
         guiManager = new GuiManager(uiGraphics);
@@ -114,13 +123,13 @@ public class LifeGame implements Game {
         }
 
         WorldConfiguration config = WorldConfig.createDefault();
-        //TODO: only pass in 'LifeGame'. Add getters for world, map, graphics, context etc.
         config.register(worldCamera);
         config.register(worldGraphics);
         config.register(map);
         config.register(context);
         config.register(guiManager);
         config.register(this);
+        config.register(controls);
         world = new World(config);
 
         tileMapRenderer = new TileMapRenderer(worldGraphics, groundTiles);
@@ -133,6 +142,8 @@ public class LifeGame implements Game {
 
     @Override
     public void tick(float delta) {
+        controls.tick(delta);
+
         worldGraphics.getCamera().writePrevTransform();
         world.delta = delta;
         world.process();
@@ -141,6 +152,8 @@ public class LifeGame implements Game {
 
     @Override
     public void render(float alpha) {
+        controls.poll(context.getInput());
+
         tickGui(alpha);
 
         glEnable(GL_BLEND);
@@ -154,8 +167,8 @@ public class LifeGame implements Game {
 
     private void tickGui(float alpha) {
         InGameHud hud = (InGameHud) guiManager.getGui("hud");
-        hud.setUiMousePosition(uiGraphics.toCameraCoordinates(getInput().getMousePosition()));
-        hud.setWorldMousePosition(worldGraphics.toCameraCoordinates(getInput().getMousePosition()));
+        hud.setUiMousePosition(uiGraphics.toCameraCoordinates(context.getInput().getMousePosition()));
+        hud.setWorldMousePosition(worldGraphics.toCameraCoordinates(context.getInput().getMousePosition()));
         hud.setFps(context.getFps());
 
         List<String> enabledGuis = guiManager.getEnabledGuis();
@@ -193,7 +206,4 @@ public class LifeGame implements Game {
         return spriteRegistry;
     }
 
-    public Vector2f getWorldMousePosition() {
-        return worldGraphics.toCameraCoordinates(getInput().getMousePosition());
-    }
 }

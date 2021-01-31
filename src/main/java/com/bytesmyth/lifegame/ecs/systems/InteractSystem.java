@@ -6,6 +6,7 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.bytesmyth.application.Input;
 import com.bytesmyth.lifegame.LifeGame;
+import com.bytesmyth.lifegame.control.Controls;
 import com.bytesmyth.lifegame.ecs.components.LookDirectionComponent;
 import com.bytesmyth.lifegame.ecs.components.InteractiveComponent;
 import com.bytesmyth.lifegame.ecs.components.TransformComponent;
@@ -27,14 +28,17 @@ public class InteractSystem extends IteratingSystem {
     @Wire
     private LifeGame game;
 
+    @Wire
+    private Controls controls;
+
     public InteractSystem() {
         super(Aspect.all(UserControl.class, TransformComponent.class));
     }
 
     @Override
     protected void process(int entityId) {
-        Input input = game.getInput();
-        if (!input.getKey("F").isPressed()) {
+        boolean shouldInteract = controls.getInteract().isJustActivated();
+        if (!shouldInteract) {
             return;
         }
 
@@ -77,18 +81,6 @@ public class InteractSystem extends IteratingSystem {
             return Optional.ofNullable(mInteraction.get(tile.getEntityId()));
         } else {
             return Optional.empty();
-        }
-    }
-
-    private static class InteractCandidate {
-        private float distance;
-        private float dot;
-        private InteractiveComponent interactiveComponent;
-
-        private InteractCandidate(InteractiveComponent interactiveComponent, float distance, float dot) {
-            this.interactiveComponent = interactiveComponent;
-            this.distance = distance;
-            this.dot = dot;
         }
     }
 }
