@@ -39,4 +39,9 @@ public class SpriteGraphicsElement extends TexturedGraphicsElement {
     public Texture getTexture() {
         return sprite.getTexture();
     }
+
+    @Override
+    public Vector2f getPosition() {
+        return position;
+    }
 }

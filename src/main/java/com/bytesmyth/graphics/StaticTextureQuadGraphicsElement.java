@@ -40,4 +40,9 @@ public class StaticTextureQuadGraphicsElement extends TexturedGraphicsElement {
         batcher.begin(texture);
         batcher.draw(position.x, position.y, position.x + width, position.y + height, region);
     }
+
+    @Override
+    public Vector2f getPosition() {
+        return position;
+    }
 }
