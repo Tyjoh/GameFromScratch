@@ -13,9 +13,9 @@ public class Controls {
     private VectorControl movement;
     private VectorControl lookDirection;
     private ActivationControl interact;
-    private ToggleControl inventory;
+    private ActivationControl inventory;
 
-    public Controls(VectorControl movement, VectorControl lookDirection, ActivationControl interact, ToggleControl inventory) {
+    public Controls(VectorControl movement, VectorControl lookDirection, ActivationControl interact, ActivationControl inventory) {
         this.movement = movement;
         this.lookDirection = lookDirection;
         this.interact = interact;
@@ -47,5 +47,9 @@ public class Controls {
 
     public ActivationControl getInteract() {
         return interact;
+    }
+
+    public ActivationControl getInventory() {
+        return inventory;
     }
 }

@@ -5,6 +5,7 @@ import com.bytesmyth.graphics.sprite.SpriteBatcher;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.Graphics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,9 @@ import java.util.stream.Collectors;
 public class GuiManager {
 
     private Map<String, Gui> guis = new HashMap<>();
+    private Map<String, String> guiToGroup = new HashMap<>();
+
+    private Map<String, List<String>> guiGroups = new HashMap<>();
 
     private Graphics graphics;
 
@@ -20,9 +24,20 @@ public class GuiManager {
         this.graphics = graphics;
     }
 
-    public void registerGui(String name, Gui gui) {
+    public void registerGui(String name, String group, Gui gui) {
         gui.setGraphics(graphics);
+        gui.setGuiManager(this);
         this.guis.put(name, gui);
+        this.guiToGroup.put(name, group);
+
+        if (!this.guiGroups.containsKey(group)) {
+            this.guiGroups.put(group, new ArrayList<>());
+        }
+        this.guiGroups.get(group).add(name);
+    }
+
+    public boolean groupActive(String group) {
+        return guiGroups.get(group).stream().anyMatch(gui -> guis.get(gui).isEnabled());
     }
 
     public void enableGui(String name) {
@@ -33,7 +48,7 @@ public class GuiManager {
         guis.get(name).disable();
     }
 
-    public void handleInput(Input input) {
+    public void poll(Input input) {
         for (Gui gui : guis.values()) {
             if (gui.isEnabled()) {
                 gui.pollInput(input, graphics.getCamera());
@@ -59,15 +74,25 @@ public class GuiManager {
         }
     }
 
+    public void tick(float dt) {
+        for (Gui gui : guis.values()) {
+            if (gui.isEnabled()) {
+                gui.tick(dt);
+            }
+        }
+    }
+
     public Gui getGui(String key) {
         return guis.get(key);
     }
 
-    public List<String> getEnabledGuis() {
-        return guis.entrySet().stream().filter(e -> e.getValue().isEnabled()).map(Map.Entry::getKey).collect(Collectors.toList());
-    }
-
     public boolean isEnabled(String guiId) {
         return guis.get(guiId).isEnabled();
+    }
+
+    public void disableGroup(String playerGroup) {
+        for (String gui : guiGroups.get(playerGroup)) {
+            disableGui(gui);
+        }
     }
 }

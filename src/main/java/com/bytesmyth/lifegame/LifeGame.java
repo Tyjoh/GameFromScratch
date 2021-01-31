@@ -4,32 +4,26 @@ import com.artemis.World;
 import com.artemis.WorldConfiguration;
 import com.bytesmyth.application.Game;
 import com.bytesmyth.application.GameContext;
-import com.bytesmyth.application.Input;
 import com.bytesmyth.graphics.Graphics;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.graphics.ui.GuiManager;
 import com.bytesmyth.lifegame.control.*;
-import com.bytesmyth.lifegame.ecs.components.InventoryComponent;
 import com.bytesmyth.lifegame.ecs.components.TransformComponent;
 import com.bytesmyth.lifegame.tilemap.*;
+import com.bytesmyth.lifegame.ui.Guis;
 import com.bytesmyth.lifegame.ui.InGameHud;
 import com.bytesmyth.lifegame.ui.InventoryTransferGui;
 import com.bytesmyth.lifegame.ui.PlayerInventoryUI;
 import com.bytesmyth.resources.Assets;
 import org.joml.Vector2f;
 
-import java.util.List;
-
 import static org.lwjgl.opengl.GL11.*;
 
 public class LifeGame implements Game {
 
     private final GameContext context;
-
-    public static final String PLAYER_INVENTORY = "player_inventory";
-    public static final String TRANSFER_INVENTORY = "transfer_inventory";
 
     private World world;
     private TileMap map;
@@ -59,6 +53,14 @@ public class LifeGame implements Game {
         return controls;
     }
 
+    public Graphics getWorldGraphics() {
+        return worldGraphics;
+    }
+
+    public Graphics getUiGraphics() {
+        return uiGraphics;
+    }
+
     public void init() {
         //initialize textures and sprite mapping system.
 //        Texture worldTileset = Assets.loadTexture("/textures/village_tileset.png");
@@ -82,7 +84,7 @@ public class LifeGame implements Game {
 
         KeyboardVectorControl movement = new KeyboardVectorControl();
         ActivationControl interact = new KeyboardActivationControl("F");
-        ToggleControl inventoryControl = new KeyboardToggleControl("E");
+        ActivationControl inventoryControl = new KeyboardActivationControl("E");
         VectorControl lookDirection = new MouseDirectionVectorControl(worldGraphics::toCameraCoordinates, () ->
             world.getEntity(playerEntity).getComponent(TransformComponent.class).getPosition()
         );
@@ -91,11 +93,11 @@ public class LifeGame implements Game {
 
         //initialize gui
         guiManager = new GuiManager(uiGraphics);
-        guiManager.registerGui("hud", new InGameHud());
-        guiManager.enableGui("hud");
+        guiManager.registerGui(Guis.DEBUG_HUD,"debug", new InGameHud(this, context));
+        guiManager.enableGui(Guis.DEBUG_HUD);
 
-        guiManager.registerGui(PLAYER_INVENTORY, new PlayerInventoryUI(5, 3));
-        guiManager.registerGui(TRANSFER_INVENTORY, new InventoryTransferGui(5, 3));
+        guiManager.registerGui(Guis.PLAYER_INVENTORY, "player", new PlayerInventoryUI(5, 3));
+        guiManager.registerGui(Guis.PLAYER_TRANSFER_INVENTORY, "player", new InventoryTransferGui(5, 3));
 
         Texture groundTiles = Assets.loadTexture("/textures/ground_tiles.png");
         TextureAtlas atlas = new TextureAtlas(groundTiles, 16, 16);
@@ -141,11 +143,12 @@ public class LifeGame implements Game {
     }
 
     @Override
-    public void tick(float delta) {
-        controls.tick(delta);
+    public void tick(float dt) {
+        controls.tick(dt);
+        guiManager.tick(dt);
 
         worldGraphics.getCamera().writePrevTransform();
-        world.delta = delta;
+        world.delta = dt;
         world.process();
         tileMapRenderer.render(map);
     }
@@ -153,41 +156,14 @@ public class LifeGame implements Game {
     @Override
     public void render(float alpha) {
         controls.poll(context.getInput());
-
-        tickGui(alpha);
+        guiManager.poll(context.getInput());
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         worldGraphics.getCamera().setAlpha(alpha);
-
         worldGraphics.render(alpha);
         guiManager.render();
-    }
-
-    private void tickGui(float alpha) {
-        InGameHud hud = (InGameHud) guiManager.getGui("hud");
-        hud.setUiMousePosition(uiGraphics.toCameraCoordinates(context.getInput().getMousePosition()));
-        hud.setWorldMousePosition(worldGraphics.toCameraCoordinates(context.getInput().getMousePosition()));
-        hud.setFps(context.getFps());
-
-        List<String> enabledGuis = guiManager.getEnabledGuis();
-        boolean otherGuiOpen = !(enabledGuis.size() == 1 && enabledGuis.contains("hud"));
-
-        if (context.getInput().getKey("E").isJustPressed()) {
-            PlayerInventoryUI inventoryGui = (PlayerInventoryUI) guiManager.getGui(PLAYER_INVENTORY);
-
-            if (guiManager.isEnabled(PLAYER_INVENTORY)) {
-                inventoryGui.setCurrentInventory(null);
-                guiManager.disableGui(PLAYER_INVENTORY);
-            } else if (!otherGuiOpen) {
-                InventoryComponent inventory = world.getEntity(playerEntity).getComponent(InventoryComponent.class);
-                inventoryGui.setCurrentInventory(inventory.getInventory());
-                guiManager.enableGui(PLAYER_INVENTORY);
-            }
-        }
-
-        guiManager.handleInput(context.getInput());
     }
 
     @Override

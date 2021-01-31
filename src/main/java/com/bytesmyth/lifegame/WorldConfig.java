@@ -8,7 +8,7 @@ public class WorldConfig {
     public static WorldConfiguration createDefault() {
         return new WorldConfigurationBuilder()
                 .with(new PrevTransformSystem())
-                .with(new EntityControlSystem())
+                .with(new UserControlSystem())
                 .with(new PositionIntegrationSystem())
                 .with(new TileEntitySystem())
                 .with(new TileMapCollisionSystem())

@@ -17,6 +17,8 @@ public abstract class Gui extends Container {
     private GuiTheme theme = new GuiTheme();
     private Graphics graphics;
 
+    private GuiManager guiManager;
+
     public void pollInput(Input input, OrthographicCamera2D camera) {
         mouse.updateMouseState(input, camera);
         this.pollMouseEvents(mouse);
@@ -53,6 +55,8 @@ public abstract class Gui extends Container {
         }
     }
 
+    public void tick(float dt) { }
+
     @Override
     public Gui getGui() {
         return this;
@@ -74,5 +78,14 @@ public abstract class Gui extends Container {
 
     public boolean hasNode(String key) {
         return keyNodeMap.containsKey(key);
+    }
+
+    public GuiManager getGuiManager() {
+        return guiManager;
+    }
+
+    Gui setGuiManager(GuiManager guiManager) {
+        this.guiManager = guiManager;
+        return this;
     }
 }

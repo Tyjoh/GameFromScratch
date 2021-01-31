@@ -1,9 +1,12 @@
 package com.bytesmyth.lifegame.ui;
 
+import com.bytesmyth.application.GameContext;
 import com.bytesmyth.graphics.ui.Gui;
 import com.bytesmyth.graphics.ui.Label;
 import com.bytesmyth.graphics.ui.VBox;
 import com.bytesmyth.graphics.ui.positioning.RelativePositioning;
+import com.bytesmyth.lifegame.LifeGame;
+import com.bytesmyth.util.Provider;
 import org.joml.Vector2f;
 
 public class InGameHud extends Gui {
@@ -12,7 +15,13 @@ public class InGameHud extends Gui {
     private final Label worldMouse;
     private final Label uiMouse;
 
-    public InGameHud() {
+    private final LifeGame game;
+    private final GameContext gameContext;
+
+    public InGameHud(LifeGame game, GameContext gameContext) {
+        this.game = game;
+        this.gameContext = gameContext;
+
         VBox vBox = new VBox();
         vBox.setPositioning(RelativePositioning.topLeft(4));
         vBox.setSize(400, 400);
@@ -34,15 +43,22 @@ public class InGameHud extends Gui {
         setUiMousePosition(new Vector2f());
     }
 
-    public void setFps(int currentFps) {
+    @Override
+    public void tick(float dt) {
+        setUiMousePosition(game.getUiGraphics().toCameraCoordinates(gameContext.getInput().getMousePosition()));
+        setWorldMousePosition(game.getWorldGraphics().toCameraCoordinates(gameContext.getInput().getMousePosition()));
+        setFps(gameContext.getFps());
+    }
+
+    private void setFps(int currentFps) {
         fps.setText("FPS: " + currentFps);
     }
 
-    public void setWorldMousePosition(Vector2f pos) {
+    private void setWorldMousePosition(Vector2f pos) {
         worldMouse.setText(String.format("World Mouse: (%.1f, %.1f)", pos.x, pos.y));
     }
 
-    public void setUiMousePosition(Vector2f pos) {
+    private void setUiMousePosition(Vector2f pos) {
         uiMouse.setText(String.format("UI Mouse: (%.1f, %.1f)", pos.x, pos.y));
     }
 }
