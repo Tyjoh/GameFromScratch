@@ -19,35 +19,20 @@ public class InventoryTransferGui extends Gui {
     private final int invWidth;
     private final int invHeight;
 
-    private final Container topSlotContainer;
-    private final Container bottomSlotContainer;
+    private Container topInventoryContainer;
+    private Container bottomInventoryContainer;
+    private final Pane topInvPane;
+    private final Pane bottomInvPane;
 
     public InventoryTransferGui(int invWidth, int invHeight) {
         this.invWidth = invWidth;
         this.invHeight = invHeight;
 
-        float width = (invWidth * CELL_SIZE) + ((invWidth-1) * CELL_PADDING);
-        float height = (invHeight * CELL_SIZE) + ((invHeight-1) * CELL_PADDING);
-
-        Pane topInvPane = new Pane();
-        topInvPane.setSize(width + CELL_SIZE, height + CELL_SIZE);
-        topInvPane.setPositioning(new RelativePositioning(HorizontalAlignment.CENTER, VerticalAlignment.CENTER, 0, height/2f + CELL_SIZE/2f));
+        topInvPane = new Pane();
         this.addNode(topInvPane);
 
-        Pane bottomInvPane = new Pane();
-        bottomInvPane.setSize(width + CELL_SIZE, height + CELL_SIZE);
-        bottomInvPane.setPositioning(new RelativePositioning(HorizontalAlignment.CENTER, VerticalAlignment.CENTER, 0, -(height/2f + CELL_SIZE/2f)));
+        bottomInvPane = new Pane();
         this.addNode(bottomInvPane);
-
-        topSlotContainer = new Container();
-        topSlotContainer.setPositioning(RelativePositioning.center());
-        topSlotContainer.setSize(width, height);
-        topInvPane.addNode(topSlotContainer);
-
-        bottomSlotContainer = new Container();
-        bottomSlotContainer.setPositioning(RelativePositioning.center());
-        bottomSlotContainer.setSize(width, height);
-        bottomInvPane.addNode(bottomSlotContainer);
 
         ItemNode handSlot = new ItemNode(new ItemSlot(null, 0));
         handSlot.setSize(CELL_SIZE, CELL_SIZE);
@@ -55,38 +40,25 @@ public class InventoryTransferGui extends Gui {
     }
 
     public void setInventories(Inventory top, Inventory bottom) {
-        topSlotContainer.clearNodes();
-        bottomSlotContainer.clearNodes();
+        if (topInventoryContainer != null) {
+            topInvPane.removeNode(topInventoryContainer);
+        }
+
+        if (bottomInventoryContainer != null) {
+            bottomInvPane.removeNode(bottomInventoryContainer);
+        }
+
         if (top != null && bottom != null) {
-            initialize(topSlotContainer, top);
-            initialize(bottomSlotContainer, bottom);
-        }
-    }
+            topInventoryContainer = new InventoryContainer(top, invWidth, invHeight, CELL_SIZE, CELL_PADDING);
+            topInvPane.setSize(topInventoryContainer.getWidth() + CELL_SIZE, topInventoryContainer.getHeight() + CELL_SIZE);
+            topInvPane.setPositioning(new RelativePositioning(HorizontalAlignment.CENTER, VerticalAlignment.CENTER, 0, topInvPane.getHeight()/2f + CELL_SIZE/2f));
+            topInvPane.addNode(topInventoryContainer);
 
-    private void initialize(Container container, Inventory inventory) {
-        int slotNum = 0;
-        for (int y = 0; y < invHeight; y++) {
-            for (int x = 0; x < invWidth; x++) {
-                ItemSlot itemSlot = inventory.getSlot(slotNum);
 
-                ItemSlotPane cell = new ItemSlotPane(itemSlot);
-                cell.setPosition((x * CELL_SIZE) + (x * CELL_PADDING), -(y * CELL_SIZE) - (y * CELL_PADDING));
-                cell.setSize(CELL_SIZE, CELL_SIZE);
-                cell.setOpacity(0.5f);
-
-                container.addNode(cell);
-
-                slotNum++;
-            }
-        }
-    }
-
-    @Override
-    public void pollInput(Input input, OrthographicCamera2D camera) {
-        super.pollInput(input, camera);
-
-        if (input.getKey("E").isJustPressed()) {
-            this.disable();
+            bottomInventoryContainer = new InventoryContainer(bottom, invWidth, invHeight, CELL_SIZE, CELL_PADDING);
+            bottomInvPane.setSize(bottomInventoryContainer.getWidth() + CELL_SIZE, bottomInventoryContainer.getHeight() + CELL_SIZE);
+            bottomInvPane.setPositioning(new RelativePositioning(HorizontalAlignment.CENTER, VerticalAlignment.CENTER, 0, -(bottomInvPane.getHeight()/2f + CELL_SIZE/2f)));
+            bottomInvPane.addNode(bottomInventoryContainer);
         }
     }
 }

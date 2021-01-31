@@ -1,10 +1,10 @@
 TODO Current:
+ - Re-introduce chests + crops
 
 TODO Next:
- - Consolidate UI initialization + usage.
- - Cleanup game init and access to graphics/gui/world etc.
  - Create first pass at entity factory system.
  - Make camera an entity, refactor tweening to tween any entity towards another. Remove prev position from inside camera
+ - First pass at particle system.
  - First pass at lighting system.
 
 
