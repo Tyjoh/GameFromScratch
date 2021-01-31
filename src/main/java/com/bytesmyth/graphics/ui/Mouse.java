@@ -12,6 +12,11 @@ public class Mouse {
     private Button rmb;
 
     private Node heldNode;
+    private Gui gui;
+
+    public Mouse(Gui gui) {
+        this.gui = gui;
+    }
 
     public Button getLeftButton() {
         return lmb;
@@ -27,6 +32,7 @@ public class Mouse {
 
     public void setHeldNode(Node node) {
         this.heldNode = node;
+        this.heldNode.setGui(gui);
     }
 
     public boolean isHoldingNode() {

@@ -90,6 +90,7 @@ public class BitmapFont {
             float cx = width/2f + cursorX + xOffset;
             float cy = -height + cursorY - yOffset;
 
+            batcher.begin(this.getFontTexture());
             batcher.draw(cx, cy, cx + width, cy + height, glyph.region);
 
             cursorX += glyph.xAdvance * scaledFontSize;

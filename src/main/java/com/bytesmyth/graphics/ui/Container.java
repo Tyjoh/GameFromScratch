@@ -23,6 +23,7 @@ public class Container extends Node {
     @Override
     public void draw(Graphics g) {
         for (Node child : children) {
+            g.getBatcher().begin(this.getGui().getTheme().getTexture());
             child.draw(g);
         }
     }

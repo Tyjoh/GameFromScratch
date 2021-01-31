@@ -20,9 +20,8 @@ public class FarmInteractionHandler implements InteractionHandler {
     public void interact(Entity entity) {
         FarmTileLogic behavior = (FarmTileLogic) bush.getComponent(TileComponent.class).getBehavior();
         if (behavior.isMature()) {
-            Item item = new Item("berry");
             System.out.println("Harvesting bush with id " + bush.getId());
-            behavior.harvest();
+            Item item = behavior.harvest();
 
             InventoryComponent invComponent = entity.getComponent(InventoryComponent.class);
             if (invComponent != null) {

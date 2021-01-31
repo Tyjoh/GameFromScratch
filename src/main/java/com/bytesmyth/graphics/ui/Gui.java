@@ -11,7 +11,7 @@ public abstract class Gui extends Container {
 
     private final Map<String, Node> keyNodeMap = new HashMap<>();
 
-    private final Mouse mouse = new Mouse();
+    private final Mouse mouse = new Mouse(this);
     private boolean enabled = false;
 
     private GuiTheme theme = new GuiTheme();

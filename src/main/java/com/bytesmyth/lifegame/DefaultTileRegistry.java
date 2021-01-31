@@ -60,6 +60,12 @@ public class DefaultTileRegistry {
 
         tileRegistry.register("chest", tiles.getRegionByCoord(8, 0));
 
+        tileRegistry.register("vegetable", tiles.getRegionByCoord(10, 0));
+        tileRegistry.register("vegetable", "growth_1", tiles.getRegionByCoord(10, 0));
+        tileRegistry.register("vegetable", "growth_2", tiles.getRegionByCoord(11, 0));
+        tileRegistry.register("vegetable", "growth_3", tiles.getRegionByCoord(12, 0));
+        tileRegistry.register("vegetable", "growth_4", tiles.getRegionByCoord(13, 0));
+
         TextureRegion[] dirtTiles = new TextureRegion[] {
                 tileRegistry.getRegion("dirt_wall"),
                 tileRegistry.getRegion("dirt_wall", "right"),

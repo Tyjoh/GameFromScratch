@@ -10,6 +10,7 @@ import com.bytesmyth.graphics.sprite.Sprite;
 import com.bytesmyth.graphics.texture.TextureAtlas;
 import com.bytesmyth.graphics.texture.TextureRegion;
 import com.bytesmyth.lifegame.domain.item.Inventory;
+import com.bytesmyth.lifegame.domain.item.Item;
 import com.bytesmyth.lifegame.ecs.components.*;
 import org.joml.Vector2f;
 
@@ -40,6 +41,8 @@ public class CharacterFactory {
         AnimationComponent animationComponent = new AnimationComponent()
                 .setSpriteAnimation(spriteAnimation);
 
+        Inventory inventory = new Inventory(15);
+        inventory.getSlot(0).add(new Item("vegetable"), 4);
         world.edit(player)
                 .add(new TransformComponent().setPosition(new Vector2f(x, y)))
                 .add(new VelocityComponent())
@@ -47,7 +50,7 @@ public class CharacterFactory {
                 .add(new UserControl())
                 .add(new CameraFollowComponent())
                 .add(new ColliderComponent().setHitBox(new Rectangle(0.85f, 0.5f)).setOffset(new Vector2f(0, -0.3f)))
-                .add(new InventoryComponent().setInventory(new Inventory(15)))
+                .add(new InventoryComponent().setInventory(inventory))
                 .add(new ItemPickupComponent())
                 .add(animationComponent)
                 .add(characterGraphics);

@@ -1,14 +1,17 @@
 package com.bytesmyth.lifegame.domain.tile;
 
 import com.artemis.Entity;
+import com.bytesmyth.lifegame.domain.item.Item;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 
 public class FarmTileLogic implements TileLogic {
 
     private int mature;
     private int age = 0;
+    private String itemType;
 
-    public FarmTileLogic() {
+    public FarmTileLogic(String itemType) {
+        this.itemType = itemType;
         genMatureTime();
     }
 
@@ -16,14 +19,23 @@ public class FarmTileLogic implements TileLogic {
         return age >= mature;
     }
 
+    public int getMatureAge() {
+        return mature;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
     @Override
     public void tick(TileMap map, Entity entity) {
         age++;
     }
 
-    public void harvest() {
+    public Item harvest() {
         age = 0;
         genMatureTime();
+        return new Item(itemType);
     }
 
     private void genMatureTime() {

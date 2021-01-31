@@ -28,9 +28,12 @@ public class ItemNode extends Node {
             if (!itemName.equals(cachedItemName)) {
                 cachedItemName = itemName;
                 cachedSprite = g.getSpriteRegistry().createSprite(itemName);
+                cachedSprite.setSize(getWidth()-2, getHeight()-2);
             }
 
-            g.getBatcher().draw(renderPos.x, renderPos.y, renderPos.x + getWidth(), renderPos.y - getHeight(), cachedSprite.getTextureRegion());
+            g.getBatcher().begin(cachedSprite.getTexture());
+            g.getBatcher().draw(cachedSprite, renderPos.x + 1, renderPos.y - getHeight() + 1);
+//            g.getBatcher().draw(renderPos.x, renderPos.y, renderPos.x + getWidth(), renderPos.y - getHeight(), cachedSprite.getTextureRegion());
 
             float fontSize = 12;
             BitmapFont font = getGui().getTheme().getFont();

@@ -72,13 +72,10 @@ public class LifeGame implements Game {
 
     public void init() {
         //initialize textures and sprite mapping system.
-//        Texture worldTileset = Assets.loadTexture("/textures/village_tileset.png");
-//        TextureAtlas worldAtlas = new TextureAtlas(worldTileset, 16, 16);
+        Texture groundTileTexture = Assets.loadTexture("/textures/ground_tiles.png");
+        TextureAtlas groundTiles = new TextureAtlas(groundTileTexture, 16, 16);
 
-//        Texture uiTileset = Assets.loadTexture("/textures/gui-tileset.png");
-//        TextureAtlas uiAtlas = new TextureAtlas(uiTileset, 16,16);
-
-//        spriteRegistry = DefaultSpriteRegistry.create(worldAtlas, uiAtlas);
+        spriteRegistry = DefaultSpriteRegistry.create(groundTiles);
 
         //initialize world graphics rendering systems
         OrthographicCamera2D worldCamera = new OrthographicCamera2D();
@@ -108,10 +105,7 @@ public class LifeGame implements Game {
         guiManager.registerGui(Guis.PLAYER_INVENTORY, "player", new PlayerInventoryUI(5, 3));
         guiManager.registerGui(Guis.PLAYER_TRANSFER_INVENTORY, "player", new InventoryTransferGui(5, 3));
 
-        Texture groundTiles = Assets.loadTexture("/textures/ground_tiles.png");
-        TextureAtlas atlas = new TextureAtlas(groundTiles, 16, 16);
-
-        tileRegistry = DefaultTileRegistry.create(atlas);
+        tileRegistry = DefaultTileRegistry.create(groundTiles);
         TileMapGen2 mapGen = new TileMapGen2(tileRegistry);
         map = mapGen.blankGrass();
 
@@ -143,7 +137,7 @@ public class LifeGame implements Game {
         config.register(controls);
         world = new World(config);
 
-        tileMapRenderer = new TileMapRenderer(worldGraphics, groundTiles);
+        tileMapRenderer = new TileMapRenderer(worldGraphics, groundTileTexture);
 
         Texture characterTexture = new Texture("/textures/main_character.png");
         TextureAtlas characterAtlas = new TextureAtlas(characterTexture, 16, 16);
@@ -151,6 +145,15 @@ public class LifeGame implements Game {
         this.playerEntity = characterFactory.create(16, 16);
 
         new ChestFactory(this).create(16, 8);
+
+        new VegetableFactory(this).create(20, 5);
+        new VegetableFactory(this).create(21, 5);
+        new VegetableFactory(this).create(22, 5);
+        new VegetableFactory(this).create(23, 5);
+        new VegetableFactory(this).create(20, 6);
+        new VegetableFactory(this).create(21, 6);
+        new VegetableFactory(this).create(22, 6);
+        new VegetableFactory(this).create(23, 6);
     }
 
     @Override

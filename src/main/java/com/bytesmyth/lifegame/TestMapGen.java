@@ -55,11 +55,11 @@ public class TestMapGen {
         TileMap map = game.getMap();
         TileMapLayer object1 = map.getLayer("1");
 
-        BushFactory bushFactory = new BushFactory(game);
+        VegetableFactory vegtableFactory = new VegetableFactory(game);
 
         //seed bushes
         for (int i = 0; i < count; i++) {
-            bushFactory.create((int) (Math.random() * map.getWidth()), (int) (Math.random() * map.getHeight()));
+            vegtableFactory.create((int) (Math.random() * map.getWidth()), (int) (Math.random() * map.getHeight()));
         }
 
         //expand bushes
@@ -76,7 +76,7 @@ public class TestMapGen {
                                 || below != null && below.getType().equals("bush");
 
                 if (adjacentBush && Math.random() < spreadFactor) {
-                    bushFactory.create(x, y);
+                    vegtableFactory.create(x, y);
                 }
 
             }
