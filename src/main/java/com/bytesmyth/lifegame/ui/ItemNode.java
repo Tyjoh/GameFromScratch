@@ -27,7 +27,7 @@ public class ItemNode extends Node {
 
             if (!itemName.equals(cachedItemName)) {
                 cachedItemName = itemName;
-                cachedSprite = g.getSpriteRegistry().getSprite(itemName);
+                cachedSprite = g.getSpriteRegistry().createSprite(itemName);
             }
 
             g.getBatcher().draw(renderPos.x, renderPos.y, renderPos.x + getWidth(), renderPos.y - getHeight(), cachedSprite.getTextureRegion());

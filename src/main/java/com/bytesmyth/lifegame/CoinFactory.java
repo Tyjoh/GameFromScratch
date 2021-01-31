@@ -27,7 +27,7 @@ public class CoinFactory {
     public int create(float x, float y) {
         int coin = world.create(coinArchetype);
         world.getMapper(TransformComponent.class).get(coin).setPosition(new Vector2f(x, y));
-        world.getMapper(SpriteGraphicsComponent.class).get(coin).setSprite(game.getSpriteRegistry().getSprite("coin"));
+        world.getMapper(SpriteGraphicsComponent.class).get(coin).setSprite(game.getSpriteRegistry().createSprite("coin"));
         return coin;
     }
 

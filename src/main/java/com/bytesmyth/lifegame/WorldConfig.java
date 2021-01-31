@@ -16,6 +16,7 @@ public class WorldConfig {
                 .with(new ItemPickupSystem())
                 .with(new CameraFollowSystem())
                 .with(new AnimationSystem())
+                .with(new TileGraphicsSystem())
                 .with(new SpriteRenderingSystem())
                 .build();
     }

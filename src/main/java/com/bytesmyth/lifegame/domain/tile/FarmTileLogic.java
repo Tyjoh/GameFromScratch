@@ -17,7 +17,7 @@ public class FarmTileLogic implements TileLogic {
     }
 
     @Override
-    public void update(TileMap map, Entity entity) {
+    public void tick(TileMap map, Entity entity) {
         age++;
     }
 

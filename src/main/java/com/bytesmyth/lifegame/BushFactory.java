@@ -28,7 +28,7 @@ public class BushFactory {
         Entity entity = world.createEntity();
         bushTile.setDynamicEntityId(entity.getId());
 
-        TileComponent tileComponent = new TileComponent("1", x, y);
+        TileComponent tileComponent = new TileComponent("1", "bush", x, y);
         tileComponent.setBehavior(new FarmTileLogic());
         entity.edit().add(tileComponent);
 

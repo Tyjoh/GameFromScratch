@@ -58,6 +58,7 @@ public class DefaultTileRegistry {
         tileRegistry.register("top_grass_edge", "bottom_right", tiles.getRegionByCoord(0, 0));
         tileRegistry.register("top_grass_edge", "bottom_left", tiles.getRegionByCoord(4, 0));
 
+        tileRegistry.register("chest", tiles.getRegionByCoord(8, 0));
 
         TextureRegion[] dirtTiles = new TextureRegion[] {
                 tileRegistry.getRegion("dirt_wall"),

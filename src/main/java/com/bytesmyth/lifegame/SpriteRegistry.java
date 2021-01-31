@@ -11,18 +11,14 @@ public class SpriteRegistry {
         Sprite get();
     }
 
-    private Map<String, SpriteFactory> spriteFactories = new HashMap<>();
+    private Map<String, SpriteFactory> factories = new HashMap<>();
 
-    public void registerStaticSprite(String id, Sprite sprite) {
-        spriteFactories.put(id, () -> sprite);
+    public void registerSprite(String id, SpriteFactory factory) {
+        factories.put(id, factory);
     }
 
-    public void registerDynamicSprite(String id, SpriteFactory factory) {
-        spriteFactories.put(id, factory);
-    }
-
-    public Sprite getSprite(String id) {
-        return spriteFactories.get(id).get();
+    public Sprite createSprite(String id) {
+        return factories.get(id).get();
     }
 
 }

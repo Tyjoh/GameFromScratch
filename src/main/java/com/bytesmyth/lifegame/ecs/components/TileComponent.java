@@ -5,8 +5,11 @@ import com.bytesmyth.lifegame.domain.tile.TileLogic;
 
 public class TileComponent extends Component {
     private String layer;
+    private String type;
     private int x;
     private int y;
+
+    private boolean isSolid;
 
     private TileLogic behavior = (w, e) -> {};
 
@@ -14,8 +17,9 @@ public class TileComponent extends Component {
 
     }
 
-    public TileComponent(String layer, int x, int y) {
+    public TileComponent(String layer, String type, int x, int y) {
         this.layer = layer;
+        this.type = type;
         this.x = x;
         this.y = y;
     }
@@ -31,6 +35,16 @@ public class TileComponent extends Component {
     public int getY() {
         return y;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public boolean isSolid() {
+        return isSolid;
+    }
+
+
 
     public TileLogic getBehavior() {
         return behavior;

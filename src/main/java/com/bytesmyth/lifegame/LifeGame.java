@@ -36,6 +36,7 @@ public class LifeGame implements Game {
 
     private int playerEntity;
     private SpriteRegistry spriteRegistry;
+    private TileRegistry tileRegistry;
 
     public LifeGame(GameContext context) {
         this.context = context;
@@ -59,6 +60,14 @@ public class LifeGame implements Game {
 
     public Graphics getUiGraphics() {
         return uiGraphics;
+    }
+
+    public TileRegistry getTileRegistry() {
+        return tileRegistry;
+    }
+
+    public GuiManager getGuiManager() {
+        return guiManager;
     }
 
     public void init() {
@@ -102,7 +111,7 @@ public class LifeGame implements Game {
         Texture groundTiles = Assets.loadTexture("/textures/ground_tiles.png");
         TextureAtlas atlas = new TextureAtlas(groundTiles, 16, 16);
 
-        TileRegistry tileRegistry = DefaultTileRegistry.create(atlas);
+        tileRegistry = DefaultTileRegistry.create(atlas);
         TileMapGen2 mapGen = new TileMapGen2(tileRegistry);
         map = mapGen.blankGrass();
 
@@ -140,6 +149,8 @@ public class LifeGame implements Game {
         TextureAtlas characterAtlas = new TextureAtlas(characterTexture, 16, 16);
         CharacterFactory characterFactory = new CharacterFactory(world, characterAtlas);
         this.playerEntity = characterFactory.create(16, 16);
+
+        new ChestFactory(this).create(16, 8);
     }
 
     @Override
