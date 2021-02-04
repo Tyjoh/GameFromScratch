@@ -8,8 +8,10 @@ import com.bytesmyth.graphics.Graphics;
 import com.bytesmyth.graphics.camera.OrthographicCamera2D;
 import com.bytesmyth.graphics.texture.Texture;
 import com.bytesmyth.graphics.texture.TextureAtlas;
+import com.bytesmyth.graphics.texture.TextureRegion;
 import com.bytesmyth.graphics.ui.GuiManager;
 import com.bytesmyth.lifegame.control.*;
+import com.bytesmyth.lifegame.domain.building.Building;
 import com.bytesmyth.lifegame.ecs.components.TransformComponent;
 import com.bytesmyth.lifegame.tilemap.*;
 import com.bytesmyth.lifegame.ui.Guis;
@@ -126,6 +128,23 @@ public class LifeGame implements Game {
                 globalTiler.tile(x, y, l2);
             }
         }
+
+        TextureRegion[] doorTiles = {
+                groundTiles.getRegionByCoord(5, 12),
+                groundTiles.getRegionByCoord(6, 12),
+                groundTiles.getRegionByCoord(7, 12),
+
+                groundTiles.getRegionByCoord(5, 13),
+                groundTiles.getRegionByCoord(6, 13),
+                groundTiles.getRegionByCoord(7, 13),
+        };
+
+        Building building = new Building(5, 3, 2)
+                .wallTheme(new NinePatchTileBuilder(groundTiles).topLeft(0, 11).buildTextureArray())
+                .roofTheme(new NinePatchTileBuilder(groundTiles).topLeft(0, 7).buildTextureArray())
+                .setPosition(36, 14)
+                .setDoor(2, 0, doorTiles);
+        building.addToMap(map);
 
         WorldConfiguration config = WorldConfig.createDefault();
         config.register(worldCamera);

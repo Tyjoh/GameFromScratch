@@ -19,6 +19,11 @@ public class TileMapGen2 {
         TileMapLayer layer0 = tileMap.createLayer("0");
         tileMap.createLayer("1");
         tileMap.createLayer("2");
+        tileMap.createLayer("3");
+        tileMap.createLayer("4");
+        tileMap.createLayer("5");
+        tileMap.createLayer("6");
+        tileMap.createLayer("7");
         tileMap.createLayer("collision");
 
         for (int y = 0; y < layer0.getHeight(); y++) {

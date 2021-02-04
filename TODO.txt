@@ -1,18 +1,22 @@
 TODO Current:
- - Re-introduce chests + crops
-
-TODO Next:
- - Create first pass at entity factory system.
- - Make camera an entity, refactor tweening to tween any entity towards another. Remove prev position from inside camera
- - First pass at particle system.
- - First pass at lighting system.
-
-
-TODO infrastructure:
  - Chunking / Room / Level (ie. underground/upstairs) system
     - Buildings should be as large on the outside as they are in.
     - When behind a building it should fade out
     - When in a building the roof and some walls should become transparent
+
+TODO Next:
+ - Create first pass at entity factory system.
+ - Make camera an entity, refactor tweening to tween any entity towards another. Remove prev position from inside camera
+
+
+
+TODO infrastructure:
+ - Spike out initial game mechanics
+    - Heisting
+    - Base building
+    - Large amount of npcs
+ - First pass at particle system.
+ - First pass at lighting system.
  - Level editing + persistence
  - Implement game state persistence
     - Store tiles

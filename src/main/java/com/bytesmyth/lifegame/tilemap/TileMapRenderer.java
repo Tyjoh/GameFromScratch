@@ -14,7 +14,7 @@ public class TileMapRenderer {
     private final Graphics graphics;
     private Texture texture;
 
-    private List<String> renderLayers = Arrays.asList("0", "1", "2");
+    private List<String> renderLayers = Arrays.asList("0", "1", "2", "3", "4", "5", "6");
 
     public TileMapRenderer(Graphics graphics, Texture texture) {
         this.graphics = graphics;
