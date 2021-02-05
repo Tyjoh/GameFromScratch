@@ -1,33 +1,30 @@
 package com.bytesmyth.lifegame;
 
-import com.bytesmyth.lifegame.tilemap.Tile;
-import com.bytesmyth.lifegame.tilemap.TileMap;
-import com.bytesmyth.lifegame.tilemap.TileMapLayer;
-import com.bytesmyth.lifegame.tilemap.TileRegistry;
+import com.bytesmyth.lifegame.tilemap.*;
 
-public class TileMapGen2 {
+public class ChunkGen {
 
     private final TileRegistry tileRegistry;
 
-    public TileMapGen2(TileRegistry tileRegistry) {
+    public ChunkGen(TileRegistry tileRegistry) {
         this.tileRegistry = tileRegistry;
     }
 
-    public TileMap blankGrass() {
-        TileMap tileMap = new TileMap(64);
+    public MapChunk blankGrassChunk(int chunkX, int chunkY) {
+        MapChunk chunk = new MapChunk(chunkX, chunkY);
 
-        TileMapLayer layer0 = tileMap.createLayer("0");
-        tileMap.createLayer("1");
-        tileMap.createLayer("2");
-        tileMap.createLayer("3");
-        tileMap.createLayer("4");
-        tileMap.createLayer("5");
-        tileMap.createLayer("6");
-        tileMap.createLayer("7");
-        tileMap.createLayer("collision");
+        ChunkLayer layer0 = chunk.createLayer("0");
+        chunk.createLayer("1");
+        chunk.createLayer("2");
+        chunk.createLayer("3");
+        chunk.createLayer("4");
+        chunk.createLayer("5");
+        chunk.createLayer("6");
+        chunk.createLayer("7");
+        chunk.createLayer("collision");
 
-        for (int y = 0; y < layer0.getHeight(); y++) {
-            for (int x = 0; x < layer0.getWidth(); x++) {
+        for (int y = 0; y < chunk.getSize(); y++) {
+            for (int x = 0; x < chunk.getSize(); x++) {
                 Tile tile;
 
                 double random = Math.random();
@@ -49,7 +46,7 @@ public class TileMapGen2 {
         expandPatch(layer0,"grass", "3", "2");
         expandPatch(layer0,"grass", "2", "1");
 
-        return tileMap;
+        return chunk;
     }
 
     public void addAutoTileDemo(int cx, int cy, TileMap map) {
@@ -95,25 +92,26 @@ public class TileMapGen2 {
     }
 
     private void addDirtAndCollision(TileMap map) {
-        TileMapLayer layer1 = map.getLayer("1");
-        TileMapLayer layer2 = map.getLayer("2");
-        TileMapLayer collision = map.getLayer("collision");
+//        TileMapLayer layer2 = map.getLayer("2");
 
-        for (int y = 0; y < map.getHeight(); y++) {
-            for (int x = 0; x < map.getWidth(); x++) {
-                Tile tile = layer2.getTile(x, y);
-                Tile top = layer2.getTile(x, y + 1);
-                Tile right = layer2.getTile(x + 1, y);
-                Tile bottom = layer2.getTile(x, y - 1);
-                Tile left = layer2.getTile(x - 1, y);
+        for (MapChunk chunk : map.getLoadedChunks()) {
+            for (int y = 0; y < chunk.getSize(); y++) {
+                for (int x = 0; x < chunk.getSize(); x++) {
+                    ChunkLayer layer2 = chunk.getLayer("2");
+                    Tile tile = layer2.getTile(x, y);
+                    Tile top = layer2.getTile(x, y + 1);
+                    Tile right = layer2.getTile(x + 1, y);
+                    Tile bottom = layer2.getTile(x, y - 1);
+                    Tile left = layer2.getTile(x - 1, y);
 
-                if (is(tile, "top_grass") || is(top, "top_grass")) {
-                    collision.setTile(x, y, new Tile("solid"));
-                    layer1.setTile(x, y, new Tile("dirt_wall"));
-                }
+                    if (is(tile, "top_grass") || is(top, "top_grass")) {
+                        chunk.getLayer("collision").setTile(x, y, new Tile("solid"));
+                        chunk.getLayer("1").setTile(x, y, new Tile("dirt_wall"));
+                    }
 
-                if (tile == null && (is(top, "top_grass") || is(right, "top_grass") || is(bottom, "top_grass") || is(left, "top_grass"))) {
-                    layer2.setTile(x, y, new Tile("top_grass_edge"));
+                    if (tile == null && (is(top, "top_grass") || is(right, "top_grass") || is(bottom, "top_grass") || is(left, "top_grass"))) {
+                        chunk.getLayer("2").setTile(x, y, new Tile("top_grass_edge"));
+                    }
                 }
             }
         }
@@ -123,7 +121,7 @@ public class TileMapGen2 {
         return tile != null && tile.getType().equals(type);
     }
 
-    private void expandPatch(TileMapLayer layer, String type, String targetVariant, String surroundVariant) {
+    private void expandPatch(ChunkLayer layer, String type, String targetVariant, String surroundVariant) {
         for (int y = 0; y < layer.getHeight(); y++) {
             for (int x = 0; x < layer.getWidth(); x++) {
                 Tile tile = layer.getTile(x, y);
@@ -137,7 +135,7 @@ public class TileMapGen2 {
         }
     }
 
-    private void replaceIfDefaultVariant(TileMapLayer layer, int x, int y, String type, String variant) {
+    private void replaceIfDefaultVariant(ChunkLayer layer, int x, int y, String type, String variant) {
         Tile tile = layer.getTile(x, y);
         if (tile != null && tile.getType().equals(type) && tile.getVariant() == null) {
             layer.setTile(x, y, tileRegistry.create(type, variant));

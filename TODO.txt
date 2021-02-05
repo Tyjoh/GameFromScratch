@@ -6,17 +6,17 @@ TODO Current:
 
 TODO Next:
  - Create first pass at entity factory system.
- - Make camera an entity, refactor tweening to tween any entity towards another. Remove prev position from inside camera
-
 
 
 TODO infrastructure:
+ - First pass at lighting system.
+    - line of sight shading (only inside of buildings?)
+    - Global lighting etc.
  - Spike out initial game mechanics
     - Heisting
     - Base building
     - Large amount of npcs
  - First pass at particle system.
- - First pass at lighting system.
  - Level editing + persistence
  - Implement game state persistence
     - Store tiles

@@ -24,10 +24,10 @@ public class TileMapRenderer {
     public void render(TileMap map) {
         Vector4f viewBounds = graphics.getViewBounds();
 
-        int minX = Math.max((int) viewBounds.x - 1, 0);
-        int maxX = Math.min((int) viewBounds.y + 1, map.getWidth()-1);
-        int minY = Math.max((int) viewBounds.z - 1, 0);
-        int maxY = Math.min((int) viewBounds.w + 1, map.getHeight()-1);
+        int minX = (int) viewBounds.x - 1;
+        int maxX = (int) viewBounds.y + 1;
+        int minY = (int) viewBounds.z - 1;
+        int maxY = (int) viewBounds.w + 1;
 
         int layer = 0;
         Pool<StaticTextureQuadGraphicsElement> graphicsPool = graphics.getElementPool(StaticTextureQuadGraphicsElement.class);

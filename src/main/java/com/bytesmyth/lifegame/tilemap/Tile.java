@@ -2,12 +2,9 @@ package com.bytesmyth.lifegame.tilemap;
 
 import com.bytesmyth.graphics.texture.TextureRegion;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Tile {
 
-    private TileMapLayer layer;
+    private ChunkLayer layer;
 
     private String type;
     private String variant;
@@ -29,11 +26,11 @@ public class Tile {
         this(type, null);
     }
 
-    public TileMapLayer getLayer() {
+    public ChunkLayer getLayer() {
         return layer;
     }
 
-    Tile setLayer(TileMapLayer layer) {
+    Tile setLayer(ChunkLayer layer) {
         this.layer = layer;
         return this;
     }

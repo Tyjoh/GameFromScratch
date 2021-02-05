@@ -2,43 +2,20 @@ package com.bytesmyth.lifegame.tilemap;
 
 public class TileMapLayer {
 
-    public static final int SIZE = 64;
+    private String layer;
+    private TileMap map;
 
-    private final int size;
-    private final Tile[][] tiles;
-    private final TileMap map;
-
-    public TileMapLayer(TileMap map, int size) {
+    public TileMapLayer(String layer, TileMap map) {
+        this.layer = layer;
         this.map = map;
-        this.size = SIZE;
-        tiles = new Tile[size][size];
-    }
-
-    public TileMap getMap() {
-        return map;
     }
 
     public Tile getTile(int x, int y) {
-        if (x < 0 || x >= getWidth()) return null;
-        if (y < 0 || y >= getHeight()) return null;
-        return tiles[x][y];
+        return map.getTile(layer, x, y);
     }
 
     public void setTile(int x, int y, Tile tile) {
-        assert x >= 0 && x < getWidth();
-        assert y >= 0 && y < getHeight();
-
-        tiles[x][y] = tile;
-        if (tile != null) {
-            tile.setLayer(this);
-        }
+        map.setTile(layer, x, y, tile);
     }
 
-    public int getWidth() {
-        return size;
-    }
-
-    public int getHeight() {
-        return size;
-    }
 }

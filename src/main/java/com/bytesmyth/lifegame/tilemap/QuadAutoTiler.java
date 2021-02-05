@@ -47,7 +47,7 @@ public class QuadAutoTiler {
             this.type = type;
         }
 
-        private int kern(int x, int y, TileMapLayer layer) {
+        private int kern(int x, int y, ChunkLayer layer) {
             Tile tile = layer.getTile(x + this.x, y + this.y);
 
             if (tile != null && tile.getType().equals(type)) {

@@ -108,8 +108,19 @@ public class LifeGame implements Game {
         guiManager.registerGui(Guis.PLAYER_TRANSFER_INVENTORY, "player", new InventoryTransferGui(5, 3));
 
         tileRegistry = DefaultTileRegistry.create(groundTiles);
-        TileMapGen2 mapGen = new TileMapGen2(tileRegistry);
-        map = mapGen.blankGrass();
+        ChunkGen mapGen = new ChunkGen(tileRegistry);
+
+        map = new TileMap();
+        MapChunk chunk1 = mapGen.blankGrassChunk(0, 0);
+        MapChunk chunk2 = mapGen.blankGrassChunk(1, 0);
+        MapChunk chunk3 = mapGen.blankGrassChunk(-1, 0);
+        MapChunk chunk4 = mapGen.blankGrassChunk(0, 1);
+        MapChunk chunk5 = mapGen.blankGrassChunk(0, -1);
+        map.addChunk(chunk1);
+        map.addChunk(chunk2);
+        map.addChunk(chunk3);
+        map.addChunk(chunk4);
+        map.addChunk(chunk5);
 
         mapGen.addAutoTileDemo(32, 32, map);
         mapGen.addAutoTileDemo(9, 23, map);
@@ -121,11 +132,13 @@ public class LifeGame implements Game {
         TileMapLayer l1 = map.getLayer("1");
         TileMapLayer l2 = map.getLayer("2");
 
-        for (int y = 0; y < map.getHeight(); y++) {
-            for (int x = 0; x < map.getWidth(); x++) {
-                globalTiler.tile(x, y, l0);
-                globalTiler.tile(x, y, l1);
-                globalTiler.tile(x, y, l2);
+        for (MapChunk chunk : map.getLoadedChunks()) {
+            for (int y = 0; y < chunk.getSize(); y++) {
+                for (int x = 0; x < chunk.getSize(); x++) {
+                    globalTiler.tile(chunk.localToTileX(x), chunk.localToTileY(y), l0);
+                    globalTiler.tile(chunk.localToTileX(x), chunk.localToTileY(y), l1);
+                    globalTiler.tile(chunk.localToTileX(x), chunk.localToTileY(y), l2);
+                }
             }
         }
 
@@ -139,7 +152,7 @@ public class LifeGame implements Game {
                 groundTiles.getRegionByCoord(7, 13),
         };
 
-        Building building = new Building(5, 3, 2)
+        Building building = new Building(7, 5, 2)
                 .wallTheme(new NinePatchTileBuilder(groundTiles).topLeft(0, 11).buildTextureArray())
                 .roofTheme(new NinePatchTileBuilder(groundTiles).topLeft(0, 7).buildTextureArray())
                 .setPosition(36, 14)
