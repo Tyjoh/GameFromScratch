@@ -1,13 +1,15 @@
 TODO Current:
- - Define texture atlas mapping in aseprite/file. Load from file rather than defining programmatically.
+ - Save/load maps from disk.
 
 TODO Next:
- - Save/load maps from disk.
+ - Triggering system
+    - detect when player is on a tile OR when a player is touching a wall
+    - Have detection trigger a tile graphics object change state
  - Room/Building interior system
     - Buildings should be as large on the outside as they are in.
     - When behind a building it should fade out
     - When in a building the roof and some walls should become transparent
- - Create first pass at entity factory system.
+ - Create first pass at entity factory / prefab system.
 
 
 TODO infrastructure:

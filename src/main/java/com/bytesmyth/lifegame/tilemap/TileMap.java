@@ -1,17 +1,21 @@
 package com.bytesmyth.lifegame.tilemap;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import com.bytesmyth.lifegame.domain.partition.PartitionRef;
+import com.bytesmyth.lifegame.domain.partition.PartitionedEntity;
+import com.bytesmyth.lifegame.domain.partition.SpatialPartition;
+import com.bytesmyth.util.Pool;
 
-public class TileMap {
+import java.util.*;
 
-    private Map<ChunkPosition, MapChunk> loadedChunks = new HashMap<>();
-    private ChunkPosition accessor = new ChunkPosition(0, 0);
+public class TileMap implements SpatialPartition {
 
-    public void addChunk(MapChunk chunk) {
-        ChunkPosition position = new ChunkPosition(chunk.getChunkX(), chunk.getChunkY());
+    private final Map<ChunkPosition, Chunk> loadedChunks = new HashMap<>();
+    private final ChunkPosition accessor = new ChunkPosition(0, 0);
+
+    private final Pool<PartitionedEntity> partitionedEntityPool = new Pool<>(PartitionedEntity::new, 1000);
+
+    public void addChunk(Chunk chunk) {
+        ChunkPosition position = new ChunkPosition(chunk.getX(), chunk.getY());
         this.loadedChunks.put(position, chunk);
     }
 
@@ -21,17 +25,17 @@ public class TileMap {
         loadedChunks.remove(accessor);
     }
 
-    public MapChunk getChunk(int chunkX, int chunkY) {
+    public Chunk getChunk(int chunkX, int chunkY) {
         this.accessor.x = chunkX;
         this.accessor.y = chunkY;
         return loadedChunks.get(accessor);
     }
 
-    public Collection<MapChunk> getLoadedChunks() {
+    public Collection<Chunk> getLoadedChunks() {
         return loadedChunks.values();
     }
 
-    public MapChunk getChunkContaining(int tileX, int tileY) {
+    public Chunk getChunkContaining(float tileX, float tileY) {
         ChunkPosition accessor = tileToChunk(tileX, tileY);
         return loadedChunks.get(accessor);
     }
@@ -40,15 +44,8 @@ public class TileMap {
         return new TileMapLayer(name, this);
     }
 
-    //TODO: this needs to be done when initializing a chunk
-//    public ChunkLayer createLayer(String name) {
-//        ChunkLayer layer = new ChunkLayer(size);
-//        layers.put(name, layer);
-//        return layer;
-//    }
-
     public Tile getTile(String name, int tileX, int tileY) {
-        MapChunk chunk = getChunkContaining(tileX, tileY);
+        Chunk chunk = getChunkContaining(tileX, tileY);
         if (chunk == null) {
             return null;
         } else {
@@ -58,7 +55,7 @@ public class TileMap {
 
     public void setTile(String layer, int x, int y, Tile tile) {
         ChunkPosition accessor = tileToChunk(x, y);
-        MapChunk chunk = loadedChunks.get(accessor);
+        Chunk chunk = loadedChunks.get(accessor);
         if (chunk == null) {
             throw new RuntimeException(String.format("Chunk (%d, %d) is not loaded", accessor.x, accessor.y));
         } else {
@@ -66,12 +63,63 @@ public class TileMap {
         }
     }
 
-    private ChunkPosition tileToChunk(int x, int y) {
-        this.accessor.x = x / MapChunk.SIZE;
+    private ChunkPosition tileToChunk(float x, float y) {
+        this.accessor.x = (int) (x / Chunk.SIZE);
         if (x < 0) this.accessor.x--;
-        this.accessor.y = y / MapChunk.SIZE;
+        this.accessor.y = (int) (y / Chunk.SIZE);
         if (y < 0) this.accessor.y--;
         return this.accessor;
+    }
+
+    @Override
+    public PartitionRef partition(int entityId, float x, float y) {
+        Chunk chunk = getChunkContaining((int) x, (int) y);
+        chunk.addEntity(partitionedEntityPool.get().set(entityId, x, y));
+        return chunk;
+    }
+
+    @Override
+    public Set<Integer> query(float x, float y, float radius) {
+        Set<Integer> hashset = new HashSet<>();
+        List<Chunk> chunks = getIntersectingChunks(x, y, radius);
+        for (Chunk chunk : chunks) {
+            chunk.getEntities().stream()
+                    .map(PartitionedEntity::getEntityId)
+                    .forEach(hashset::add);
+        }
+        return hashset;
+    }
+
+    @Override
+    public Set<Integer> queryExact(float x, float y, float radius) {
+        float rad2 = radius * radius;
+
+        Set<Integer> hashset = new HashSet<>();
+        List<Chunk> chunks = getIntersectingChunks(x, y, radius);
+
+        for (Chunk chunk : chunks) {
+            chunk.getEntities().stream()
+                    .filter(e -> e.within(x, y, rad2))
+                    .map(PartitionedEntity::getEntityId)
+                    .forEach(hashset::add);
+        }
+
+        return hashset;
+    }
+
+    private List<Chunk> getIntersectingChunks(float x, float y, float radius) {
+        float querySpanChunks = (radius * 2) / Chunk.SIZE;
+        int searchSquare = (int) (Math.floor(querySpanChunks) + 1);
+
+        List<Chunk> chunks = new ArrayList<>(searchSquare * searchSquare);
+
+        for (float tx = x - radius; tx < x + radius; tx += Chunk.SIZE) {
+            for (float ty = y - radius; ty < y + radius; ty += Chunk.SIZE) {
+                chunks.add(getChunkContaining(tx, ty));
+            }
+        }
+
+        return chunks;
     }
 
     private static class ChunkPosition {

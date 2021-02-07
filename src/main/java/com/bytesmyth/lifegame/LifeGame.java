@@ -13,8 +13,9 @@ import com.bytesmyth.graphics.tileset.*;
 import com.bytesmyth.graphics.ui.GuiManager;
 import com.bytesmyth.lifegame.control.*;
 import com.bytesmyth.lifegame.domain.building.Building;
+import com.bytesmyth.lifegame.domain.partition.SpatialPartition;
 import com.bytesmyth.lifegame.ecs.components.TransformComponent;
-import com.bytesmyth.lifegame.tilemap.MapChunk;
+import com.bytesmyth.lifegame.tilemap.Chunk;
 import com.bytesmyth.lifegame.tilemap.TileMap;
 import com.bytesmyth.lifegame.tilemap.TileMapLayer;
 import com.bytesmyth.lifegame.tilemap.TileMapRenderer;
@@ -111,16 +112,19 @@ public class LifeGame implements Game {
         ChunkGen chunkGen = new ChunkGen(tileset);
 
         map = new TileMap();
-        MapChunk chunk1 = chunkGen.blankGrassChunk(0, 0);
-        MapChunk chunk2 = chunkGen.blankGrassChunk(1, 0);
-        MapChunk chunk3 = chunkGen.blankGrassChunk(-1, 0);
-        MapChunk chunk4 = chunkGen.blankGrassChunk(0, 1);
-        MapChunk chunk5 = chunkGen.blankGrassChunk(0, -1);
+        Chunk chunk1 = chunkGen.blankGrassChunk(0, 0);
+        Chunk chunk2 = chunkGen.blankGrassChunk(1, 0);
+        Chunk chunk3 = chunkGen.blankGrassChunk(0, 1);
+        Chunk chunk4 = chunkGen.blankGrassChunk(1, 1);
+//        Chunk chunk2 = chunkGen.blankGrassChunk(1, 0);
+//        Chunk chunk3 = chunkGen.blankGrassChunk(-1, 0);
+//        Chunk chunk4 = chunkGen.blankGrassChunk(0, 1);
+//        Chunk chunk5 = chunkGen.blankGrassChunk(0, -1);
         map.addChunk(chunk1);
         map.addChunk(chunk2);
         map.addChunk(chunk3);
         map.addChunk(chunk4);
-        map.addChunk(chunk5);
+//        map.addChunk(chunk5);
 
         chunkGen.addAutoTileDemo(32, 32, map);
         chunkGen.addAutoTileDemo(9, 23, map);
@@ -133,20 +137,20 @@ public class LifeGame implements Game {
 
         Tiler globalTiler = tileset.getCombinedTiler();
 
-        for (MapChunk chunk : map.getLoadedChunks()) {
+        for (Chunk chunk : map.getLoadedChunks()) {
             for (int y = 0; y < chunk.getSize(); y++) {
                 for (int x = 0; x < chunk.getSize(); x++) {
                     int wx = chunk.localToTileX(x);
                     int wy = chunk.localToTileY(y);
 
                     TileDef tile = globalTiler.tile(wx, wy, layer0::getTileType);
-                    if (tile != null) layer0.getTile(x, y).setTextureRegion(tile.getRegion()).setVariant(tile.getVariant());
+                    if (tile != null) layer0.getTile(wx, wy).setTextureRegion(tile.getRegion()).setVariant(tile.getVariant());
 
                     tile = globalTiler.tile(wx, wy, layer1::getTileType);
-                    if (tile != null) layer1.getTile(x, y).setTextureRegion(tile.getRegion()).setVariant(tile.getVariant());
+                    if (tile != null) layer1.getTile(wx, wy).setTextureRegion(tile.getRegion()).setVariant(tile.getVariant());
 
                     tile = globalTiler.tile(wx, wy, layer2::getTileType);
-                    if (tile != null) layer2.getTile(x, y).setTextureRegion(tile.getRegion()).setVariant(tile.getVariant());
+                    if (tile != null) layer2.getTile(wx, wy).setTextureRegion(tile.getRegion()).setVariant(tile.getVariant());
                 }
             }
         }
@@ -237,4 +241,7 @@ public class LifeGame implements Game {
         return spriteRegistry;
     }
 
+    public SpatialPartition getSpatialPartitioner() {
+        return map;
+    }
 }

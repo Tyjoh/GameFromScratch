@@ -4,7 +4,7 @@ import com.bytesmyth.graphics.texture.TextureRegion;
 
 public class Tile {
 
-    private ChunkLayer layer;
+    private Layer layer;
 
     private String type;
     private String variant;
@@ -26,11 +26,11 @@ public class Tile {
         this(type, null);
     }
 
-    public ChunkLayer getLayer() {
+    public Layer getLayer() {
         return layer;
     }
 
-    Tile setLayer(ChunkLayer layer) {
+    Tile setLayer(Layer layer) {
         this.layer = layer;
         return this;
     }

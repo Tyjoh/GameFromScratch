@@ -11,10 +11,10 @@ public class ChunkGen {
         this.tileset = tileset;
     }
 
-    public MapChunk blankGrassChunk(int chunkX, int chunkY) {
-        MapChunk chunk = new MapChunk(chunkX, chunkY);
+    public Chunk blankGrassChunk(int chunkX, int chunkY) {
+        Chunk chunk = new Chunk(chunkX, chunkY);
 
-        ChunkLayer layer0 = chunk.createLayer("0");
+        Layer layer0 = chunk.createLayer("0");
         chunk.createLayer("1");
         chunk.createLayer("2");
         chunk.createLayer("3");
@@ -95,10 +95,10 @@ public class ChunkGen {
     private void addDirtAndCollision(TileMap map) {
 //        TileMapLayer layer2 = map.getLayer("2");
 
-        for (MapChunk chunk : map.getLoadedChunks()) {
+        for (Chunk chunk : map.getLoadedChunks()) {
             for (int y = 0; y < chunk.getSize(); y++) {
                 for (int x = 0; x < chunk.getSize(); x++) {
-                    ChunkLayer layer2 = chunk.getLayer("2");
+                    Layer layer2 = chunk.getLayer("2");
                     Tile tile = layer2.getTile(x, y);
                     Tile top = layer2.getTile(x, y + 1);
                     Tile right = layer2.getTile(x + 1, y);
@@ -122,7 +122,7 @@ public class ChunkGen {
         return tile != null && tile.getType().equals(type);
     }
 
-    private void expandPatch(ChunkLayer layer, String type, String targetVariant, String surroundVariant) {
+    private void expandPatch(Layer layer, String type, String targetVariant, String surroundVariant) {
         for (int y = 0; y < layer.getHeight(); y++) {
             for (int x = 0; x < layer.getWidth(); x++) {
                 Tile tile = layer.getTile(x, y);
@@ -136,7 +136,7 @@ public class ChunkGen {
         }
     }
 
-    private void replaceIfDefaultVariant(ChunkLayer layer, int x, int y, String type, String variant) {
+    private void replaceIfDefaultVariant(Layer layer, int x, int y, String type, String variant) {
         Tile tile = layer.getTile(x, y);
         if (tile != null && tile.getType().equals(type) && tile.getVariant().equals("0")) {
             layer.setTile(x, y, texturedTile(type, variant));

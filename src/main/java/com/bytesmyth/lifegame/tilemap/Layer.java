@@ -1,14 +1,12 @@
 package com.bytesmyth.lifegame.tilemap;
 
-public class ChunkLayer {
-
-    public static final int SIZE = 64;
+public class Layer {
 
     private final int size;
     private final Tile[][] tiles;
 
-    ChunkLayer(int size) {
-        this.size = SIZE;
+    Layer(int size) {
+        this.size = size;
         tiles = new Tile[size][size];
     }
 

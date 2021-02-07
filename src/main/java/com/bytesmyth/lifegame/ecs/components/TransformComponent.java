@@ -1,6 +1,7 @@
 package com.bytesmyth.lifegame.ecs.components;
 
 import com.artemis.Component;
+import com.bytesmyth.lifegame.domain.partition.PartitionRef;
 import org.joml.Vector2f;
 
 
@@ -8,6 +9,7 @@ public class TransformComponent extends Component {
 
     private Vector2f position = new Vector2f();
     private Vector2f prevPosition = new Vector2f();
+    private PartitionRef prevPartition;
 
     public void translate(Vector2f delta) {
         this.position.add(delta);
@@ -28,5 +30,14 @@ public class TransformComponent extends Component {
 
     public Vector2f getPrevPosition() {
         return prevPosition;
+    }
+
+    public PartitionRef getPartition() {
+        return prevPartition;
+    }
+
+    public TransformComponent setPartition(PartitionRef prevPartition) {
+        this.prevPartition = prevPartition;
+        return this;
     }
 }
