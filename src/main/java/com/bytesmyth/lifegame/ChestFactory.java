@@ -2,6 +2,7 @@ package com.bytesmyth.lifegame;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.bytesmyth.graphics.tileset.Tileset;
 import com.bytesmyth.graphics.ui.GuiManager;
 import com.bytesmyth.lifegame.domain.interaction.InventoryInteractionHandler;
 import com.bytesmyth.lifegame.domain.item.Inventory;
@@ -11,7 +12,6 @@ import com.bytesmyth.lifegame.ecs.components.TileComponent;
 import com.bytesmyth.lifegame.ecs.components.TileGraphicsComponent;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
-import com.bytesmyth.lifegame.tilemap.TileRegistry;
 
 public class ChestFactory {
 
@@ -24,7 +24,7 @@ public class ChestFactory {
     public void create(int x, int y) {
         TileMap map = game.getMap();
         World world = game.getWorld();
-        TileRegistry tileRegistry = game.getTileRegistry();
+        Tileset tileset = game.getTileset();
         GuiManager guiManager = game.getGuiManager();
 
         Tile tile = map.getLayer("1").getTile(x, y);
@@ -41,7 +41,7 @@ public class ChestFactory {
         TileComponent tileComponent = new TileComponent("1", "chest", x, y);
         entity.edit().add(new InventoryComponent().setInventory(new Inventory(15)))
                 .add(new InteractiveComponent(new InventoryInteractionHandler(guiManager, entity)))
-                .add(new TileGraphicsComponent().setTextureRegion(tileRegistry.getRegion("chest")))
+                .add(new TileGraphicsComponent().setTextureRegion(tileset.getTile("chest").getRegion()))
                 .add(tileComponent);
     }
 }

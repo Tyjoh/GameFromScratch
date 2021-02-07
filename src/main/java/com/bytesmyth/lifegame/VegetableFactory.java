@@ -3,6 +3,7 @@ package com.bytesmyth.lifegame;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.bytesmyth.graphics.texture.TextureRegion;
+import com.bytesmyth.graphics.tileset.Tileset;
 import com.bytesmyth.lifegame.domain.interaction.FarmInteractionHandler;
 import com.bytesmyth.lifegame.domain.tile.FarmTileLogic;
 import com.bytesmyth.lifegame.ecs.components.InteractiveComponent;
@@ -10,18 +11,17 @@ import com.bytesmyth.lifegame.ecs.components.TileComponent;
 import com.bytesmyth.lifegame.ecs.components.TileGraphicsComponent;
 import com.bytesmyth.lifegame.tilemap.Tile;
 import com.bytesmyth.lifegame.tilemap.TileMap;
-import com.bytesmyth.lifegame.tilemap.TileRegistry;
 import com.bytesmyth.util.Provider;
 
 public class VegetableFactory {
     private final World world;
     private final TileMap map;
-    private final TileRegistry tileRegistry;
+    private final Tileset tileset;
 
     public VegetableFactory(LifeGame game) {
         this.world = game.getWorld();
         this.map = game.getMap();
-        this.tileRegistry = game.getTileRegistry();
+        this.tileset = game.getTileset();
     }
 
     public void create(int x, int y) {
@@ -35,10 +35,10 @@ public class VegetableFactory {
         tileComponent.setBehavior(farmTileLogic);
 
         GrowthTileGraphics graphics = new GrowthTileGraphics(farmTileLogic, new TextureRegion[]{
-                tileRegistry.getRegion("vegetable", "growth_1"),
-                tileRegistry.getRegion("vegetable", "growth_2"),
-                tileRegistry.getRegion("vegetable", "growth_3"),
-                tileRegistry.getRegion("vegetable", "growth_4")
+                tileset.getTile("vegetable", "growth_1").getRegion(),
+                tileset.getTile("vegetable", "growth_2").getRegion(),
+                tileset.getTile("vegetable", "growth_3").getRegion(),
+                tileset.getTile("vegetable", "growth_4").getRegion()
         });
 
         entity.edit().add(tileComponent)

@@ -1,8 +1,10 @@
-package com.bytesmyth.lifegame.tilemap;
+package com.bytesmyth.graphics.tileset;
 
 import com.bytesmyth.graphics.texture.TextureRegion;
+import com.bytesmyth.lifegame.tilemap.Tile;
+import com.bytesmyth.lifegame.tilemap.TileMapLayer;
 
-public class RectangleAutoTiler implements Tiler {
+public class AutoTiler implements Tiler {
 
     public static final int TOP_LEFT = 1;
     public static final int TOP = 2;
@@ -15,7 +17,7 @@ public class RectangleAutoTiler implements Tiler {
 
     private final String type;
     private final String maskType;
-    private final TextureRegion[] tiles;
+    private final TileDef[] tiles;
 
     private final MaskTile topLeft;
     private final MaskTile top;
@@ -26,7 +28,7 @@ public class RectangleAutoTiler implements Tiler {
     private final MaskTile bottomLeft;
     private final MaskTile left;
 
-    public RectangleAutoTiler(String type, String maskType, TextureRegion[] tiles) {
+    public AutoTiler(String type, String maskType, TileDef[] tiles) {
         this.maskType = maskType;
         if (tiles.length != 256) throw new IllegalArgumentException("Horizontal auto tilers require 256 texture regions");
         this.type = type;
@@ -42,14 +44,14 @@ public class RectangleAutoTiler implements Tiler {
         left = new MaskTile(-1, 0, LEFT, maskType);
     }
 
-    public RectangleAutoTiler(String type, TextureRegion[] tiles) {
+    public AutoTiler(String type, TileDef[] tiles) {
         this(type, type, tiles);
     }
 
-    public void tile(int x, int y, TileMapLayer layer) {
-        Tile tile = layer.getTile(x, y);
-        if (tile == null || !tile.getType().equals(type)) {
-            return;
+    public TileDef tile(int x, int y, TileTypeProvider layer) {
+        String tile = layer.get(x, y);
+        if (tile == null || !tile.equals(type)) {
+            return null;
         }
 
         int kern = 0;
@@ -83,8 +85,7 @@ public class RectangleAutoTiler implements Tiler {
             kern |= bottomLeft.kern(x, y, layer);
         }
 
-        TextureRegion region = tiles[kern];
-        layer.getTile(x, y).setTextureRegion(region);
+        return tiles[kern];
     }
 
     private static class MaskTile {
@@ -100,10 +101,10 @@ public class RectangleAutoTiler implements Tiler {
             this.type = type;
         }
 
-        private int kern(int x, int y, TileMapLayer layer) {
-            Tile tile = layer.getTile(x + this.x, y + this.y);
+        private int kern(int x, int y, TileTypeProvider layer) {
+            String tile = layer.get(x + this.x, y + this.y);
 
-            if (tile != null && tile.getType().equals(type)) {
+            if (tile != null && tile.equals(type)) {
                 return bitmask;
             } else {
                 return 0;

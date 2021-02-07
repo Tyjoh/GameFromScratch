@@ -14,6 +14,15 @@ public class TileMapLayer {
         return map.getTile(layer, x, y);
     }
 
+    public String getTileType(int x, int y) {
+        Tile tile = getTile(x, y);
+        if (tile != null) {
+            return tile.getType();
+        } else {
+            return null;
+        }
+    }
+
     public void setTile(int x, int y, Tile tile) {
         map.setTile(layer, x, y, tile);
     }

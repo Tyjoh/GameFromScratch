@@ -1,10 +1,12 @@
 TODO Current:
- - Chunking / Room / Level (ie. underground/upstairs) system
+ - Define texture atlas mapping in aseprite/file. Load from file rather than defining programmatically.
+
+TODO Next:
+ - Save/load maps from disk.
+ - Room/Building interior system
     - Buildings should be as large on the outside as they are in.
     - When behind a building it should fade out
     - When in a building the roof and some walls should become transparent
-
-TODO Next:
  - Create first pass at entity factory system.
 
 

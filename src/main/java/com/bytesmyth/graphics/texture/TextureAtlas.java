@@ -3,6 +3,8 @@ package com.bytesmyth.graphics.texture;
 public class TextureAtlas {
 
     private final Texture texture;
+    private int tileWidth;
+    private int tileHeight;
 
     private final int width;
     private final int height;
@@ -11,6 +13,8 @@ public class TextureAtlas {
 
     public TextureAtlas(Texture texture, int tileWidth, int tileHeight) {
         this.texture = texture;
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
 
         this.width = texture.getWidth() / tileWidth;
         this.height = texture.getHeight() / tileHeight;
@@ -46,7 +50,27 @@ public class TextureAtlas {
         return y * width + x;
     }
 
+    public int idToX(int id) {
+        return id % width;
+    }
+
+    public int idToY(int id) {
+        return id / width;
+    }
+
     public TextureRegion getRegionByCoord(int x, int y) {
         return getRegionById(tileCoordToId(x, y));
+    }
+
+    public int getTileCount() {
+        return width * height;
+    }
+
+    public int getTileWidth() {
+        return tileWidth;
+    }
+
+    public int getTileHeight() {
+        return tileHeight;
     }
 }

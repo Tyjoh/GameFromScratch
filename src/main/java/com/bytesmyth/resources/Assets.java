@@ -6,6 +6,8 @@ import org.lwjgl.BufferUtils;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,8 +37,8 @@ public class Assets {
         try {
             InputStream resourceAsStream = Assets.class.getResourceAsStream(path);
 
-            if(resourceAsStream == null) {
-                throw new ResourceNotFoundException(path);
+            if (resourceAsStream == null) {
+                resourceAsStream = Files.newInputStream(Paths.get(path));
             }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));

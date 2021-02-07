@@ -1,13 +1,14 @@
 package com.bytesmyth.lifegame;
 
+import com.bytesmyth.graphics.tileset.Tileset;
 import com.bytesmyth.lifegame.tilemap.*;
 
 public class ChunkGen {
 
-    private final TileRegistry tileRegistry;
+    private final Tileset tileset;
 
-    public ChunkGen(TileRegistry tileRegistry) {
-        this.tileRegistry = tileRegistry;
+    public ChunkGen(Tileset tileset) {
+        this.tileset = tileset;
     }
 
     public MapChunk blankGrassChunk(int chunkX, int chunkY) {
@@ -30,13 +31,13 @@ public class ChunkGen {
                 double random = Math.random();
 
                 if (random > 0.995f) {
-                    tile = tileRegistry.create("grass", "3");
+                    tile = texturedTile("grass", "3");
                 } else if (random > 0.97f) {
-                    tile = tileRegistry.create("grass", "2");
+                    tile = texturedTile("grass", "2");
                 } else if (random > 0.94f) {
-                    tile = tileRegistry.create("grass", "1");
+                    tile = texturedTile("grass", "1");
                 } else {
-                    tile = tileRegistry.create("grass");
+                    tile = texturedTile("grass", "0");
                 }
 
                 layer0.setTile(x, y, tile);
@@ -137,9 +138,13 @@ public class ChunkGen {
 
     private void replaceIfDefaultVariant(ChunkLayer layer, int x, int y, String type, String variant) {
         Tile tile = layer.getTile(x, y);
-        if (tile != null && tile.getType().equals(type) && tile.getVariant() == null) {
-            layer.setTile(x, y, tileRegistry.create(type, variant));
+        if (tile != null && tile.getType().equals(type) && tile.getVariant().equals("0")) {
+            layer.setTile(x, y, texturedTile(type, variant));
         }
+    }
+
+    private Tile texturedTile(String type, String variant) {
+        return new Tile(type, variant).setTextureRegion(tileset.getTile(type, variant).getRegion());
     }
 
     public void rectangle(int x1, int y1, int x2, int y2, int thickness, TileMap map) {
